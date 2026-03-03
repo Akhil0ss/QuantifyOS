@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: quantify-backend-prod
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env.prod
+    volumes:
+      - ./backend/workspaces:/app/workspaces
+      - ./backend/backups:/app/backups
+    # Resource limits for 1GB Oracle Instance
+    deploy:
+      resources:
+        limits:
+          memory: 800M
+    networks:
+      - quantify-network
+
+networks:
+  quantify-network:
+    driver: bridge
