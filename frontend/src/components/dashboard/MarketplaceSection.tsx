@@ -1,191 +1,78 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useAuth } from '../../hooks/useAuth';
-import { motion } from 'framer-motion';
-import * as Icons from 'lucide-react';
-import toast from 'react-hot-toast';
+import { Store, Zap, Shield, Search, Download, Star, ExternalLink } from 'lucide-react';
 
 export default function MarketplaceSection() {
-    const { user } = useAuth();
-    const [catalog, setCatalog] = useState<any[]>([]);
-    const [installed, setInstalled] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [installing, setInstalling] = useState<string | null>(null);
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('All');
-
-    const workspaceId = user ? `default-${user.uid}` : '';
-
-    const fetchMarketplaceData = useCallback(async () => {
-        if (!user || !workspaceId) return;
-        try {
-            const token = await user.getIdToken();
-            const headers = { 'Authorization': `Bearer ${token}` };
-
-            const [catalogRes, installedRes] = await Promise.all([
-                fetch(`/api/workspaces/${workspaceId}/marketplace/catalog`, { headers }),
-                fetch(`/api/workspaces/${workspaceId}/marketplace/installed`, { headers })
-            ]);
-
-            if (catalogRes.ok && installedRes.ok) {
-                setCatalog(await catalogRes.json());
-                setInstalled(await installedRes.json());
-            }
-        } catch (error) {
-            console.error('Failed to fetch marketplace data:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [user, workspaceId]);
-
-    useEffect(() => {
-        fetchMarketplaceData();
-    }, [fetchMarketplaceData]);
-
-    const handleInstall = async (moduleId: string) => {
-        if (!user || !workspaceId) return;
-        setInstalling(moduleId);
-        try {
-            const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/marketplace/install/${moduleId}`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (res.ok) {
-                toast.success('Module Installed successfully!');
-                fetchMarketplaceData();
-            } else {
-                toast.error('Failed to install module');
-            }
-        } catch (error) {
-            console.error('Install error:', error);
-            toast.error('An error occurred');
-        } finally {
-            setInstalling(null);
-        }
-    };
-
-    const isInstalled = (moduleId: string) => {
-        return installed.some(mod => mod.id === moduleId);
-    };
-
-    const categories = ['All', ...Array.from(new Set(catalog.map(item => item.category).filter(Boolean)))].sort();
-
-    const filteredCatalog = useMemo(() => {
-        return catalog.filter(module => {
-            const matchesSearch = module.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                module.description.toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesCategory = selectedCategory === 'All' || module.category === selectedCategory;
-            return matchesSearch && matchesCategory;
-        });
-    }, [catalog, searchQuery, selectedCategory]);
-
-    // Dynamic icon renderer
-    const RenderIcon = ({ iconName, type }: { iconName: string, type: string }) => {
-        const IconComponent = (Icons as any)[iconName] || Icons.Box;
-        let colorClass = 'text-blue-400';
-        if (type === 'workflow') colorClass = 'text-pink-400';
-        if (type === 'persona') colorClass = 'text-emerald-400';
-
-        return <IconComponent size={24} className={colorClass} />;
-    };
+    const agents = [
+        { name: "Researcher_Alpha", role: "Market Analysis", author: "Quantify Core", price: "Free", rating: 4.9 },
+        { name: "Healer_Main", role: "Bug Fixing", author: "Quantify Core", price: "Premium", rating: 5.0 },
+        { name: "Scraper_X", role: "Web Intelligence", author: "L6 Protocol", price: "Free", rating: 4.7 },
+        { name: "Coder_Evolution", role: "Auto-Refactor", author: "Quantify V11", price: "Premium", rating: 4.9 },
+    ];
 
     return (
-        <div className="space-y-6 h-full flex flex-col">
-            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
+        <div className="max-w-6xl space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h2 className="text-xl font-bold tracking-tight text-white mb-1">Module Marketplace</h2>
-                    <p className="text-sm text-gray-400">Expand your agent's capabilities with pre-built personas and advanced workflows.</p>
+                    <h1 className="text-2xl font-black text-white flex items-center gap-3">
+                        <Store className="text-blue-500" size={24} />
+                        Agent Store
+                    </h1>
+                    <p className="text-zinc-500 text-sm mt-1 uppercase tracking-widest font-bold">L12 Swarm Orchestration • Community Skills</p>
                 </div>
-
-                <div className="relative w-full md:w-64 shrink-0">
-                    <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <div className="relative w-full md:w-80">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={16} />
                     <input
                         type="text"
-                        placeholder="Search 100+ tools..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-[#141414] border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+                        placeholder="Search skills, agents, or tools..."
+                        className="w-full bg-[#111113] border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs text-white focus:outline-none focus:border-blue-500/50 transition-all font-medium"
                     />
                 </div>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                {agents.map((a, i) => (
+                    <div key={i} className="bg-[#111113] border border-white/5 rounded-3xl p-6 group hover:border-blue-500/20 transition-all flex flex-col justify-between">
+                        <div>
+                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600/10 to-indigo-600/10 flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform">
+                                <Zap size={24} />
+                            </div>
+                            <div className="flex justify-between items-start mb-2">
+                                <h3 className="text-white font-bold">{a.name}</h3>
+                                <div className="flex items-center gap-1 text-[10px] text-amber-500 font-bold">
+                                    <Star size={10} fill="currentColor" /> {a.rating}
+                                </div>
+                            </div>
+                            <p className="text-xs text-zinc-500 mb-4">{a.role}</p>
+                            <div className="flex gap-2 mb-8">
+                                <span className="px-2 py-1 rounded-lg bg-white/5 border border-white/5 text-[9px] font-bold text-zinc-400 uppercase tracking-widest">{a.author}</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                            <span className={`text-[11px] font-black uppercase tracking-widest ${a.price === 'Free' ? 'text-emerald-400' : 'text-blue-400'}`}>
+                                {a.price}
+                            </span>
+                            <button className="p-2 rounded-xl bg-white/[0.03] text-zinc-500 hover:text-white hover:bg-white/[0.08] transition-all">
+                                <Download size={14} />
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            {/* Categories filter */}
-            {!loading && categories.length > 1 && (
-                <div className="flex flex-wrap gap-2 pb-2">
-                    {categories.map(category => (
-                        <button
-                            key={category}
-                            onClick={() => setSelectedCategory(category)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === category
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                                    : 'bg-[#141414] text-gray-400 hover:text-white border border-white/5 hover:border-white/20'
-                                }`}
-                        >
-                            {category}
-                        </button>
-                    ))}
+            <div className="p-12 bg-blue-600/5 border border-blue-500/10 rounded-[40px] flex flex-col items-center text-center space-y-6">
+                <Shield className="text-blue-400" size={48} />
+                <div>
+                    <h2 className="text-2xl font-black text-white">Developer SDK</h2>
+                    <p className="text-zinc-500 text-sm max-w-lg mt-2 leading-relaxed">
+                        Build your own autonomous sub-agents and list them on the global grid.
+                        Monetize your specialized prompt chains and toolsets.
+                    </p>
                 </div>
-            )}
-
-            {loading ? (
-                <div className="flex justify-center py-20"><Icons.Loader2 className="animate-spin text-blue-500" /></div>
-            ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-10">
-                    {filteredCatalog.length === 0 ? (
-                        <div className="col-span-1 lg:col-span-2 text-center py-10 text-gray-500 text-sm">
-                            No tools found matching your search.
-                        </div>
-                    ) : (
-                        filteredCatalog.map((module) => (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                key={module.id}
-                                className="bg-[#141414] rounded-xl border border-white/5 p-5 hover:border-white/10 transition-colors flex flex-col h-full"
-                            >
-                                <div className="flex items-start gap-4 mb-4">
-                                    <div className="w-12 h-12 rounded-xl bg-black/50 border border-white/5 flex items-center justify-center shrink-0 shadow-inner">
-                                        <RenderIcon iconName={module.icon} type={module.type} />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between gap-2">
-                                            <h3 className="font-semibold text-white truncate" title={module.name}>{module.name}</h3>
-                                            <span className="text-[10px] uppercase font-bold tracking-widest text-[#bbff00] px-2 py-0.5 bg-[#bbff00]/10 rounded-full shrink-0">
-                                                {module.type}
-                                            </span>
-                                        </div>
-                                        <div className="text-[10px] text-gray-500 mt-0.5">{module.category || 'General'}</div>
-                                        <p className="text-xs text-gray-400 mt-2 line-clamp-3 leading-relaxed">{module.description}</p>
-                                    </div>
-                                </div>
-
-                                <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
-                                    <div className="text-xs font-bold text-gray-300 bg-white/5 px-2 py-1 rounded">
-                                        {module.price}
-                                    </div>
-                                    {isInstalled(module.id) ? (
-                                        <div className="flex items-center gap-1.5 text-xs text-green-400 font-medium px-3 py-1.5 bg-green-900/10 border border-green-500/20 rounded-lg">
-                                            <Icons.CheckCircle2 size={14} /> Installed
-                                        </div>
-                                    ) : (
-                                        <button
-                                            onClick={() => handleInstall(module.id)}
-                                            disabled={installing === module.id}
-                                            className="flex items-center gap-1.5 text-xs text-white font-medium px-4 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 shadow-md shadow-blue-500/10 hover:shadow-blue-500/20"
-                                        >
-                                            {installing === module.id ? <Icons.Loader2 size={14} className="animate-spin" /> : <Icons.Download size={14} />}
-                                            Install
-                                        </button>
-                                    )}
-                                </div>
-                            </motion.div>
-                        ))
-                    )}
-                </div>
-            )}
+                <button className="px-10 py-4 bg-white text-black text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-zinc-200 transition-all active:scale-95 shadow-2xl">
+                    Get Started <ExternalLink className="inline ml-2" size={14} />
+                </button>
+            </div>
         </div>
     );
 }

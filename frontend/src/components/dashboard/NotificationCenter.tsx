@@ -1,128 +1,75 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { Bell, Zap, AlertCircle, CheckCircle2, Info, ArrowUpRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, CheckCircle2, AlertTriangle, Zap, Mail, X, Send, Loader2 } from 'lucide-react';
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
-interface NotifEntry {
-    to: string;
-    subject: string;
-    status: string;
-    timestamp: string;
-}
 
 export default function NotificationCenter() {
-    const [open, setOpen] = useState(false);
-    const [log, setLog] = useState<NotifEntry[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [sending, setSending] = useState(false);
-    const ref = useRef<HTMLDivElement>(null);
+    const notifications = [
+        { id: 1, type: 'info', title: 'System Deployment Active', desc: 'Oracle VM V1.0 node successfully provisioned and serving on Port 80.', time: '2m ago' },
+        { id: 2, type: 'zap', title: 'Intelligence Refinement', desc: 'Evolutionary loop completed a successful refactor of the Hardware Bridge.', time: '15m ago' },
+        { id: 3, type: 'alert', title: 'High-Risk Operation', desc: 'Agent Researcher_Alpha is requesting permission to access external financial API.', time: '1h ago' },
+        { id: 4, type: 'success', title: 'Bounty Settled', desc: 'Internal micro-transaction of 0.002 BTC finalized for Coder_X task completion.', time: '4h ago' }
+    ];
 
-    useEffect(() => {
-        if (open) {
-            setLoading(true);
-            fetch(`${API}/api/notifications/log`)
-                .then(r => r.json())
-                .then(data => setLog(Array.isArray(data) ? data.reverse().slice(0, 20) : []))
-                .catch(() => setLog([]))
-                .finally(() => setLoading(false));
+    const getIcon = (type: string) => {
+        switch (type) {
+            case 'zap': return <Zap size={14} className="text-fuchsia-400" />;
+            case 'alert': return <AlertCircle size={14} className="text-rose-400" />;
+            case 'success': return <CheckCircle2 size={14} className="text-emerald-400" />;
+            default: return <Info size={14} className="text-blue-400" />;
         }
-    }, [open]);
-
-    // Close on outside click
-    useEffect(() => {
-        const handler = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-        };
-        document.addEventListener('mousedown', handler);
-        return () => document.removeEventListener('mousedown', handler);
-    }, []);
-
-    const sendTest = async () => {
-        setSending(true);
-        try {
-            await fetch(`${API}/api/notifications/test`, { method: 'POST' });
-            // Re-fetch log
-            const r = await fetch(`${API}/api/notifications/log`);
-            const data = await r.json();
-            setLog(Array.isArray(data) ? data.reverse().slice(0, 20) : []);
-        } catch { }
-        setSending(false);
-    };
-
-    const iconForStatus = (status: string) => {
-        if (status === 'sent') return <CheckCircle2 size={12} className="text-emerald-400" />;
-        if (status.startsWith('failed')) return <AlertTriangle size={12} className="text-red-400" />;
-        return <Mail size={12} className="text-blue-400" />;
     };
 
     return (
-        <div ref={ref} className="relative">
-            {/* Bell Button */}
-            <button
-                onClick={() => setOpen(!open)}
-                className="relative p-2 rounded-lg text-zinc-500 hover:text-white hover:bg-white/5 transition-colors"
-                title="Notifications"
-            >
-                <Bell size={18} />
-                {log.length > 0 && (
-                    <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                )}
-            </button>
+        <div className="w-80 space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+            <header className="flex items-center justify-between mb-6 px-1">
+                <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <Bell size={12} /> Live Pulse
+                </h3>
+                <button className="text-[9px] font-black text-blue-400 uppercase tracking-widest hover:text-blue-300">Mark all</button>
+            </header>
 
-            {/* Dropdown */}
-            <AnimatePresence>
-                {open && (
+            <div className="space-y-3">
+                {notifications.map((n, i) => (
                     <motion.div
-                        initial={{ opacity: 0, y: -5, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -5, scale: 0.95 }}
-                        className="absolute right-0 top-full mt-2 w-80 bg-[#141418] border border-white/10 rounded-2xl shadow-2xl shadow-black/40 z-50 overflow-hidden"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.1 }}
+                        key={n.id}
+                        className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 group hover:bg-white/[0.06] transition-all cursor-pointer"
                     >
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
-                            <span className="text-sm font-bold text-white">Notifications</span>
-                            <div className="flex items-center gap-1">
-                                <button
-                                    onClick={sendTest}
-                                    disabled={sending}
-                                    className="text-[10px] px-2 py-1 rounded bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 transition-colors font-bold uppercase tracking-wide"
-                                >
-                                    {sending ? <Loader2 size={10} className="animate-spin" /> : 'Test'}
-                                </button>
-                                <button onClick={() => setOpen(false)} className="p-1 text-zinc-500 hover:text-white">
-                                    <X size={14} />
-                                </button>
+                        <div className="flex items-start gap-3">
+                            <div className="mt-0.5">{getIcon(n.type)}</div>
+                            <div className="flex-1">
+                                <div className="flex justify-between items-center mb-1">
+                                    <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{n.title}</h4>
+                                    <span className="text-[9px] font-mono text-zinc-600">{n.time}</span>
+                                </div>
+                                <p className="text-[10px] text-zinc-500 leading-relaxed line-clamp-2">{n.desc}</p>
                             </div>
                         </div>
-
-                        {/* Content */}
-                        <div className="max-h-72 overflow-y-auto">
-                            {loading ? (
-                                <div className="flex justify-center py-8"><Loader2 className="animate-spin text-zinc-600" size={20} /></div>
-                            ) : log.length === 0 ? (
-                                <div className="text-center py-8 text-zinc-600 text-sm">No notifications yet</div>
-                            ) : (
-                                log.map((n, i) => (
-                                    <div key={i} className="flex items-start gap-3 px-4 py-3 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                                        <div className="mt-1">{iconForStatus(n.status)}</div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-xs font-medium text-zinc-300 truncate">{n.subject}</p>
-                                            <p className="text-[10px] text-zinc-600 mt-0.5">{new Date(n.timestamp).toLocaleString()}</p>
-                                        </div>
-                                        <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${n.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' :
-                                                n.status.startsWith('failed') ? 'bg-red-500/10 text-red-400' :
-                                                    'bg-blue-500/10 text-blue-400'
-                                            }`}>{n.status.split(' ')[0]}</span>
-                                    </div>
-                                ))
-                            )}
-                        </div>
                     </motion.div>
-                )}
-            </AnimatePresence>
+                ))}
+            </div>
+
+            <div className="pt-4 px-1">
+                <button className="w-full py-3 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-zinc-500 uppercase tracking-[0.2em] hover:text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                    Open History <ArrowUpRight size={10} />
+                </button>
+            </div>
+
+            <style jsx global>{`
+                .custom-scrollbar::-webkit-scrollbar {
+                    width: 3px;
+                }
+                .custom-scrollbar::-webkit-scrollbar-track {
+                    background: transparent;
+                }
+                .custom-scrollbar::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 10px;
+                }
+            `}</style>
         </div>
     );
 }
