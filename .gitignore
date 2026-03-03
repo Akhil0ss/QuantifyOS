@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Next.js
+.next/
+out/
+build/
+
+# Firebase / Secret Keys
+.firebaserc
+firebase-debug.log
+*.json
+!system_config.json
+!evolution_history.json
+!evolution_intelligence.json
+!capability_index.json
+serviceAccountKey.json
+
+# OS Specific
+.DS_Store
+Thumbs.db
+
+# Workspace data (Temporary/Local)
+workspaces/
+tmp/
+generated_tools/
+capability/
+goal_engine/
+memory/
+autonomy/history/
+
+# IDE
+.vscode/
+.idea/
+.gemini/

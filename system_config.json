@@ -1,0 +1,9 @@
+{
+  "evolution_enabled": false,
+  "predictive_evolution_enabled": true,
+  "hardware_control_enabled": true,
+  "beta_mode": true,
+  "maintenance_mode": false,
+  "emergency_stop": false,
+  "owner_email": "test@example.com"
+}

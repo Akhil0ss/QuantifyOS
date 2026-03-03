@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-dotenv
+firebase-admin
+pydantic
+pydantic-settings
+python-multipart
+httpx
+openai
+anthropic
+google-genai
+playwright
+psutil

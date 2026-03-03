@@ -1,0 +1,23 @@
+[
+  {
+    "capability": "hardware_control_optimized",
+    "event": "Generation Failed",
+    "error": "",
+    "result": "Sandbox Failure",
+    "timestamp": "2026-03-02T12:56:38.362199"
+  },
+  {
+    "capability": "hardware_control_optimized",
+    "event": "Generation Failed",
+    "error": "",
+    "result": "Sandbox Failure",
+    "timestamp": "2026-03-02T12:57:16.206476"
+  },
+  {
+    "capability": "hardware_control_optimized",
+    "event": "Generation Failed",
+    "error": "Unknown error",
+    "result": "Sandbox Failure",
+    "timestamp": "2026-03-02T13:04:51.571843"
+  }
+]
