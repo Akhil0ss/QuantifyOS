@@ -5,20 +5,35 @@ import { useAuth } from '../../hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { redirect } from 'next/navigation';
 
-import DashboardHome from '@/components/dashboard/DashboardHome';
-import OperationsCenter from '@/components/dashboard/OperationsCenter';
-import ConnectionsHub from '@/components/dashboard/ConnectionsHub';
-import EvolutionHub from '@/components/dashboard/EvolutionHub';
-import MarketplaceSection from '@/components/dashboard/MarketplaceSection';
-import ProfileSection from '@/components/dashboard/ProfileSection';
-import BusinessSection from '@/components/dashboard/BusinessSection';
-import MemorySection from '@/components/dashboard/MemorySection';
-import WalletSection from '@/components/dashboard/WalletSection';
-import NotificationCenter from '@/components/dashboard/NotificationCenter';
-import BillingSection from '@/components/dashboard/BillingSection';
-import BackupsSection from '@/components/dashboard/BackupsSection';
-import SecuritySection from '@/components/dashboard/SecuritySection';
-import SovereignIntelligence from '@/components/dashboard/SovereignIntelligence';
+// import DashboardHome from '@/components/dashboard/DashboardHome';
+// import OperationsCenter from '@/components/dashboard/OperationsCenter';
+// import ConnectionsHub from '@/components/dashboard/ConnectionsHub';
+// import EvolutionHub from '@/components/dashboard/EvolutionHub';
+// import MarketplaceSection from '@/components/dashboard/MarketplaceSection';
+// import ProfileSection from '@/components/dashboard/ProfileSection';
+// import BusinessSection from '@/components/dashboard/BusinessSection';
+// import MemorySection from '@/components/dashboard/MemorySection';
+// import WalletSection from '@/components/dashboard/WalletSection';
+// import NotificationCenter from '@/components/dashboard/NotificationCenter';
+// import BillingSection from '@/components/dashboard/BillingSection';
+// import BackupsSection from '@/components/dashboard/BackupsSection';
+// import SecuritySection from '@/components/dashboard/SecuritySection';
+// import SovereignIntelligence from '@/components/dashboard/SovereignIntelligence';
+
+const DashboardHome = () => <div className="p-8 text-zinc-500">Dashboard Home (Placeholder)</div>;
+const OperationsCenter = () => <div className="p-8 text-zinc-500">Operations Center (Placeholder)</div>;
+const ConnectionsHub = () => <div className="p-8 text-zinc-500">Connections Hub (Placeholder)</div>;
+const EvolutionHub = () => <div className="p-8 text-zinc-500">Evolution Hub (Placeholder)</div>;
+const MarketplaceSection = () => <div className="p-8 text-zinc-500">Marketplace Section (Placeholder)</div>;
+const ProfileSection = () => <div className="p-8 text-zinc-500">Profile Section (Placeholder)</div>;
+const BusinessSection = () => <div className="p-8 text-zinc-500">Business Section (Placeholder)</div>;
+const MemorySection = () => <div className="p-8 text-zinc-500">Memory Section (Placeholder)</div>;
+const WalletSection = () => <div className="p-8 text-zinc-500">Wallet Section (Placeholder)</div>;
+const NotificationCenter = () => <div className="text-xs text-zinc-500">Notifications (Offline)</div>;
+const BillingSection = () => <div className="p-8 text-zinc-500">Billing Section (Placeholder)</div>;
+const BackupsSection = () => <div className="p-8 text-zinc-500">Backups Section (Placeholder)</div>;
+const SecuritySection = () => <div className="p-8 text-zinc-500">Security Section (Placeholder)</div>;
+const SovereignIntelligence = () => <div className="p-8 text-zinc-500">Sovereign Intelligence (Placeholder)</div>;
 
 import {
     LayoutDashboard, Activity, Link2, Sparkles, Store,
