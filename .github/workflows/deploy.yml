@@ -18,13 +18,14 @@ jobs:
           key: ${{ secrets.ORACLE_SSH_KEY }}
           script: |
             if [ ! -d "~/quantify-os/.git" ]; then
-              echo "Creating project directory..."
+              echo "Refreshing project directory..."
+              sudo rm -rf ~/quantify-os
               git clone https://github.com/Akhil0ss/QuantifyOS.git ~/quantify-os
             fi
             cd ~/quantify-os
             git pull origin main
-            docker-compose -f docker-compose.prod.yml up --build -d
-            docker image prune -f
+            sudo docker compose -f docker-compose.prod.yml up --build -d
+            sudo docker image prune -f
 
   deploy-frontends:
     runs-on: ubuntu-latest
