@@ -11,24 +11,42 @@ export const useAuth = () => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-            if (firebaseUser) {
-                // Fetch additional user data (like isAdmin) from RTDB
-                const userRef = ref(db, `users/${firebaseUser.uid}`);
-                const snapshot = await get(userRef);
-                const userData = snapshot.val() || {};
+            try {
+                if (firebaseUser) {
+                    // Fetch additional user data (like isAdmin) from RTDB
+                    const userRef = ref(db, `users/${firebaseUser.uid}`);
+                    const snapshot = await get(userRef);
+                    const userData = snapshot.val() || {};
 
-                setUser({
-                    uid: firebaseUser.uid,
-                    displayName: firebaseUser.displayName || userData.name || 'Beta User',
-                    email: firebaseUser.email,
-                    isAdmin: userData.plan === 'admin' || firebaseUser.email === 'test@example.com',
-                    plan: userData.plan || 'free',
-                    getIdToken: () => firebaseUser.getIdToken()
-                });
-            } else {
-                setUser(null);
+                    setUser({
+                        uid: firebaseUser.uid,
+                        displayName: firebaseUser.displayName || userData.name || 'Beta User',
+                        email: firebaseUser.email,
+                        isAdmin: userData.plan === 'admin' || firebaseUser.email === 'test@example.com',
+                        plan: userData.plan || 'free',
+                        getIdToken: () => firebaseUser.getIdToken()
+                    });
+                } else {
+                    setUser(null);
+                }
+            } catch (error) {
+                console.error("Auth metadata sync error:", error);
+                // Fallback to basic auth user if DB fails
+                if (firebaseUser) {
+                    setUser({
+                        uid: firebaseUser.uid,
+                        displayName: firebaseUser.displayName || 'Beta User',
+                        email: firebaseUser.email,
+                        isAdmin: firebaseUser.email === 'test@example.com',
+                        plan: 'free',
+                        getIdToken: () => firebaseUser.getIdToken()
+                    });
+                } else {
+                    setUser(null);
+                }
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         });
 
         return () => unsubscribe();
