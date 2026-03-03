@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV PLAYWRIGHT_BROWSERS_PATH=/usr/local/bin/playwright
+# Playwright is allowed to use its default path to avoid EEXIST errors
 
 # Set work directory
 WORKDIR /app

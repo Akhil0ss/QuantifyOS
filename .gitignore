@@ -21,6 +21,8 @@ build/
 .firebaserc
 firebase-debug.log
 *.json
+*.pem
+*.key
 !system_config.json
 !evolution_history.json
 !evolution_intelligence.json

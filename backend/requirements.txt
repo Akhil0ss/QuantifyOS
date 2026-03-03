@@ -11,3 +11,4 @@ anthropic
 google-genai
 playwright
 psutil
+email-validator

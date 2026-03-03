@@ -110,7 +110,7 @@ async def public_health():
     """
     Public health check heartbeat for cloud load balancers.
     """
-    return {"status": "ok", "timestamp": rtdb.ServerValue.TIMESTAMP}
+    return {"status": "ok", "timestamp": int(__import__("time").time() * 1000)}
 
 # Production Logging Optimization
 if ENV == "production":
@@ -144,7 +144,7 @@ async def get_me(user = Depends(get_current_user)):
             "name": user.get("name", "Beta User"),
             "plan": "beta",
             "beta_mode": True,
-            "created_at": rtdb.ServerValue.TIMESTAMP
+            "created_at": int(__import__("time").time() * 1000)
         }
         ref.set(user_data)
         
@@ -154,7 +154,7 @@ async def get_me(user = Depends(get_current_user)):
         workspace_ref.set({
             "name": "My Beta Workspace",
             "owner": user_id,
-            "created_at": rtdb.ServerValue.TIMESTAMP
+            "created_at": int(__import__("time").time() * 1000)
         })
         
         # 2. Grant Membership
