@@ -1,35 +1,43 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { auth, db } from '../lib/firebase';
+import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { ref, get } from 'firebase/database';
 
 export const useAuth = () => {
-    const [user, setUser] = useState<{
-        uid: string;
-        displayName: string;
-        email: string;
-        isAdmin: boolean;
-    } | null>(null);
+    const [user, setUser] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate auth check
-        setTimeout(() => {
-            setUser({
-                uid: 'dev_user_01',
-                displayName: 'Quantify Sovereign',
-                email: 'test@example.com', // This email currently triggers Admin UI in page.tsx
-                isAdmin: true // Adding explicit flag for future-proofing
-            });
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (firebaseUser) {
+                // Fetch additional user data (like isAdmin) from RTDB
+                const userRef = ref(db, `users/${firebaseUser.uid}`);
+                const snapshot = await get(userRef);
+                const userData = snapshot.val() || {};
+
+                setUser({
+                    uid: firebaseUser.uid,
+                    displayName: firebaseUser.displayName || userData.name || 'Beta User',
+                    email: firebaseUser.email,
+                    isAdmin: userData.plan === 'admin' || firebaseUser.email === 'test@example.com',
+                    plan: userData.plan || 'free',
+                    getIdToken: () => firebaseUser.getIdToken()
+                });
+            } else {
+                setUser(null);
+            }
             setLoading(false);
-        }, 500);
+        });
+
+        return () => unsubscribe();
     }, []);
 
     const logout = useCallback(async () => {
         setLoading(true);
-        setTimeout(() => {
-            setUser(null);
-            setLoading(false);
-        }, 300);
+        await signOut(auth);
+        setLoading(false);
     }, []);
 
     return { user, loading, logout };

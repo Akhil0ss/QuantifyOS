@@ -22,9 +22,8 @@ export default function SwarmSection() {
             const token = await user.getIdToken();
             const headers = { 'Authorization': `Bearer ${token}` };
 
-            // Hardcoding workspace_id for MVP, using user.uid as implicit workspace
-            // In a full app context we would get this from global state
-            const workspace_id = user.uid;
+            // Mapping workspace_id to standard default pattern default-{uid[:8]}
+            const workspace_id = `default-${user.uid.slice(0, 8)}`;
 
             const [agentsRes, msgsRes] = await Promise.all([
                 fetch(`/api/swarm/active?workspace_id=${workspace_id}`, { headers }),

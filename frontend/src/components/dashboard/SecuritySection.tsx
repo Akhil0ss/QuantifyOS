@@ -1,8 +1,36 @@
 'use client';
 
-import { Shield, Lock, Eye, Terminal, Key, Cpu, ShieldAlert } from 'lucide-react';
+import { Shield, Lock, Eye, Terminal, Key, Cpu, ShieldAlert, Activity, Loader2 } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
+import { useEffect, useState } from 'react';
 
 export default function SecuritySection() {
+    const { user } = useAuth();
+    const [security, setSecurity] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSecurity = async () => {
+            if (!user) return;
+            try {
+                const token = await user.getIdToken();
+                const res = await fetch('/api/security/status', {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    setSecurity(await res.json());
+                }
+            } catch (e) {
+                console.error("Failed to fetch security status", e);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSecurity();
+        const interval = setInterval(fetchSecurity, 15000);
+        return () => clearInterval(interval);
+    }, [user]);
+
     return (
         <div className="max-w-4xl space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <header className="flex justify-between items-start">
@@ -14,27 +42,35 @@ export default function SecuritySection() {
                     <p className="text-zinc-500 text-sm mt-1 uppercase tracking-widest font-bold">L12 Hardened Perimeter • Zero-Trust Mesh</p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
-                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Active Guard</span>
+                    <div className={`w-1.5 h-1.5 rounded-full ${security?.active_threats > 0 ? 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]' : 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]'}`} />
+                    <span className={`text-[10px] font-black uppercase tracking-widest ${security?.active_threats > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        {security?.active_threats > 0 ? 'Threat Mitigation' : 'Active Guard'}
+                    </span>
                 </div>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                    { label: "Firewall Traversal", val: "Deep Drop", icon: <Lock className="text-emerald-400" /> },
-                    { label: "Neural Privacy", val: "L4 Encrypted", icon: <Eye className="text-blue-400" /> },
-                    { label: "Systemic Audit", val: "Daily Trace", icon: <Terminal className="text-zinc-400" /> }
-                ].map((stat, i) => (
-                    <div key={i} className="p-6 bg-[#111113] border border-white/5 rounded-3xl space-y-4 group hover:border-emerald-500/20 transition-all">
-                        <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center group-hover:scale-110 transition-transform">
-                            {stat.icon}
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{stat.label}</p>
-                            <p className="text-lg font-black text-white mt-1">{stat.val}</p>
-                        </div>
+                {loading ? (
+                    <div className="col-span-3 flex justify-center py-10">
+                        <Loader2 className="animate-spin text-emerald-500" size={24} />
                     </div>
-                ))}
+                ) : (
+                    [
+                        { label: "Firewall Traversal", val: "Optimal", icon: <Lock className="text-emerald-400" /> },
+                        { label: "Neural Privacy", val: "Encrypted", icon: <Eye className="text-blue-400" /> },
+                        { label: "Active Threats", val: security?.active_threats || 0, icon: <Activity className="text-amber-400" /> }
+                    ].map((stat, i) => (
+                        <div key={i} className="p-6 bg-[#111113] border border-white/5 rounded-3xl space-y-4 group hover:border-emerald-500/20 transition-all">
+                            <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center group-hover:scale-110 transition-transform">
+                                {stat.icon}
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{stat.label}</p>
+                                <p className="text-lg font-black text-white mt-1 font-mono">{stat.val}</p>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -44,8 +80,8 @@ export default function SecuritySection() {
                     </h3>
                     <div className="space-y-4">
                         <p className="text-zinc-500 text-sm leading-relaxed">
-                            Primary access to Oracle VM is restricted to your current IP.
-                            New device pairing requires multi-sig approval via WhatsApp Bridge.
+                            Primary access to Oracle VM is restricted to your current session.
+                            New device pairing requires multi-sig approval.
                         </p>
                         <div className="flex gap-2">
                             <button className="flex-1 py-3 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-zinc-400 uppercase tracking-widest hover:text-white transition-all">Rotate Keys</button>

@@ -1,15 +1,47 @@
 'use client';
 
-import { Bell, Zap, AlertCircle, CheckCircle2, Info, ArrowUpRight } from 'lucide-react';
+import { Bell, Zap, AlertCircle, CheckCircle2, Info, ArrowUpRight, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../hooks/useAuth';
+import { useEffect, useState } from 'react';
 
 export default function NotificationCenter() {
-    const notifications = [
-        { id: 1, type: 'info', title: 'System Deployment Active', desc: 'Oracle VM V1.0 node successfully provisioned and serving on Port 80.', time: '2m ago' },
-        { id: 2, type: 'zap', title: 'Intelligence Refinement', desc: 'Evolutionary loop completed a successful refactor of the Hardware Bridge.', time: '15m ago' },
-        { id: 3, type: 'alert', title: 'High-Risk Operation', desc: 'Agent Researcher_Alpha is requesting permission to access external financial API.', time: '1h ago' },
-        { id: 4, type: 'success', title: 'Bounty Settled', desc: 'Internal micro-transaction of 0.002 BTC finalized for Coder_X task completion.', time: '4h ago' }
-    ];
+    const { user } = useAuth();
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const fetchNotifications = async () => {
+        if (!user) return;
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch('/api/notifications/log', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                // Map API log to UI format
+                const mapped = data.map((n: any, i: number) => ({
+                    id: i,
+                    type: n.subject.toLowerCase().includes('welcome') ? 'info' :
+                        n.subject.toLowerCase().includes('task') ? 'zap' : 'success',
+                    title: n.subject,
+                    desc: `Notification sent to ${n.to}. Status: ${n.status}`,
+                    time: new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                })).reverse();
+                setNotifications(mapped);
+            }
+        } catch (e) {
+            console.error("Failed to fetch notifications", e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+        const interval = setInterval(fetchNotifications, 30000);
+        return () => clearInterval(interval);
+    }, [user]);
 
     const getIcon = (type: string) => {
         switch (type) {
@@ -26,30 +58,43 @@ export default function NotificationCenter() {
                 <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
                     <Bell size={12} /> Live Pulse
                 </h3>
-                <button className="text-[9px] font-black text-blue-400 uppercase tracking-widest hover:text-blue-300">Mark all</button>
+                <button
+                    onClick={fetchNotifications}
+                    className="text-[9px] font-black text-blue-400 uppercase tracking-widest hover:text-blue-300"
+                >
+                    Refresh
+                </button>
             </header>
 
             <div className="space-y-3">
-                {notifications.map((n, i) => (
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        key={n.id}
-                        className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 group hover:bg-white/[0.06] transition-all cursor-pointer"
-                    >
-                        <div className="flex items-start gap-3">
-                            <div className="mt-0.5">{getIcon(n.type)}</div>
-                            <div className="flex-1">
-                                <div className="flex justify-between items-center mb-1">
-                                    <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">{n.title}</h4>
-                                    <span className="text-[9px] font-mono text-zinc-600">{n.time}</span>
+                {loading ? (
+                    <div className="flex justify-center py-8">
+                        <Loader2 className="animate-spin text-zinc-600" size={16} />
+                    </div>
+                ) : notifications.length === 0 ? (
+                    <p className="text-[10px] text-zinc-600 text-center py-8 italic uppercase tracking-widest font-bold">No active pulses</p>
+                ) : (
+                    notifications.map((n, i) => (
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: i * 0.05 }}
+                            key={n.id}
+                            className="bg-white/[0.03] border border-white/5 rounded-2xl p-4 group hover:bg-white/[0.06] transition-all cursor-pointer"
+                        >
+                            <div className="flex items-start gap-3">
+                                <div className="mt-0.5">{getIcon(n.type)}</div>
+                                <div className="flex-1">
+                                    <div className="flex justify-between items-center mb-1">
+                                        <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight truncate max-w-[140px]">{n.title}</h4>
+                                        <span className="text-[9px] font-mono text-zinc-600 shrink-0">{n.time}</span>
+                                    </div>
+                                    <p className="text-[10px] text-zinc-500 leading-relaxed line-clamp-2">{n.desc}</p>
                                 </div>
-                                <p className="text-[10px] text-zinc-500 leading-relaxed line-clamp-2">{n.desc}</p>
                             </div>
-                        </div>
-                    </motion.div>
-                ))}
+                        </motion.div>
+                    ))
+                )}
             </div>
 
             <div className="pt-4 px-1">

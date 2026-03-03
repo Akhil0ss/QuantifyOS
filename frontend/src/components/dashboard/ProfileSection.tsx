@@ -13,9 +13,6 @@ export default function ProfileSection() {
                     <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-3xl font-black text-white shadow-2xl shadow-blue-500/20">
                         {user?.displayName?.[0] || 'Q'}
                     </div>
-                    <button className="absolute -bottom-2 -right-2 p-2 bg-zinc-900 border border-white/10 rounded-xl text-zinc-400 hover:text-white transition-colors">
-                        <Edit2 size={14} />
-                    </button>
                 </div>
                 <div>
                     <h1 className="text-2xl font-black text-white">{user?.displayName || 'Quantify Sovereign'}</h1>
@@ -38,7 +35,9 @@ export default function ProfileSection() {
                         </div>
                         <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/5">
                             <span className="text-sm text-zinc-400">Account Tier</span>
-                            <span className="text-xs font-bold text-blue-400 uppercase tracking-tighter">Beta Founder</span>
+                            <span className="text-xs font-bold text-blue-400 uppercase tracking-tighter">
+                                {user?.plan || 'Free Tier'} {user?.isAdmin ? '(Admin)' : ''}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -64,9 +63,9 @@ export default function ProfileSection() {
 
             <div className="p-8 bg-blue-600/5 border border-blue-500/10 rounded-3xl">
                 <h3 className="text-white font-bold mb-2">Sovereign Identity Key</h3>
-                <p className="text-zinc-500 text-sm mb-4">Your hashed identity signature for the decentralized ledger. Do not share.</p>
+                <p className="text-zinc-500 text-sm mb-4">Your hashed identity signature for the decentralized ledger. Unique to your UID.</p>
                 <div className="p-4 bg-black/40 rounded-xl border border-white/5 font-mono text-[10px] text-blue-400/60 break-all leading-relaxed">
-                    SHA256:7a41f82e8b61c9e2b3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6
+                    UID: {user?.uid || 'INITIALIZING...'}
                 </div>
             </div>
         </div>
