@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { auth, db } from '../lib/firebase';
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { auth, db, googleProvider, githubProvider } from '../lib/firebase';
+import { onAuthStateChanged, signOut, signInWithPopup, signInWithEmailAndPassword, User } from 'firebase/auth';
 import { ref, get } from 'firebase/database';
 
 export const useAuth = () => {
@@ -52,11 +52,44 @@ export const useAuth = () => {
         return () => unsubscribe();
     }, []);
 
+    const signInWithGoogle = useCallback(async () => {
+        setLoading(true);
+        try {
+            await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            console.error("Google sign-in error:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const signInWithGithub = useCallback(async () => {
+        setLoading(true);
+        try {
+            await signInWithPopup(auth, githubProvider);
+        } catch (error) {
+            console.error("Github sign-in error:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    const signInWithEmail = useCallback(async (email: string, password: string) => {
+        setLoading(true);
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            console.error("Email sign-in error:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
     const logout = useCallback(async () => {
         setLoading(true);
         await signOut(auth);
         setLoading(false);
     }, []);
 
-    return { user, loading, logout };
+    return { user, loading, logout, signInWithGoogle, signInWithGithub, signInWithEmail };
 };
