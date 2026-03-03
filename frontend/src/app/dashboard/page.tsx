@@ -5,20 +5,20 @@ import { useAuth } from '../../hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { redirect } from 'next/navigation';
 
-import DashboardHome from '@/components/dashboard/DashboardHome';
-import OperationsCenter from '@/components/dashboard/OperationsCenter';
-import ConnectionsHub from '@/components/dashboard/ConnectionsHub';
-import EvolutionHub from '@/components/dashboard/EvolutionHub';
-import MarketplaceSection from '@/components/dashboard/MarketplaceSection';
-import ProfileSection from '@/components/dashboard/ProfileSection';
-import BusinessSection from '@/components/dashboard/BusinessSection';
-import MemorySection from '@/components/dashboard/MemorySection';
-import WalletSection from '@/components/dashboard/WalletSection';
-import NotificationCenter from '@/components/dashboard/NotificationCenter';
-import BillingSection from '@/components/dashboard/BillingSection';
-import BackupsSection from '@/components/dashboard/BackupsSection';
-import SecuritySection from '@/components/dashboard/SecuritySection';
-import SovereignIntelligence from '@/components/dashboard/SovereignIntelligence';
+import DashboardHome from '../../components/dashboard/DashboardHome';
+import OperationsCenter from '../../components/dashboard/OperationsCenter';
+import ConnectionsHub from '../../components/dashboard/ConnectionsHub';
+import EvolutionHub from '../../components/dashboard/EvolutionHub';
+import MarketplaceSection from '../../components/dashboard/MarketplaceSection';
+import ProfileSection from '../../components/dashboard/ProfileSection';
+import BusinessSection from '../../components/dashboard/BusinessSection';
+import MemorySection from '../../components/dashboard/MemorySection';
+import WalletSection from '../../components/dashboard/WalletSection';
+import NotificationCenter from '../../components/dashboard/NotificationCenter';
+import BillingSection from '../../components/dashboard/BillingSection';
+import BackupsSection from '../../components/dashboard/BackupsSection';
+import SecuritySection from '../../components/dashboard/SecuritySection';
+import SovereignIntelligence from '../../components/dashboard/SovereignIntelligence';
 
 import {
     LayoutDashboard, Activity, Link2, Sparkles, Store,
