@@ -2,26 +2,22 @@ version: '3.8'
 
 services:
   backend:
-    build:
+    build: 
       context: ./backend
-      dockerfile: Dockerfile.prod
-    container_name: quantify-backend-prod
+      dockerfile: Dockerfile
     restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - FIREBASE_CONFIG=${FIREBASE_CONFIG}
+      - ENV=production
     ports:
       - "8000:8000"
-    env_file:
-      - ./backend/.env.prod
     volumes:
-      - ./backend/workspaces:/app/workspaces
-      - ./backend/backups:/app/backups
-    # Resource limits for 1GB Oracle Instance
+      - ~/quantify-os/workspaces:/app/workspaces
+      - ~/quantify-os/backups:/app/backups
     deploy:
       resources:
         limits:
-          memory: 800M
-    networks:
-      - quantify-network
+          memory: 800M # Hard limit to prevent crashing the 1GB instance
 
-networks:
-  quantify-network:
-    driver: bridge
+# Caddy is handled via the host service for maximum performance

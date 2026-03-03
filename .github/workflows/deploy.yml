@@ -17,6 +17,10 @@ jobs:
           username: ${{ secrets.ORACLE_USER }}
           key: ${{ secrets.ORACLE_SSH_KEY }}
           script: |
+            if [ ! -d "~/quantify-os/.git" ]; then
+              echo "Creating project directory..."
+              git clone https://github.com/Akhil0ss/QuantifyOS.git ~/quantify-os
+            fi
             cd ~/quantify-os
             git pull origin main
             docker-compose -f docker-compose.prod.yml up --build -d
