@@ -23,6 +23,20 @@ async def get_transactions(user = Depends(get_current_user)):
     transactions = wallet_service.get_transactions(user_id)
     return transactions
 
+@router.get("/agent-economy")
+async def get_agent_economy(user = Depends(get_current_user)):
+    user_id = user["uid"]
+    logs = wallet_service.get(f"{user_id}/agent_economy_logs") or {}
+    
+    # Transform to list and sort
+    log_list = []
+    for lid, data in logs.items():
+        data["id"] = lid
+        log_list.append(data)
+    
+    log_list.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
+    return log_list
+
 @router.post("/fund")
 async def fund_wallet(request: FundRequest, user = Depends(get_current_user)):
     user_id = user["uid"]

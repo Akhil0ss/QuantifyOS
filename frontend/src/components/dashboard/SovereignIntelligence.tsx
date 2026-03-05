@@ -1,12 +1,43 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Sparkles, TrendingUp, Shield } from "lucide-react";
+import { Brain, Sparkles, TrendingUp, Shield, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../hooks/useAuth";
 import ForesightTimeline from "./ForesightTimeline";
 import ShadowTrace from "./ShadowTrace";
 import EconomyVisualizer from "./EconomyVisualizer";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function SovereignIntelligence() {
+    const { user } = useAuth();
+    const [intel, setIntel] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    const workspaceId = user ? `default-${user.uid}` : "";
+
+    useEffect(() => {
+        const fetchIntel = async () => {
+            if (!user || !workspaceId) return;
+            try {
+                const token = await user.getIdToken();
+                const res = await fetch(`${API}/api/intelligence/status?workspace_id=${workspaceId}`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    setIntel(await res.json());
+                }
+            } catch (error) {
+                console.error("Failed to fetch intelligence status:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchIntel();
+    }, [user, workspaceId]);
+
     return (
         <div className="space-y-10 pb-20">
             {/* Header Section */}
@@ -18,9 +49,13 @@ export default function SovereignIntelligence() {
                 <div className="relative z-10">
                     <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 w-fit mb-4">
                         <Sparkles size={14} className="text-indigo-400" />
-                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">S-Tier Autonomy Active</span>
+                        <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">
+                            {loading ? "Initializing..." : `Tier ${intel?.level || 1} Autonomy Active`}
+                        </span>
                     </div>
-                    <h1 className="text-4xl font-black text-white tracking-tighter mb-2">Sovereign Intelligence</h1>
+                    <h1 className="text-4xl font-black text-white tracking-tighter mb-2">
+                        {loading ? "Analyzing Engine..." : `IQ ${intel?.score || 0}: Sovereign Intelligence`}
+                    </h1>
                     <p className="text-zinc-400 text-sm max-w-xl font-medium leading-relaxed">
                         The core engine is currently anchored to the year 2026/2027 trajectories.
                         Live foresight, inter-agent micro-transactions, and predictive governance are fully operational.
