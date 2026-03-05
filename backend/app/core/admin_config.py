@@ -45,8 +45,8 @@ class SystemConfig:
         with open(CONFIG_FILE, "w") as f:
             json.dump(self.config, f, indent=2)
 
-    def get(self, key: str) -> Any:
-        return self.config.get(key)
+    def get(self, key: str, default: Any = None) -> Any:
+        return self.config.get(key, default)
 
     def update(self, key: str, value: Any):
         self.config[key] = value
