@@ -65,12 +65,25 @@ class MarketplaceService(BaseRTDBService):
         # 3. REGISTER IN CAPABILITY INDEX
         # This makes it visible to the autonomous Evolution Feed and Agent Orchestrator
         from app.autonomy.capability_engine import CapabilityManager, CapabilityStatus
+        from app.services.evolution import EvolutionService
+        
         cap_mgr = CapabilityManager(workspace_id)
         cap_mgr.register_working(
             cap_name=f"marketplace_{module_id}",
             file_path=target_path,
             validation_score=0.95 if os.path.exists(template_path) else 0.8,
             dependencies=[]
+        )
+
+        # 4. LOG TO EVOLUTION SERVICE
+        # Links marketplace installation to the 'Autonomous Growth' telemetry
+        evo_service = EvolutionService()
+        evo_service.log_event(
+            workspace_id=workspace_id,
+            event_type="autonomous_upgrade",
+            details=f"Installed {module['name']} from Marketplace. Capability provisioned and verified.",
+            result="success",
+            extra={"module_id": module_id, "type": "marketplace"}
         )
         
         return True
