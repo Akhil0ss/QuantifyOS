@@ -18,8 +18,9 @@ class MarketplaceService(BaseRTDBService):
             catalog_path = os.path.join(os.path.dirname(__file__), "marketplace_catalog.json")
             with open(catalog_path, "r", encoding="utf-8") as f:
                 self.catalog = json.load(f)
+            print(f"MARKETPLACE: Loaded {len(self.catalog)} items from catalog.")
         except Exception as e:
-            print(f"Failed to load marketplace catalog: {e}")
+            print(f"MARKETPLACE ERROR: Failed to load marketplace catalog from {catalog_path}: {e}")
             self.catalog = []
 
     def get_catalog(self) -> List[Dict[str, Any]]:
