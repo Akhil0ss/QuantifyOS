@@ -5,10 +5,46 @@ import {
     Sparkles, HeartPulse, TrendingUp, ShieldCheck, Zap, Box,
     CheckCircle2, AlertTriangle, Clock
 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import EvolutionStats from './EvolutionStats';
 import CapabilityExplorer from './CapabilityExplorer';
 
+const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '');
+
 export default function EvolutionHub() {
+    const { user } = useAuth();
+    const [events, setEvents] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    const workspaceId = user ? `default-${user.uid}` : '';
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            if (!user || !workspaceId) return;
+            try {
+                const token = await user.getIdToken();
+                const res = await fetch(`${API}/api/evolution/status`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setEvents(data.history || []);
+                }
+            } catch (error) {
+                console.error('Failed to fetch evolution events:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvents();
+        const interval = setInterval(fetchEvents, 30000);
+        return () => clearInterval(interval);
+    }, [user, workspaceId]);
+
+    const healingEvents = events.filter(e => e.type === 'bug_fix').slice(0, 3);
+    const marketEvents = events.filter(e => e.type === 'market_feature_gap').slice(0, 2);
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -35,16 +71,16 @@ export default function EvolutionHub() {
                         <HeartPulse className="text-emerald-400" size={20} /> Self-Healing Repository
                     </h3>
                     <div className="space-y-3">
-                        {[
-                            { file: 'payment_gate.py', action: 'Syntax error auto-repaired', time: '2h ago', status: 'healed' },
-                            { file: 'mqtt_driver.py', action: 'Missing import added', time: '6h ago', status: 'healed' },
-                            { file: 'csv_analyzer.py', action: 'Type mismatch corrected', time: '12h ago', status: 'healed' },
-                        ].map((item, i) => (
+                        {healingEvents.length === 0 ? (
+                            <div className="p-8 text-center text-zinc-500 text-xs border border-dashed border-white/5 rounded-xl">
+                                No self-healing events recorded in this cycle.
+                            </div>
+                        ) : healingEvents.map((item, i) => (
                             <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
                                 <ShieldCheck className="text-emerald-500 shrink-0 mt-0.5" size={16} />
                                 <div className="flex-1">
-                                    <p className="text-sm font-medium text-zinc-200">{item.action} in <code className="text-emerald-400 text-xs bg-emerald-500/10 px-1.5 py-0.5 rounded">{item.file}</code></p>
-                                    <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold tracking-wide">{item.time} • Verified by Sandbox</p>
+                                    <p className="text-sm font-medium text-zinc-200">{item.details}</p>
+                                    <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold tracking-wide">{new Date(item.timestamp).toLocaleTimeString()} • Verified by Sandbox</p>
                                 </div>
                             </div>
                         ))}
@@ -62,16 +98,17 @@ export default function EvolutionHub() {
                         <Zap className="text-blue-400" size={20} /> Competitive Market IQ
                     </h3>
                     <div className="space-y-3">
-                        {[
-                            { trend: 'Multi-Chain wallet integration', source: 'Competitor X', action: 'Prototype ready' },
-                            { trend: 'Voice-first AI interfaces', source: 'Market trend', action: 'Under analysis' },
-                        ].map((item, i) => (
+                        {marketEvents.length === 0 ? (
+                            <div className="p-8 text-center text-zinc-500 text-xs border border-dashed border-white/5 rounded-xl">
+                                Surveying market for new capability vectors...
+                            </div>
+                        ) : marketEvents.map((item, i) => (
                             <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
                                 <TrendingUp className="text-blue-500 shrink-0 mt-0.5" size={16} />
                                 <div>
-                                    <p className="text-sm font-medium text-zinc-200">Identified &apos;{item.trend}&apos; from {item.source}</p>
+                                    <p className="text-sm font-medium text-zinc-200">{item.details}</p>
                                     <button className="mt-2 text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded uppercase tracking-widest hover:bg-blue-500/20 transition-all">
-                                        {item.action}
+                                        {item.result === 'success' ? 'Prototype Ready' : 'Under Analysis'}
                                     </button>
                                 </div>
                             </div>

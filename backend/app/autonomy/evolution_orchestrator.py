@@ -17,6 +17,7 @@ from app.core.security import SecurityEngine
 from app.core.admin_config import system_config
 from app.autonomy.simulator import EvolutionSimulator
 from app.services.mcp import mcp_host
+from app.services.evolution import EvolutionService
 
 class EvolutionOrchestrator:
     """
@@ -36,51 +37,20 @@ class EvolutionOrchestrator:
         self.telemetry = TelemetryService()
         self.saas = SaaSController()
         
-        # Base filenames (will be isolated via WorkspaceManager)
-        self.history_file = "evolution_history.json"
-        self.state_file = "evolution_state.json"
-        self.intel_file = "evolution_intelligence.json"
-        self.predictive_log = "predictive_evolution.json"
+        self.evolution_service = EvolutionService()
 
     def _get_state(self, workspace_id: str) -> Dict[str, Any]:
-        wm = WorkspaceManager(workspace_id)
-        path = wm.get_path(self.state_file)
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                return json.load(f)
-        return {"daily_count": 0, "last_reset": time.time(), "failure_count": 0, "proactive_count": 0}
-
-    def _update_state(self, workspace_id: str, updates: Dict[str, Any]):
-        wm = WorkspaceManager(workspace_id)
-        path = wm.get_path(self.state_file)
-        state = self._get_state(workspace_id)
-        state.update(updates)
-        with open(path, "w") as f:
-            json.dump(state, f)
+        return self.evolution_service.get_state(workspace_id)
 
     def _log_history(self, workspace_id: str, entry: Dict[str, Any]):
-        wm = WorkspaceManager(workspace_id)
-        path = wm.get_path(self.history_file)
-        history = []
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                history = json.load(f)
-        entry["timestamp"] = datetime.now().isoformat()
-        history.append(entry)
-        with open(path, "w") as f:
-            json.dump(history, f, indent=2)
+        event_type = entry.get("type", "evolution_step")
+        details = entry.get("capability") or entry.get("event") or "Evolution action"
+        result = entry.get("result", "success").lower()
+        self.evolution_service.log_event(workspace_id, event_type, details, result, entry)
 
     def _log_intel(self, workspace_id: str, entry: Dict[str, Any]):
-        wm = WorkspaceManager(workspace_id)
-        path = wm.get_path(self.intel_file)
-        intel = []
-        if os.path.exists(path):
-            with open(path, "r") as f:
-                intel = json.load(f)
-        entry["timestamp"] = datetime.now().isoformat()
-        intel.append(entry)
-        with open(path, "w") as f:
-            json.dump(intel, f, indent=2)
+        # Market IQ events
+        self.evolution_service.log_event(workspace_id, "market_feature_gap", entry.get("gap") or "Market Insight", "success", entry)
 
     async def revalidate_capabilities(self, workspace_id: str):
         """
@@ -128,13 +98,7 @@ class EvolutionOrchestrator:
 
             state = self._get_state(workspace_id)
             
-            # Reset daily count if it's a new day
-            if time.time() - state["last_reset"] > 86400:
-                state["daily_count"] = 0
-                state["proactive_count"] = 0
-                state["failure_count"] = 0  # STABILITY: Auto-reset circuit breaker
-                state["last_reset"] = time.time()
-                self._update_state(workspace_id, state)
+            state = self._get_state(workspace_id)
 
             if state["failure_count"] >= 3:
                 print("EVOLUTION: Circuit breaker active (>= 3 failures). Evolution halted until daily reset.")
@@ -216,8 +180,6 @@ class EvolutionOrchestrator:
                 result = await self.generator.generate_module(top_gap, workspace_id)
                 
                 if result["success"]:
-                    state["daily_count"] += 1
-                    self._update_state(workspace_id, state)
                     self._log_history(workspace_id, {
                         "capability": top_gap["capability_name"],
                         "event": "Module Created",
@@ -225,8 +187,6 @@ class EvolutionOrchestrator:
                         "result": "Success"
                     })
                 else:
-                    state["failure_count"] += 1
-                    self._update_state(workspace_id, state)
                     self._log_history(workspace_id, {
                         "capability": top_gap["capability_name"],
                         "event": "Generation Failed",
@@ -256,25 +216,13 @@ class EvolutionOrchestrator:
                     result = await self.generator.generate_module(top_forecast, workspace_id)
                     
                     if result["success"]:
-                        state = self._get_state(workspace_id) 
-                        state["daily_count"] += 1
-                        state["proactive_count"] = state.get("proactive_count", 0) + 1
-                        self._update_state(workspace_id, state)
                         proactive_entry["result"] = "Success"
                     else:
                         proactive_entry["result"] = "Failure"
                         proactive_entry["error"] = result.get("error")
 
-                    # Save to predictive log
-                    wm = WorkspaceManager(workspace_id)
-                    p_log_path = wm.get_path(self.predictive_log)
-                    p_log = []
-                    if os.path.exists(p_log_path):
-                        with open(p_log_path, "r") as f:
-                            p_log = json.load(f)
-                    p_log.append(proactive_entry)
-                    with open(p_log_path, "w") as f:
-                        json.dump(p_log, f, indent=2)
+                    # Log proactive result
+                    self.evolution_service.log_event(workspace_id, "autonomous_upgrade", top_forecast['capability_name'], "success" if result["success"] else "failure", proactive_entry)
 
             # 5. Competitive Intelligence & Revalidation
             await self.revalidate_capabilities(workspace_id)
