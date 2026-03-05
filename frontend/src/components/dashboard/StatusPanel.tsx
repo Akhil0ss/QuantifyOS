@@ -12,6 +12,7 @@ export default function StatusPanel() {
     const { user } = useAuth();
     const [metrics, setMetrics] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const workspaceId = user ? `default-${user.uid}` : '';
 
     useEffect(() => {
         const fetchMetrics = async () => {
@@ -21,8 +22,8 @@ export default function StatusPanel() {
                 // Fetch from multiple sources for a unified view
                 const [saasRes, intelRes, securityRes] = await Promise.all([
                     fetch("/api/saas/status", { headers: { Authorization: `Bearer ${token}` } }),
-                    fetch("/api/intelligence/status", { headers: { Authorization: `Bearer ${token}` } }),
-                    fetch("/api/security/status", { headers: { Authorization: `Bearer ${token}` } })
+                    fetch(`/api/intelligence/status?workspace_id=${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } }),
+                    fetch(`/api/security/status?workspace_id=${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } })
                 ]);
 
                 if (saasRes.ok && intelRes.ok && securityRes.ok) {
