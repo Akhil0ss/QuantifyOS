@@ -6,7 +6,17 @@
         "type": "workflow",
         "icon": "Share2",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-seo-auditor",
@@ -15,7 +25,17 @@
         "type": "workflow",
         "icon": "Search",
         "price": "Premium",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-gh-integration",
@@ -24,7 +44,16 @@
         "type": "tool",
         "icon": "Github",
         "price": "Free",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-data-scientist",
@@ -33,7 +62,17 @@
         "type": "persona",
         "icon": "Database",
         "price": "Free",
-        "category": "Data"
+        "category": "Data",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-lead-gen",
@@ -42,7 +81,17 @@
         "type": "workflow",
         "icon": "UserPlus",
         "price": "Premium",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-docker-manager",
@@ -51,7 +100,16 @@
         "type": "tool",
         "icon": "Box",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-copywriter",
@@ -60,7 +118,17 @@
         "type": "persona",
         "icon": "PenTool",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-financial-analyst",
@@ -69,7 +137,17 @@
         "type": "workflow",
         "icon": "TrendingUp",
         "price": "Premium",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-slack-bot",
@@ -78,7 +156,17 @@
         "type": "tool",
         "icon": "MessageSquare",
         "price": "Free",
-        "category": "Communication"
+        "category": "Communication",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-hr-recruiter",
@@ -87,7 +175,17 @@
         "type": "persona",
         "icon": "Users",
         "price": "Free",
-        "category": "HR"
+        "category": "HR",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-video-editor",
@@ -96,7 +194,17 @@
         "type": "workflow",
         "icon": "Video",
         "price": "Premium",
-        "category": "Media"
+        "category": "Media",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-stripe-manager",
@@ -105,7 +213,17 @@
         "type": "tool",
         "icon": "CreditCard",
         "price": "Free",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "p-sysadmin",
@@ -114,7 +232,17 @@
         "type": "persona",
         "icon": "Terminal",
         "price": "Free",
-        "category": "IT"
+        "category": "IT",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-competitor-tracker",
@@ -123,7 +251,17 @@
         "type": "workflow",
         "icon": "Eye",
         "price": "Free",
-        "category": "Strategy"
+        "category": "Strategy",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-aws-provisioner",
@@ -132,7 +270,16 @@
         "type": "tool",
         "icon": "Cloud",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-legal-aide",
@@ -141,7 +288,16 @@
         "type": "persona",
         "icon": "FileText",
         "price": "Premium",
-        "category": "Legal"
+        "category": "Legal",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "m-customer-support",
@@ -150,7 +306,17 @@
         "type": "workflow",
         "icon": "Headphones",
         "price": "Free",
-        "category": "Support"
+        "category": "Support",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-jira-sync",
@@ -159,7 +325,17 @@
         "type": "tool",
         "icon": "Trello",
         "price": "Free",
-        "category": "Product"
+        "category": "Product",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-ux-researcher",
@@ -168,7 +344,17 @@
         "type": "persona",
         "icon": "Layout",
         "price": "Free",
-        "category": "Design"
+        "category": "Design",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-email-campaign",
@@ -177,7 +363,17 @@
         "type": "workflow",
         "icon": "Mail",
         "price": "Premium",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-sql-optimizer",
@@ -186,7 +382,16 @@
         "type": "tool",
         "icon": "Database",
         "price": "Free",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-cyber-sec",
@@ -195,7 +400,16 @@
         "type": "persona",
         "icon": "Shield",
         "price": "Premium",
-        "category": "Security"
+        "category": "Security",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "m-content-calendar",
@@ -204,7 +418,17 @@
         "type": "workflow",
         "icon": "Calendar",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-figma-extractor",
@@ -213,7 +437,16 @@
         "type": "tool",
         "icon": "Figma",
         "price": "Premium",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-executive-assistant",
@@ -222,7 +455,17 @@
         "type": "persona",
         "icon": "Briefcase",
         "price": "Free",
-        "category": "Productivity"
+        "category": "Productivity",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-ad-optimizer",
@@ -231,7 +474,17 @@
         "type": "workflow",
         "icon": "Target",
         "price": "Premium",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-notion-sync",
@@ -240,7 +493,17 @@
         "type": "tool",
         "icon": "Book",
         "price": "Free",
-        "category": "Productivity"
+        "category": "Productivity",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-qa-engineer",
@@ -249,7 +512,16 @@
         "type": "persona",
         "icon": "CheckSquare",
         "price": "Free",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "m-inventory-manager",
@@ -258,7 +530,17 @@
         "type": "workflow",
         "icon": "ShoppingCart",
         "price": "Premium",
-        "category": "E-commerce"
+        "category": "E-commerce",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-python-linter",
@@ -267,7 +549,16 @@
         "type": "tool",
         "icon": "Code",
         "price": "Free",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-scrum-master",
@@ -276,7 +567,17 @@
         "type": "persona",
         "icon": "Repeat",
         "price": "Free",
-        "category": "Product"
+        "category": "Product",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-podcast-producer",
@@ -285,7 +586,17 @@
         "type": "workflow",
         "icon": "Mic",
         "price": "Free",
-        "category": "Media"
+        "category": "Media",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-hubspot-crm",
@@ -294,7 +605,17 @@
         "type": "tool",
         "icon": "Users",
         "price": "Free",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "p-academic-researcher",
@@ -303,7 +624,17 @@
         "type": "persona",
         "icon": "BookOpen",
         "price": "Free",
-        "category": "Research"
+        "category": "Research",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-onboarding-bot",
@@ -312,7 +643,17 @@
         "type": "workflow",
         "icon": "UserCheck",
         "price": "Premium",
-        "category": "HR"
+        "category": "HR",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-reddit-monitor",
@@ -321,7 +662,17 @@
         "type": "tool",
         "icon": "MessageCircle",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-translator",
@@ -330,7 +681,17 @@
         "type": "persona",
         "icon": "Globe",
         "price": "Free",
-        "category": "Product"
+        "category": "Product",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-event-planner",
@@ -339,7 +700,17 @@
         "type": "workflow",
         "icon": "Calendar",
         "price": "Premium",
-        "category": "Events"
+        "category": "Events",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-cloudflare-admin",
@@ -348,7 +719,16 @@
         "type": "tool",
         "icon": "Shield",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-sales-coach",
@@ -357,7 +737,17 @@
         "type": "persona",
         "icon": "PhoneCall",
         "price": "Premium",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-invoice-chaser",
@@ -366,7 +756,17 @@
         "type": "workflow",
         "icon": "DollarSign",
         "price": "Free",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-gcp-billing",
@@ -375,7 +775,16 @@
         "type": "tool",
         "icon": "PieChart",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-game-designer",
@@ -384,7 +793,17 @@
         "type": "persona",
         "icon": "Play",
         "price": "Premium",
-        "category": "Gaming"
+        "category": "Gaming",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-newsletter-curator",
@@ -393,7 +812,17 @@
         "type": "workflow",
         "icon": "Mail",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-twilio-sms",
@@ -402,7 +831,17 @@
         "type": "tool",
         "icon": "Smartphone",
         "price": "Free",
-        "category": "Support"
+        "category": "Support",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-crypto-trader",
@@ -411,7 +850,17 @@
         "type": "persona",
         "icon": "Activity",
         "price": "Premium",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-web-scraper",
@@ -420,7 +869,17 @@
         "type": "workflow",
         "icon": "Download",
         "price": "Premium",
-        "category": "Data"
+        "category": "Data",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-kubernetes-debug",
@@ -429,7 +888,16 @@
         "type": "tool",
         "icon": "Server",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-therapist-bot",
@@ -438,7 +906,17 @@
         "type": "persona",
         "icon": "Heart",
         "price": "Free",
-        "category": "HR"
+        "category": "HR",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-affiliate-manager",
@@ -447,7 +925,17 @@
         "type": "workflow",
         "icon": "Link",
         "price": "Premium",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-zapier-bridge",
@@ -456,7 +944,17 @@
         "type": "tool",
         "icon": "Zap",
         "price": "Free",
-        "category": "Integrations"
+        "category": "Integrations",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-math-tutor",
@@ -465,7 +963,17 @@
         "type": "persona",
         "icon": "Edit3",
         "price": "Free",
-        "category": "Education"
+        "category": "Education",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-contract-generator",
@@ -474,7 +982,17 @@
         "type": "workflow",
         "icon": "FilePlus",
         "price": "Free",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-tiktok-ads",
@@ -483,7 +1001,17 @@
         "type": "tool",
         "icon": "Video",
         "price": "Premium",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-brand-manager",
@@ -492,7 +1020,17 @@
         "type": "persona",
         "icon": "Type",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-grant-writer",
@@ -501,7 +1039,17 @@
         "type": "workflow",
         "icon": "Edit",
         "price": "Premium",
-        "category": "Writing"
+        "category": "Writing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-grafana-dash",
@@ -510,7 +1058,16 @@
         "type": "tool",
         "icon": "BarChart",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-supply-chain",
@@ -519,7 +1076,17 @@
         "type": "persona",
         "icon": "Truck",
         "price": "Premium",
-        "category": "Operations"
+        "category": "Operations",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-crm-migration",
@@ -528,7 +1095,17 @@
         "type": "workflow",
         "icon": "Database",
         "price": "Premium",
-        "category": "IT"
+        "category": "IT",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-youtube-seo",
@@ -537,7 +1114,17 @@
         "type": "tool",
         "icon": "Youtube",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "p-realtor",
@@ -546,7 +1133,17 @@
         "type": "persona",
         "icon": "Home",
         "price": "Free",
-        "category": "Real Estate"
+        "category": "Real Estate",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-tax-prep",
@@ -555,7 +1152,17 @@
         "type": "workflow",
         "icon": "FileText",
         "price": "Premium",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-discord-bot",
@@ -564,7 +1171,17 @@
         "type": "tool",
         "icon": "MessageCircle",
         "price": "Free",
-        "category": "Community"
+        "category": "Community",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-ui-designer",
@@ -573,7 +1190,17 @@
         "type": "persona",
         "icon": "Layout",
         "price": "Free",
-        "category": "Design"
+        "category": "Design",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-influencer-outreach",
@@ -582,7 +1209,17 @@
         "type": "workflow",
         "icon": "Instagram",
         "price": "Premium",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-elasticsearch",
@@ -591,7 +1228,17 @@
         "type": "tool",
         "icon": "Search",
         "price": "Free",
-        "category": "Data"
+        "category": "Data",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "p-prompt-engineer",
@@ -600,7 +1247,17 @@
         "type": "persona",
         "icon": "Cpu",
         "price": "Free",
-        "category": "AI"
+        "category": "AI",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "m-churn-predictor",
@@ -609,7 +1266,17 @@
         "type": "workflow",
         "icon": "AlertTriangle",
         "price": "Premium",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-shopify-api",
@@ -618,7 +1285,17 @@
         "type": "tool",
         "icon": "ShoppingCart",
         "price": "Free",
-        "category": "E-commerce"
+        "category": "E-commerce",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-compliance-officer",
@@ -627,7 +1304,16 @@
         "type": "persona",
         "icon": "Shield",
         "price": "Premium",
-        "category": "Security"
+        "category": "Security",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "m-pitch-deck",
@@ -636,7 +1322,17 @@
         "type": "workflow",
         "icon": "Presentation",
         "price": "Free",
-        "category": "Strategy"
+        "category": "Strategy",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-github-issues",
@@ -645,7 +1341,16 @@
         "type": "tool",
         "icon": "Github",
         "price": "Free",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-travel-agent",
@@ -654,7 +1359,17 @@
         "type": "persona",
         "icon": "Map",
         "price": "Free",
-        "category": "Operations"
+        "category": "Operations",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-ab-testing",
@@ -663,7 +1378,17 @@
         "type": "workflow",
         "icon": "SplitSquareHorizontal",
         "price": "Premium",
-        "category": "Product"
+        "category": "Product",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-s3-backup",
@@ -672,7 +1397,16 @@
         "type": "tool",
         "icon": "HardDrive",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-nutritionist",
@@ -681,7 +1415,17 @@
         "type": "persona",
         "icon": "Coffee",
         "price": "Free",
-        "category": "Health"
+        "category": "Health",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-resume-screener",
@@ -690,7 +1434,17 @@
         "type": "workflow",
         "icon": "FileText",
         "price": "Premium",
-        "category": "HR"
+        "category": "HR",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-zoom-api",
@@ -699,7 +1453,17 @@
         "type": "tool",
         "icon": "Video",
         "price": "Free",
-        "category": "Productivity"
+        "category": "Productivity",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-architect",
@@ -708,7 +1472,16 @@
         "type": "persona",
         "icon": "Server",
         "price": "Free",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "m-pr-manager",
@@ -717,7 +1490,17 @@
         "type": "workflow",
         "icon": "Megaphone",
         "price": "Free",
-        "category": "Marketing"
+        "category": "Marketing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-mailgun-api",
@@ -726,7 +1509,17 @@
         "type": "tool",
         "icon": "Mail",
         "price": "Premium",
-        "category": "IT"
+        "category": "IT",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-music-producer",
@@ -735,7 +1528,17 @@
         "type": "persona",
         "icon": "Music",
         "price": "Free",
-        "category": "Media"
+        "category": "Media",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-fraud-detect",
@@ -744,7 +1547,17 @@
         "type": "workflow",
         "icon": "ShieldAlert",
         "price": "Premium",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-google-sheets",
@@ -753,7 +1566,17 @@
         "type": "tool",
         "icon": "FileText",
         "price": "Free",
-        "category": "Productivity"
+        "category": "Productivity",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-crisis-manager",
@@ -762,7 +1585,17 @@
         "type": "persona",
         "icon": "AlertOctagon",
         "price": "Premium",
-        "category": "Operations"
+        "category": "Operations",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-translation-pipeline",
@@ -771,7 +1604,16 @@
         "type": "workflow",
         "icon": "Globe",
         "price": "Premium",
-        "category": "Development"
+        "category": "Development",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "t-pdf-parser",
@@ -780,7 +1622,17 @@
         "type": "tool",
         "icon": "File",
         "price": "Free",
-        "category": "Data"
+        "category": "Data",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "p-philosopher",
@@ -789,7 +1641,17 @@
         "type": "persona",
         "icon": "Brain",
         "price": "Free",
-        "category": "Strategy"
+        "category": "Strategy",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-oncall-rotator",
@@ -798,7 +1660,17 @@
         "type": "workflow",
         "icon": "Calendar",
         "price": "Free",
-        "category": "HR"
+        "category": "HR",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-dns-manager",
@@ -807,7 +1679,16 @@
         "type": "tool",
         "icon": "Globe",
         "price": "Free",
-        "category": "DevOps"
+        "category": "DevOps",
+        "min_model": "GPT-4o / Gemini Pro / Llama3 70B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic"
+        ],
+        "tier": "advanced"
     },
     {
         "id": "p-dating-coach",
@@ -816,7 +1697,17 @@
         "type": "persona",
         "icon": "Heart",
         "price": "Free",
-        "category": "Personal"
+        "category": "Personal",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-course-creator",
@@ -825,7 +1716,17 @@
         "type": "workflow",
         "icon": "Book",
         "price": "Premium",
-        "category": "Education"
+        "category": "Education",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "t-ffmpeg-runner",
@@ -834,7 +1735,17 @@
         "type": "tool",
         "icon": "Video",
         "price": "Free",
-        "category": "Media"
+        "category": "Media",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "p-sommelier",
@@ -843,7 +1754,17 @@
         "type": "persona",
         "icon": "Coffee",
         "price": "Free",
-        "category": "Lifestyle"
+        "category": "Lifestyle",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-startup-hunter",
@@ -852,7 +1773,17 @@
         "type": "workflow",
         "icon": "TrendingUp",
         "price": "Premium",
-        "category": "Finance"
+        "category": "Finance",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-web-accessibility",
@@ -861,7 +1792,17 @@
         "type": "tool",
         "icon": "Eye",
         "price": "Free",
-        "category": "Design"
+        "category": "Design",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-interior-designer",
@@ -870,7 +1811,17 @@
         "type": "persona",
         "icon": "Home",
         "price": "Free",
-        "category": "Lifestyle"
+        "category": "Lifestyle",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "m-rfp-responder",
@@ -879,7 +1830,17 @@
         "type": "workflow",
         "icon": "Briefcase",
         "price": "Premium",
-        "category": "Sales"
+        "category": "Sales",
+        "min_model": "GPT-4o-mini / Gemini Flash / Llama3 8B",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "standard"
     },
     {
         "id": "t-wifi-analyzer",
@@ -888,7 +1849,17 @@
         "type": "tool",
         "icon": "Wifi",
         "price": "Premium",
-        "category": "IT"
+        "category": "IT",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     },
     {
         "id": "p-novel-writer",
@@ -897,6 +1868,16 @@
         "type": "persona",
         "icon": "Edit3",
         "price": "Free",
-        "category": "Writing"
+        "category": "Writing",
+        "min_model": "Any (Ollama 7B+)",
+        "providers": [
+            "openai",
+            "gemini",
+            "ollama",
+            "deepseek",
+            "anthropic",
+            "web"
+        ],
+        "tier": "basic"
     }
 ]

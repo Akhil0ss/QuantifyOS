@@ -169,6 +169,34 @@ export default function MarketplaceSection() {
                                     </div>
                                 </div>
 
+                                {/* Model Compatibility Badge */}
+                                {module.min_model && (
+                                    <div className="mb-3 flex items-center gap-2 flex-wrap">
+                                        <span className={`text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${module.tier === 'basic' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
+                                                module.tier === 'standard' ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+                                                    'text-red-400 bg-red-500/10 border-red-500/20'
+                                            }`}>
+                                            <Icons.Cpu size={8} className="inline mr-1 -mt-0.5" />
+                                            {module.tier === 'basic' ? 'Any Model' : module.tier === 'standard' ? 'Mid-Range+' : 'Pro Model'}
+                                        </span>
+                                        <span className="text-[9px] text-gray-600" title={module.min_model}>
+                                            Min: {module.min_model}
+                                        </span>
+                                    </div>
+                                )}
+
+                                {/* Supported Providers */}
+                                {module.providers && (
+                                    <div className="mb-3 flex items-center gap-1.5">
+                                        <span className="text-[9px] text-gray-600 mr-1">Works with:</span>
+                                        {module.providers.map((p: string) => (
+                                            <span key={p} className="text-[8px] uppercase font-bold tracking-wider text-gray-500 bg-white/5 px-1.5 py-0.5 rounded" title={p}>
+                                                {p === 'openai' ? 'GPT' : p === 'gemini' ? 'Gem' : p === 'ollama' ? 'Oll' : p === 'deepseek' ? 'DS' : p === 'anthropic' ? 'Cld' : 'Web'}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+
                                 <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
                                     <div className="text-xs font-bold text-gray-300 bg-white/5 px-2 py-1 rounded">
                                         {module.price}
