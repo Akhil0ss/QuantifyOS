@@ -141,7 +141,7 @@ class EvolutionOrchestrator:
                 self.telemetry.log_system_event(self.user_id, "Orchestrator", "Evolution HALTED - Circuit breaker active. Will auto-reset at next daily cycle.")
                 return
 
-            if not os.environ.get("TEST_MODE") and not general_config.get("evolution_active", True):
+            if not os.environ.get("TEST_MODE") and not system_config.get("evolution_active", True):
                 print("EVOLUTION: Deactivated by admin toggle.")
                 return
             
@@ -238,7 +238,7 @@ class EvolutionOrchestrator:
             if system_config.get("predictive_evolution_enabled") and state["daily_count"] < 2 and state.get("proactive_count", 0) < 1:
                 print("EVOLUTION: Checking for predictive opportunities...")
                 await self.predictor.analyze_trends(workspace_id)
-                directive = general_config.get("primary_directive", "Global Automation")
+                directive = system_config.get("primary_directive", "Global Automation")
                 forecasts = await self.predictor.generate_forecast(directive, workspace_id)
                 
                 if forecasts:
