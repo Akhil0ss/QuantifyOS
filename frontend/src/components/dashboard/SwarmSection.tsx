@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Network, Bot, MessageSquare, Play, Square, Activity, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function SwarmSection() {
     const { user } = useAuth();
@@ -26,7 +26,7 @@ export default function SwarmSection() {
 
             // Hardcoding workspace_id for MVP, using user.uid as implicit workspace
             // In a full app context we would get this from global state
-            const workspace_id = user.uid;
+            const workspace_id = `default-${user.uid}`;
 
             const [agentsRes, msgsRes] = await Promise.all([
                 fetch(`${API}/api/swarm/active?workspace_id=${workspace_id}`, { headers }),
@@ -71,7 +71,7 @@ export default function SwarmSection() {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    workspace_id: user.uid,
+                    workspace_id: `default-${user.uid}`,
                     parent_task_id: 'manual_ui_spawn',
                     role: role,
                     goal: goal
@@ -103,7 +103,7 @@ export default function SwarmSection() {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ workspace_id: user.uid })
+                body: JSON.stringify({ workspace_id: `default-${user.uid}` })
             });
 
             if (res.ok) {

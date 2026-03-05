@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Clock, CheckCircle2, AlertCircle, Loader2, ChevronDown, ChevronUp, TerminalSquare, BrainCircuit, Activity, Zap, PlayCircle, Settings, Coffee, UserCog, Megaphone, LineChart, GanttChart, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export default function TaskSection() {
     const { user } = useAuth();

@@ -56,7 +56,7 @@ async def send_message(request: MessageRequest, user = Depends(get_current_user)
     # Using 'user_interface' as a generic sender for manual interventions
     msg_id = swarm_engine.broadcast_message(
         workspace_id=request.workspace_id,
-        sender_id="user_interface", 
+        sender_id="system", # Authenticated manual message
         receiver_id=request.receiver_id,
         message=request.message
     )
@@ -64,5 +64,5 @@ async def send_message(request: MessageRequest, user = Depends(get_current_user)
 
 @router.post("/terminate/{agent_id}")
 async def terminate_agent(agent_id: str, workspace_id: str = Body(..., embed=True), user = Depends(get_current_user)):
-    swarm_engine.terminate_agent(workspace_id, agent_id, reason="Terminated via User Command")
+    swarm_engine.terminate_agent(workspace_id, agent_id, reason="Terminated via User Command", caller_id="system")
     return {"status": "success", "agent_id": agent_id}
