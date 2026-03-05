@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://80.225.250.239'; // Mapping host 80 to container 8000
+// Use relative paths — Next.js rewrites in next.config.ts proxy /api/* to the Oracle backend
+// This avoids Mixed Content (HTTPS→HTTP) browser blocks on production Vercel
 
 export default function MarketplaceSection() {
     const { user } = useAuth();
@@ -22,18 +23,21 @@ export default function MarketplaceSection() {
 
     const fetchMarketplaceData = useCallback(async () => {
         if (!user || !workspaceId) return;
-        console.log(`[Marketplace] Fetching catalog from: ${API}/api/workspaces/any/marketplace/catalog`);
         try {
             const token = await user.getIdToken();
             const headers = { 'Authorization': `Bearer ${token}` };
 
             const [catalogRes, installedRes] = await Promise.all([
-                fetch(`${API}/api/workspaces/any/marketplace/catalog`, { headers }), // We use 'any' or just a global route if we refactor prefix
-                fetch(`${API}/api/workspaces/${workspaceId}/marketplace/installed`, { headers })
+                fetch(`/api/workspaces/${workspaceId}/marketplace/catalog`, { headers }),
+                fetch(`/api/workspaces/${workspaceId}/marketplace/installed`, { headers })
             ]);
 
-            if (catalogRes.ok && installedRes.ok) {
+            if (catalogRes.ok) {
                 setCatalog(await catalogRes.json());
+            } else {
+                console.error('[Marketplace] Catalog fetch failed:', catalogRes.status, await catalogRes.text());
+            }
+            if (installedRes.ok) {
                 setInstalled(await installedRes.json());
             }
         } catch (error) {
@@ -52,7 +56,7 @@ export default function MarketplaceSection() {
         setInstalling(moduleId);
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`${API}/api/workspaces/${workspaceId}/marketplace/install/${moduleId}`, {
+            const res = await fetch(`/api/workspaces/${workspaceId}/marketplace/install/${moduleId}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
