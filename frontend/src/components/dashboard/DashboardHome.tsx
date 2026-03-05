@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import CommandInput from './CommandInput';
 import EvolutionFeed from './EvolutionFeed';
+import { useAuth } from '../../hooks/useAuth';
+import toast from 'react-hot-toast';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
