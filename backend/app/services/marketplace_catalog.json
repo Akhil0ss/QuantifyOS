@@ -1,0 +1,902 @@
+[
+    {
+        "id": "m-social-media",
+        "name": "Social Media Manager",
+        "description": "End-to-end module that analyzes competitors, writes posts, and schedules them.",
+        "type": "workflow",
+        "icon": "Share2",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "m-seo-auditor",
+        "name": "Technical SEO Auditor",
+        "description": "Crawls a given domain, checks vitals, and automatically generates fix plans.",
+        "type": "workflow",
+        "icon": "Search",
+        "price": "Premium",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-gh-integration",
+        "name": "GitHub CI/CD Analyzer",
+        "description": "Grants the AI the ability to read and manage GitHub Actions workflows.",
+        "type": "tool",
+        "icon": "Github",
+        "price": "Free",
+        "category": "Development"
+    },
+    {
+        "id": "p-data-scientist",
+        "name": "Data Scientist Persona",
+        "description": "Installs advanced statistical analysis and Python data plotting tools.",
+        "type": "persona",
+        "icon": "Database",
+        "price": "Free",
+        "category": "Data"
+    },
+    {
+        "id": "m-lead-gen",
+        "name": "B2B Lead Generator",
+        "description": "Scrapes LinkedIn and company sites to build targeted email lists.",
+        "type": "workflow",
+        "icon": "UserPlus",
+        "price": "Premium",
+        "category": "Sales"
+    },
+    {
+        "id": "t-docker-manager",
+        "name": "Docker Swarm Commander",
+        "description": "Allows agents to deploy, scale, and monitor Docker containers.",
+        "type": "tool",
+        "icon": "Box",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-copywriter",
+        "name": "Master Copywriter",
+        "description": "Persona tuned for high-converting sales letters and ad copy.",
+        "type": "persona",
+        "icon": "PenTool",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "m-financial-analyst",
+        "name": "Market Trend Predictor",
+        "description": "Analyzes stock APIs and news sentiment to generate daily market reports.",
+        "type": "workflow",
+        "icon": "TrendingUp",
+        "price": "Premium",
+        "category": "Finance"
+    },
+    {
+        "id": "t-slack-bot",
+        "name": "Slack Auto-Responder",
+        "description": "Integrates into Slack channels to answer FAQs based on company wiki.",
+        "type": "tool",
+        "icon": "MessageSquare",
+        "price": "Free",
+        "category": "Communication"
+    },
+    {
+        "id": "p-hr-recruiter",
+        "name": "Tech Recruiter Persona",
+        "description": "Screens resumes and drafts personalized outreach to candidates.",
+        "type": "persona",
+        "icon": "Users",
+        "price": "Free",
+        "category": "HR"
+    },
+    {
+        "id": "m-video-editor",
+        "name": "Automated Short-Form Editor",
+        "description": "Cuts long podcasts into TikTok/Reel clips with auto-captions.",
+        "type": "workflow",
+        "icon": "Video",
+        "price": "Premium",
+        "category": "Media"
+    },
+    {
+        "id": "t-stripe-manager",
+        "name": "Stripe Analytics Deep-Dive",
+        "description": "Queries Stripe API to calculate churn, LTV, and MRR accurately.",
+        "type": "tool",
+        "icon": "CreditCard",
+        "price": "Free",
+        "category": "Finance"
+    },
+    {
+        "id": "p-sysadmin",
+        "name": "Linux Sysadmin Persona",
+        "description": "Expert at bash scripting, log analysis, and server hardening.",
+        "type": "persona",
+        "icon": "Terminal",
+        "price": "Free",
+        "category": "IT"
+    },
+    {
+        "id": "m-competitor-tracker",
+        "name": "Rival Watchdog",
+        "description": "Monitors competitor pricing changes and website updates.",
+        "type": "workflow",
+        "icon": "Eye",
+        "price": "Free",
+        "category": "Strategy"
+    },
+    {
+        "id": "t-aws-provisioner",
+        "name": "AWS Infrastructure as Code",
+        "description": "Allows agents to write and deploy Terraform/CloudFormation.",
+        "type": "tool",
+        "icon": "Cloud",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-legal-aide",
+        "name": "Contract Reviewer",
+        "description": "Analyzes NDAs and vendor agreements for non-standard clauses.",
+        "type": "persona",
+        "icon": "FileText",
+        "price": "Premium",
+        "category": "Legal"
+    },
+    {
+        "id": "m-customer-support",
+        "name": "Zendesk Whisperer",
+        "description": "Drafts suggested replies to support tickets and escalates angry users.",
+        "type": "workflow",
+        "icon": "Headphones",
+        "price": "Free",
+        "category": "Support"
+    },
+    {
+        "id": "t-jira-sync",
+        "name": "Jira Agile Master",
+        "description": "Creates epics, stories, and assigns sprint points autonomously.",
+        "type": "tool",
+        "icon": "Trello",
+        "price": "Free",
+        "category": "Product"
+    },
+    {
+        "id": "p-ux-researcher",
+        "name": "UX Feedback Synthesizer",
+        "description": "Aggregates user interviews and outputs feature priorities.",
+        "type": "persona",
+        "icon": "Layout",
+        "price": "Free",
+        "category": "Design"
+    },
+    {
+        "id": "m-email-campaign",
+        "name": "Cold Outreach Sequencer",
+        "description": "Manages A/B testing and follow-ups for cold email campaigns.",
+        "type": "workflow",
+        "icon": "Mail",
+        "price": "Premium",
+        "category": "Sales"
+    },
+    {
+        "id": "t-sql-optimizer",
+        "name": "Database Query Optimizer",
+        "description": "Analyzes slow Postgres logs and suggests index creation.",
+        "type": "tool",
+        "icon": "Database",
+        "price": "Free",
+        "category": "Development"
+    },
+    {
+        "id": "p-cyber-sec",
+        "name": "Penetration Tester",
+        "description": "Runs localized network scans and audits web app vulnerabilities.",
+        "type": "persona",
+        "icon": "Shield",
+        "price": "Premium",
+        "category": "Security"
+    },
+    {
+        "id": "m-content-calendar",
+        "name": "Blog Engine",
+        "description": "Researches keywords, drafts outlines, and schedules WordPress drafts.",
+        "type": "workflow",
+        "icon": "Calendar",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-figma-extractor",
+        "name": "Figma to React",
+        "description": "Extracts CSS tokens and generates boilerplate JSX from Figma links.",
+        "type": "tool",
+        "icon": "Figma",
+        "price": "Premium",
+        "category": "Development"
+    },
+    {
+        "id": "p-executive-assistant",
+        "name": "Chief of Staff",
+        "description": "Prioritizes emails, blocks calendar time, and drafts executive summaries.",
+        "type": "persona",
+        "icon": "Briefcase",
+        "price": "Free",
+        "category": "Productivity"
+    },
+    {
+        "id": "m-ad-optimizer",
+        "name": "Google Ads Optimizer",
+        "description": "Adjusts bidding strategies based on ROAS targets daily.",
+        "type": "workflow",
+        "icon": "Target",
+        "price": "Premium",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-notion-sync",
+        "name": "Notion Workspace Manager",
+        "description": "Organizes messy Notion pages and links related databases.",
+        "type": "tool",
+        "icon": "Book",
+        "price": "Free",
+        "category": "Productivity"
+    },
+    {
+        "id": "p-qa-engineer",
+        "name": "QA Automation Lead",
+        "description": "Writes Playwright test suites based on user stories.",
+        "type": "persona",
+        "icon": "CheckSquare",
+        "price": "Free",
+        "category": "Development"
+    },
+    {
+        "id": "m-inventory-manager",
+        "name": "Shopify Stock Forecaster",
+        "description": "Predicts inventory shortages based on seasonal sales velocity.",
+        "type": "workflow",
+        "icon": "ShoppingCart",
+        "price": "Premium",
+        "category": "E-commerce"
+    },
+    {
+        "id": "t-python-linter",
+        "name": "Codebase Refactor Pro",
+        "description": "Applies PEP8 standards and modernizes old Python syntax globally.",
+        "type": "tool",
+        "icon": "Code",
+        "price": "Free",
+        "category": "Development"
+    },
+    {
+        "id": "p-scrum-master",
+        "name": "Agile Coach",
+        "description": "Facilitates async standups and generates burndown reports.",
+        "type": "persona",
+        "icon": "Repeat",
+        "price": "Free",
+        "category": "Product"
+    },
+    {
+        "id": "m-podcast-producer",
+        "name": "Podcast Show Notes Generator",
+        "description": "Transcribes audio and creates timestamped summaries and tweets.",
+        "type": "workflow",
+        "icon": "Mic",
+        "price": "Free",
+        "category": "Media"
+    },
+    {
+        "id": "t-hubspot-crm",
+        "name": "HubSpot Data Cleanser",
+        "description": "Finds duplicate contacts and enriches missing company data via API.",
+        "type": "tool",
+        "icon": "Users",
+        "price": "Free",
+        "category": "Sales"
+    },
+    {
+        "id": "p-academic-researcher",
+        "name": "Literature Reviewer",
+        "description": "Summarizes ArXiv PDFs and finds contradictory studies.",
+        "type": "persona",
+        "icon": "BookOpen",
+        "price": "Free",
+        "category": "Research"
+    },
+    {
+        "id": "m-onboarding-bot",
+        "name": "Employee Onboarding Agent",
+        "description": "Guides new hires through docs, IT setup, and training videos.",
+        "type": "workflow",
+        "icon": "UserCheck",
+        "price": "Premium",
+        "category": "HR"
+    },
+    {
+        "id": "t-reddit-monitor",
+        "name": "Reddit Brand Sentiment",
+        "description": "Tracks mentions of your brand across relevant subreddits.",
+        "type": "tool",
+        "icon": "MessageCircle",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "p-translator",
+        "name": "Localization Expert",
+        "description": "Translates JSON i18n files while keeping cultural nuance context.",
+        "type": "persona",
+        "icon": "Globe",
+        "price": "Free",
+        "category": "Product"
+    },
+    {
+        "id": "m-event-planner",
+        "name": "Virtual Summit Organizer",
+        "description": "Coordinates speaker schedules, generates promo emails, tracking RSVPs.",
+        "type": "workflow",
+        "icon": "Calendar",
+        "price": "Premium",
+        "category": "Events"
+    },
+    {
+        "id": "t-cloudflare-admin",
+        "name": "Cloudflare WAF tuner",
+        "description": "Analyzes blocked requests and fine-tunes firewall rules.",
+        "type": "tool",
+        "icon": "Shield",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-sales-coach",
+        "name": "Gong Call Analyzer",
+        "description": "Reviews sales transcripts to score rep performance and objections.",
+        "type": "persona",
+        "icon": "PhoneCall",
+        "price": "Premium",
+        "category": "Sales"
+    },
+    {
+        "id": "m-invoice-chaser",
+        "name": "Accounts Receivable Bot",
+        "description": "Cross-references bank feeds and emails clients about overdue invoices.",
+        "type": "workflow",
+        "icon": "DollarSign",
+        "price": "Free",
+        "category": "Finance"
+    },
+    {
+        "id": "t-gcp-billing",
+        "name": "GCP Cost Optimizer",
+        "description": "Finds idle IP addresses, orphaned disks, and overprovisioned instances.",
+        "type": "tool",
+        "icon": "PieChart",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-game-designer",
+        "name": "Game Economy Balancer",
+        "description": "Simulates player progression and adjusting drop rates/prices.",
+        "type": "persona",
+        "icon": "Play",
+        "price": "Premium",
+        "category": "Gaming"
+    },
+    {
+        "id": "m-newsletter-curator",
+        "name": "Weekly Digest Builder",
+        "description": "Aggregates top industry news from RSS feeds into a Mailchimp draft.",
+        "type": "workflow",
+        "icon": "Mail",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-twilio-sms",
+        "name": "SMS Appointment Reminder",
+        "description": "Sends confirmation texts and handles basic rescheduling via SMS.",
+        "type": "tool",
+        "icon": "Smartphone",
+        "price": "Free",
+        "category": "Support"
+    },
+    {
+        "id": "p-crypto-trader",
+        "name": "DeFi Yield Farmer",
+        "description": "Monitors gas fees and APYs across protocols to suggest pool rotation.",
+        "type": "persona",
+        "icon": "Activity",
+        "price": "Premium",
+        "category": "Finance"
+    },
+    {
+        "id": "m-web-scraper",
+        "name": "Dynamic Site Scraper",
+        "description": "Bypasses Captchas to scrape structured data from complex React SPAs.",
+        "type": "workflow",
+        "icon": "Download",
+        "price": "Premium",
+        "category": "Data"
+    },
+    {
+        "id": "t-kubernetes-debug",
+        "name": "K8s Crashloop Fixer",
+        "description": "Inspects pod logs and events to diagnose crashloop backoffs.",
+        "type": "tool",
+        "icon": "Server",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-therapist-bot",
+        "name": "Wellness Check-in",
+        "description": "Conducts empathetic, non-diagnostic team morale surveys via Slack.",
+        "type": "persona",
+        "icon": "Heart",
+        "price": "Free",
+        "category": "HR"
+    },
+    {
+        "id": "m-affiliate-manager",
+        "name": "Affiliate Payout Calculator",
+        "description": "Tracks referrers, calculates commissions, and prepares PayPal batch files.",
+        "type": "workflow",
+        "icon": "Link",
+        "price": "Premium",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-zapier-bridge",
+        "name": "Zapier Webhook Trigger",
+        "description": "Flexible tool to bridge OS output into existing Zapier workflows.",
+        "type": "tool",
+        "icon": "Zap",
+        "price": "Free",
+        "category": "Integrations"
+    },
+    {
+        "id": "p-math-tutor",
+        "name": "Socratic Tutor",
+        "description": "Guides users to answers rather than providing direct solutions.",
+        "type": "persona",
+        "icon": "Edit3",
+        "price": "Free",
+        "category": "Education"
+    },
+    {
+        "id": "m-contract-generator",
+        "name": "Dynamic Proposal Builder",
+        "description": "Takes raw project scope and generates polished SOW documents.",
+        "type": "workflow",
+        "icon": "FilePlus",
+        "price": "Free",
+        "category": "Sales"
+    },
+    {
+        "id": "t-tiktok-ads",
+        "name": "TikTok Campaign Launcher",
+        "description": "Uploads creative and targets audiences automatically via API.",
+        "type": "tool",
+        "icon": "Video",
+        "price": "Premium",
+        "category": "Marketing"
+    },
+    {
+        "id": "p-brand-manager",
+        "name": "Brand Voice Guardian",
+        "description": "Reviews outgoing website copy for consistency with style guide.",
+        "type": "persona",
+        "icon": "Type",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "m-grant-writer",
+        "name": "Non-Profit Grant Writer",
+        "description": "Formats organizational data to match specific RFP requirements.",
+        "type": "workflow",
+        "icon": "Edit",
+        "price": "Premium",
+        "category": "Writing"
+    },
+    {
+        "id": "t-grafana-dash",
+        "name": "Grafana Dashboard Generator",
+        "description": "Generates JSON config for dashboards based on metric requirements.",
+        "type": "tool",
+        "icon": "BarChart",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-supply-chain",
+        "name": "Logistics Optimizer",
+        "description": "Analyzes shipping routes and carrier rates to cut freight costs.",
+        "type": "persona",
+        "icon": "Truck",
+        "price": "Premium",
+        "category": "Operations"
+    },
+    {
+        "id": "m-crm-migration",
+        "name": "Salesforce Data Migrator",
+        "description": "Maps fields and safely migrates legacy CSVs into Salesforce APIs.",
+        "type": "workflow",
+        "icon": "Database",
+        "price": "Premium",
+        "category": "IT"
+    },
+    {
+        "id": "t-youtube-seo",
+        "name": "YouTube Tag Optimizer",
+        "description": "Analyzes trending videos to suggest titles, descriptions, and tags.",
+        "type": "tool",
+        "icon": "Youtube",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "p-realtor",
+        "name": "Real Estate Analyst",
+        "description": "Pulls MLS data to calculate neighborhood comp averages and CAP rates.",
+        "type": "persona",
+        "icon": "Home",
+        "price": "Free",
+        "category": "Real Estate"
+    },
+    {
+        "id": "m-tax-prep",
+        "name": "Expense Categorizer",
+        "description": "Reads bank statements and maps transactions to IRS categories.",
+        "type": "workflow",
+        "icon": "FileText",
+        "price": "Premium",
+        "category": "Finance"
+    },
+    {
+        "id": "t-discord-bot",
+        "name": "Discord Community Manager",
+        "description": "Assigns roles, moderates toxicity, and runs automated giveaways.",
+        "type": "tool",
+        "icon": "MessageCircle",
+        "price": "Free",
+        "category": "Community"
+    },
+    {
+        "id": "p-ui-designer",
+        "name": "Tailwind UI Expert",
+        "description": "Generates accessible, responsive Tailwind components from descriptions.",
+        "type": "persona",
+        "icon": "Layout",
+        "price": "Free",
+        "category": "Design"
+    },
+    {
+        "id": "m-influencer-outreach",
+        "name": "Micro-Influencer Scout",
+        "description": "Finds IG/TikTok accounts with high engagement and sends DMs.",
+        "type": "workflow",
+        "icon": "Instagram",
+        "price": "Premium",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-elasticsearch",
+        "name": "ElasticSearch Query Builder",
+        "description": "Translates plain English into complex Kibana/Elastic query DSL.",
+        "type": "tool",
+        "icon": "Search",
+        "price": "Free",
+        "category": "Data"
+    },
+    {
+        "id": "p-prompt-engineer",
+        "name": "Meta-Prompter",
+        "description": "Optimizes and refines prompts to save tokens and improve output.",
+        "type": "persona",
+        "icon": "Cpu",
+        "price": "Free",
+        "category": "AI"
+    },
+    {
+        "id": "m-churn-predictor",
+        "name": "Customer Risk Scoring",
+        "description": "Uses usage decay metrics to alert sales of accounts likely to churn.",
+        "type": "workflow",
+        "icon": "AlertTriangle",
+        "price": "Premium",
+        "category": "Sales"
+    },
+    {
+        "id": "t-shopify-api",
+        "name": "Shopify Price Updater",
+        "description": "Bulk updates product prices based on a master CSV or inflation index.",
+        "type": "tool",
+        "icon": "ShoppingCart",
+        "price": "Free",
+        "category": "E-commerce"
+    },
+    {
+        "id": "p-compliance-officer",
+        "name": "GDPR/HIPAA Auditor",
+        "description": "Scans codebases for PII logging and insecure data transmission.",
+        "type": "persona",
+        "icon": "Shield",
+        "price": "Premium",
+        "category": "Security"
+    },
+    {
+        "id": "m-pitch-deck",
+        "name": "Investor Deck Generator",
+        "description": "Structures business model narratives into 12-slide presentation texts.",
+        "type": "workflow",
+        "icon": "Presentation",
+        "price": "Free",
+        "category": "Strategy"
+    },
+    {
+        "id": "t-github-issues",
+        "name": "Bug Triage Assistant",
+        "description": "Tags GitHub issues, identifies duplicates, and requests repro steps.",
+        "type": "tool",
+        "icon": "Github",
+        "price": "Free",
+        "category": "Development"
+    },
+    {
+        "id": "p-travel-agent",
+        "name": "Corporate Travel Booker",
+        "description": "Finds flights and hotels within corporate budget policies.",
+        "type": "persona",
+        "icon": "Map",
+        "price": "Free",
+        "category": "Operations"
+    },
+    {
+        "id": "m-ab-testing",
+        "name": "Optimizely Experiment Runner",
+        "description": "Generates hypotheses, sets up variations, and analyzes significance.",
+        "type": "workflow",
+        "icon": "SplitSquareHorizontal",
+        "price": "Premium",
+        "category": "Product"
+    },
+    {
+        "id": "t-s3-backup",
+        "name": "AWS S3 Sync Commander",
+        "description": "Manages lifecycle policies and cross-region replication for buckets.",
+        "type": "tool",
+        "icon": "HardDrive",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-nutritionist",
+        "name": "Macro Planner",
+        "description": "Creates meal plans matching specific calorie and macronutrient goals.",
+        "type": "persona",
+        "icon": "Coffee",
+        "price": "Free",
+        "category": "Health"
+    },
+    {
+        "id": "m-resume-screener",
+        "name": "ATS Bias Checker",
+        "description": "Redacts PII from resumes to enforce blinding before hiring review.",
+        "type": "workflow",
+        "icon": "FileText",
+        "price": "Premium",
+        "category": "HR"
+    },
+    {
+        "id": "t-zoom-api",
+        "name": "Zoom Meeting Summarizer",
+        "description": "Downloads cloud recordings, transcribes, and extracts action items.",
+        "type": "tool",
+        "icon": "Video",
+        "price": "Free",
+        "category": "Productivity"
+    },
+    {
+        "id": "p-architect",
+        "name": "System Design Architect",
+        "description": "Draws Mermaid.js diagrams for microservice architectures.",
+        "type": "persona",
+        "icon": "Server",
+        "price": "Free",
+        "category": "Development"
+    },
+    {
+        "id": "m-pr-manager",
+        "name": "Press Release Distributor",
+        "description": "Drafts standard PRs and curates lists of journalist emails.",
+        "type": "workflow",
+        "icon": "Megaphone",
+        "price": "Free",
+        "category": "Marketing"
+    },
+    {
+        "id": "t-mailgun-api",
+        "name": "Email Deliverability Tester",
+        "description": "Checks SPF/DKIM records and monitors IP reputation scores.",
+        "type": "tool",
+        "icon": "Mail",
+        "price": "Premium",
+        "category": "IT"
+    },
+    {
+        "id": "p-music-producer",
+        "name": "MIDI Sequence Generator",
+        "description": "Creates chord progressions and drum patterns via python libraries.",
+        "type": "persona",
+        "icon": "Music",
+        "price": "Free",
+        "category": "Media"
+    },
+    {
+        "id": "m-fraud-detect",
+        "name": "Transaction Fraud Scorer",
+        "description": "Flags unusual charge locations or high-velocity card testing.",
+        "type": "workflow",
+        "icon": "ShieldAlert",
+        "price": "Premium",
+        "category": "Finance"
+    },
+    {
+        "id": "t-google-sheets",
+        "name": "Spreadsheet Macro Wizard",
+        "description": "Writes complex Google Apps Script for automated reporting.",
+        "type": "tool",
+        "icon": "FileText",
+        "price": "Free",
+        "category": "Productivity"
+    },
+    {
+        "id": "p-crisis-manager",
+        "name": "Incident Response Commander",
+        "description": "Guides teams through P1 outages with structured runbooks.",
+        "type": "persona",
+        "icon": "AlertOctagon",
+        "price": "Premium",
+        "category": "Operations"
+    },
+    {
+        "id": "m-translation-pipeline",
+        "name": "Continuous Localization",
+        "description": "Detects Git changes, translates strings, and opens PRs with updates.",
+        "type": "workflow",
+        "icon": "Globe",
+        "price": "Premium",
+        "category": "Development"
+    },
+    {
+        "id": "t-pdf-parser",
+        "name": "OCR Invoice Extractor",
+        "description": "Pulls line items, totals, and vendor info from scanned PDFs.",
+        "type": "tool",
+        "icon": "File",
+        "price": "Free",
+        "category": "Data"
+    },
+    {
+        "id": "p-philosopher",
+        "name": "Devil's Advocate",
+        "description": "Pokes holes in business strategies pushing for logical rigor.",
+        "type": "persona",
+        "icon": "Brain",
+        "price": "Free",
+        "category": "Strategy"
+    },
+    {
+        "id": "m-oncall-rotator",
+        "name": "PagerDuty Scheduler",
+        "description": "Balances holiday shifts and timezones for engineering on-call rosters.",
+        "type": "workflow",
+        "icon": "Calendar",
+        "price": "Free",
+        "category": "HR"
+    },
+    {
+        "id": "t-dns-manager",
+        "name": "Route53 Zone Updater",
+        "description": "Safely updates DNS records and verifies propagation.",
+        "type": "tool",
+        "icon": "Globe",
+        "price": "Free",
+        "category": "DevOps"
+    },
+    {
+        "id": "p-dating-coach",
+        "name": "Profile Optimizer",
+        "description": "Suggests better bio text and photo sorting for dating apps.",
+        "type": "persona",
+        "icon": "Heart",
+        "price": "Free",
+        "category": "Personal"
+    },
+    {
+        "id": "m-course-creator",
+        "name": "LMS Curriculum Builder",
+        "description": "Structures online courses into modules, lessons, and quizzes.",
+        "type": "workflow",
+        "icon": "Book",
+        "price": "Premium",
+        "category": "Education"
+    },
+    {
+        "id": "t-ffmpeg-runner",
+        "name": "Video Compressor Batch",
+        "description": "Generates FFmpeg commands to mass-convert formats and sizes.",
+        "type": "tool",
+        "icon": "Video",
+        "price": "Free",
+        "category": "Media"
+    },
+    {
+        "id": "p-sommelier",
+        "name": "Wine Pairing Expert",
+        "description": "Suggests vintages and regions based on menu ingredients and budget.",
+        "type": "persona",
+        "icon": "Coffee",
+        "price": "Free",
+        "category": "Lifestyle"
+    },
+    {
+        "id": "m-startup-hunter",
+        "name": "VC Deal Flow Sourcer",
+        "description": "Scans ProductHunt, Crunchbase, and YC for early breakout signals.",
+        "type": "workflow",
+        "icon": "TrendingUp",
+        "price": "Premium",
+        "category": "Finance"
+    },
+    {
+        "id": "t-web-accessibility",
+        "name": "WCAG Compliance Checker",
+        "description": "Tests DOM for contrast, ARIA labels, and keyboard navigation.",
+        "type": "tool",
+        "icon": "Eye",
+        "price": "Free",
+        "category": "Design"
+    },
+    {
+        "id": "p-interior-designer",
+        "name": "Space Planning Assistant",
+        "description": "Suggests furniture layouts and color palettes based on room dims.",
+        "type": "persona",
+        "icon": "Home",
+        "price": "Free",
+        "category": "Lifestyle"
+    },
+    {
+        "id": "m-rfp-responder",
+        "name": "Gov Contract Bidder",
+        "description": "Matches past performance data to complex government RFP matrices.",
+        "type": "workflow",
+        "icon": "Briefcase",
+        "price": "Premium",
+        "category": "Sales"
+    },
+    {
+        "id": "t-wifi-analyzer",
+        "name": "Netcap Packet Sniffer",
+        "description": "Reads PCAP files to identify bottlenecks or rogue APs.",
+        "type": "tool",
+        "icon": "Wifi",
+        "price": "Premium",
+        "category": "IT"
+    },
+    {
+        "id": "p-novel-writer",
+        "name": "Fiction Co-pilot",
+        "description": "Maintains character bibles and suggests plot twists for authors.",
+        "type": "persona",
+        "icon": "Edit3",
+        "price": "Free",
+        "category": "Writing"
+    }
+]
