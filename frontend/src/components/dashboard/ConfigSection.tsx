@@ -449,19 +449,19 @@ export default function ConfigSection() {
                                     )}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                                        {currentTabProvider.provider === 'lmstudio' ? 'LM Studio Backend URL' : 'Ollama Backend URL'}
+                                    <label className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center justify-between">
+                                        {currentTabProvider.provider === 'lmstudio' ? 'LM Studio Base URL' : 'Ollama Base URL (or Tunnel)'}
                                     </label>
                                     <input
                                         type="text"
-                                        placeholder="http://127.0.0.1:11434"
-                                        className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-sm font-mono focus:border-blue-500 focus:outline-none transition-all"
+                                        placeholder="http://127.0.0.1:11434 or https://your-tunnel.ngrok-free.app"
+                                        className="w-full bg-black/40 border border-white/10 rounded-xl p-3.5 text-sm font-mono focus:border-blue-500 focus:outline-none transition-all placeholder:text-gray-700"
                                         value={currentTabProvider.local_url}
                                         onChange={(e) => updateProviderConfig('local', { local_url: e.target.value })}
                                     />
-                                    {currentTabProvider.provider === 'ollama' && (
-                                        <p className="text-[10px] text-gray-500">Ensure OLLAMA_ORIGINS="*" is set if connecting from another origin.</p>
-                                    )}
+                                    <p className="text-[10px] text-gray-500 leading-relaxed">
+                                        To use local models with the cloud, use a tunnel like <span className="text-blue-400">Ngrok</span> or ensure <span className="text-gray-300 font-mono">OLLAMA_ORIGINS="*"</span> is set.
+                                    </p>
                                 </div>
                             </>
                         )}

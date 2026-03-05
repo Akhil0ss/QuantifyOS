@@ -79,7 +79,11 @@ class ModelRouter:
                 return OpenAIDriver(api_key=api_key, model=model_name if model_name != "default" else "gpt-4o")
             # Other API providers...
         elif mode == "local":
-            return OllamaDriver(local_model=model_name if model_name != "default" else "llama3")
+            local_url = p_config.get("local_url", "http://localhost:11434")
+            return OllamaDriver(
+                local_model=model_name if model_name != "default" else "llama3",
+                base_url=local_url
+            )
         elif mode == "web":
             return WebRouter(provider=provider_name, user_id=user_id)
         

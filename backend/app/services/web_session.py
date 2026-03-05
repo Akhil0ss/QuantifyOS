@@ -21,6 +21,10 @@ class WebSessionManager:
         """
         Launches a headful browser for the user to log in manually.
         """
+        env = os.environ.get("QUANTIFY_ENV", "production")
+        if env == "production":
+            raise Exception("Interactive GUI login is not supported on the production server. Please use API keys or local hardware tunneling for production use.")
+
         if not self.playwright:
             self.playwright = await async_playwright().start()
 
