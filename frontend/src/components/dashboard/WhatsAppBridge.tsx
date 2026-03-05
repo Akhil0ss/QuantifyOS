@@ -6,7 +6,7 @@ import { Smartphone, QrCode, Loader2, CheckCircle2, AlertCircle, XCircle, Send }
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function WhatsAppBridge() {
     const { user } = useAuth();

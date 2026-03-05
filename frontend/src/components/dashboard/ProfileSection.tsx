@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Save, User as UserIcon, ShieldAlert, Cpu, Settings, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = process.env.NEXT_PUBLIC_API_URL || '';
 
 
 export default function ProfileSection() {

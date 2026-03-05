@@ -11,7 +11,7 @@ import UserManagement from "../../components/admin/UserManagement";
 import MonitoringArea from "../../components/admin/MonitoringArea";
 import toast from "react-hot-toast";
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function AdminPage() {
     const { user, loading: authLoading } = useAuth();

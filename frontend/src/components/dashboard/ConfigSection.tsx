@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Shield, Database, Cpu, Globe, HardDrive, Infinity, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = process.env.NEXT_PUBLIC_API_URL || '';
 
 export default function ConfigSection() {
     const { user } = useAuth();
