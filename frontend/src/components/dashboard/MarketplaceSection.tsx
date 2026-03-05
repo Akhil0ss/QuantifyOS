@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '');
 
 export default function MarketplaceSection() {
     const { user } = useAuth();
