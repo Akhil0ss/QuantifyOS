@@ -4,8 +4,9 @@ from openai import OpenAI, AsyncOpenAI
 from .base import AIProvider
 
 class OpenAIDriver(AIProvider):
-    def __init__(self, api_key: str, model: str = "gpt-4o"):
-        self.client = AsyncOpenAI(api_key=api_key)
+    def __init__(self, api_key: str = None, model: str = "gpt-4o"):
+        key_to_use = api_key or os.environ.get("OPENAI_API_KEY", "dummy-key-to-prevent-crash")
+        self.client = AsyncOpenAI(api_key=key_to_use)
         self.model = model
 
     async def generate_text(self, prompt: str, system_message: Optional[str] = None) -> str:

@@ -79,12 +79,16 @@ class ModelRouter:
                 return OpenAIDriver(api_key=api_key, model=model_name if model_name != "default" else "gpt-4o")
             # Other API providers...
         elif mode == "local":
-            return OllamaDriver(model=model_name if model_name != "default" else "llama3")
+            return OllamaDriver(local_model=model_name if model_name != "default" else "llama3")
         elif mode == "web":
             return WebRouter(provider=provider_name, user_id=user_id)
         
         # Default fallback
-        return OpenAIDriver(api_key=api_key)
+        if api_key:
+            return OpenAIDriver(api_key=api_key)
+        
+        # Absolute fallback if everything is broken or empty config
+        return OllamaDriver(local_model="llama3")
 
     @staticmethod
     async def get_best_provider(user_id: str, prompt: str, system_message: Optional[str] = None) -> str:
