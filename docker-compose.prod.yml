@@ -11,9 +11,9 @@ services:
     ports:
       - "80:8000"
     volumes:
-      - ~/quantify-os/workspaces:/app/workspaces
-      - ~/quantify-os/backups:/app/backups
-      - ~/quantify-os/backend/serviceAccountKey.json:/app/serviceAccountKey.json:ro
+      - ./workspaces:/app/workspaces
+      - ./backups:/app/backups
+      - ./backend/serviceAccountKey.json:/app/serviceAccountKey.json:ro
     deploy:
       resources:
         limits:
