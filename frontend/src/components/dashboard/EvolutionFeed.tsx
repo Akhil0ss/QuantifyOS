@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Zap, ShieldCheck, TrendingUp, History, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function EvolutionFeed() {
     const { user } = useAuth();
     const [history, setHistory] = useState<any[]>([]);
@@ -15,7 +17,7 @@ export default function EvolutionFeed() {
             if (!user) return;
             try {
                 const token = await user.getIdToken();
-                const res = await fetch("/api/evolution/status", {
+                const res = await fetch(`${API}/api/evolution/status`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -60,8 +62,8 @@ export default function EvolutionFeed() {
                             className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all flex gap-4"
                         >
                             <div className={`shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${event.type === 'bug_fix' ? 'bg-emerald-500/10 text-emerald-400' :
-                                    event.type === 'market_feature_gap' ? 'bg-blue-500/10 text-blue-400' :
-                                        'bg-fuchsia-500/10 text-fuchsia-400'
+                                event.type === 'market_feature_gap' ? 'bg-blue-500/10 text-blue-400' :
+                                    'bg-fuchsia-500/10 text-fuchsia-400'
                                 }`}>
                                 {event.type === 'bug_fix' ? <ShieldCheck size={20} /> :
                                     event.type === 'market_feature_gap' ? <TrendingUp size={20} /> :

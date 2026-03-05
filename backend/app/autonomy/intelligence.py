@@ -89,6 +89,7 @@ class IntelligenceEngine:
     def get_intelligence_status(self) -> Dict[str, Any]:
         """Returns comprehensive intelligence status."""
         score = self.calculate_iq()
+        growth = self._get_growth()
         history = self._get_history()
         
         last_score = history[-1]["score"] if history else score
@@ -96,9 +97,13 @@ class IntelligenceEngine:
         
         return {
             "intelligence_score": score,
+            "score": score,  # for frontend compatibility
+            "level": int(score / 10) if score > 0 else 1,
             "improvement_delta": improvement,
+            "capabilities_count": growth.get("total_capabilities", 0),
+            "evolution_cycles": self._get_metrics().get("evolution_total", 0),
             "metrics": self._get_metrics(),
-            "growth": self._get_growth(),
+            "growth": growth,
             "status": "evolving" if improvement >= 0 else "stagnant"
         }
 

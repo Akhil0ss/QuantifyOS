@@ -33,6 +33,13 @@ async def get_evolution_status(user = Depends(get_current_user)):
     if os.path.exists(gaps_file):
         with open(gaps_file, "r") as f:
             gaps = json.load(f)
+
+    # Transform history for frontend icons if types are missing
+    for h in history:
+        if "icon" not in h:
+            if h.get("type") == "bug_fix": h["icon"] = "shield"
+            elif h.get("type") == "market_feature_gap": h["icon"] = "trending-up"
+            else: h["icon"] = "sparkles"
             
     return {
         "active": state.get("failure_count", 0) < 3,
@@ -43,6 +50,15 @@ async def get_evolution_status(user = Depends(get_current_user)):
         "history": history[-10:], # Last 10 events
         "current_gaps": gaps
     }
+
+@router.post("/run")
+async def run_evolution_cycle_manual(background_tasks: BackgroundTasks, user = Depends(get_current_user)):
+    """
+    Manually triggers an evolution cycle.
+    """
+    from app.services.perpetual_evolution import run_evolution_cycle
+    background_tasks.add_task(run_evolution_cycle)
+    return {"status": "success", "message": "Evolution engine engaged. Monitoring capability gaps..."}
 
 @router.post("/kill")
 async def workspace_kill_switch(user = Depends(get_current_user)):

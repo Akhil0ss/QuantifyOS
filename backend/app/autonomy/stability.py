@@ -16,6 +16,7 @@ class StabilityEngine:
         self.workspace_id = workspace_id
         self.health_file = "system_health.json"
         self.backup_dir = "backups"
+        self.boot_time = time.time()
         self.critical_files = [
             "capability_index.json",
             "evolution_history.json",
@@ -31,23 +32,28 @@ class StabilityEngine:
         """
         Gathers real-time OS and application metrics.
         """
-        cpu_usage = psutil.cpu_percent(interval=1)
+        cpu_usage = psutil.cpu_percent(interval=0.1)
         memory = psutil.virtual_memory()
+        uptime_seconds = int(time.time() - self.boot_time)
         
         # Track API/Task failures by reading logs (simplified for now)
         task_failures = 0
         if os.path.exists("evolution_state.json"):
-            with open("evolution_state.json", "r") as f:
-                state = json.load(f)
-                task_failures = state.get("failure_count", 0)
+            try:
+                with open("evolution_state.json", "r") as f:
+                    state = json.load(f)
+                    task_failures = state.get("failure_count", 0)
+            except: pass
 
         health = {
             "timestamp": datetime.now().isoformat(),
             "cpu_percent": cpu_usage,
-            "memory_used_mb": memory.used / (1024 * 1024),
+            "memory_used_mb": round(memory.used / (1024 * 1024), 2),
             "memory_percent": memory.percent,
             "task_failures_24h": task_failures,
-            "status": "healthy" if cpu_usage < 90 and memory.percent < 90 else "strained"
+            "uptime_seconds": uptime_seconds,
+            "uptime_hours": round(uptime_seconds / 3600, 1),
+            "status": "Healthy" if cpu_usage < 90 and memory.percent < 90 else "Strained"
         }
         
         self._log_health(health)
