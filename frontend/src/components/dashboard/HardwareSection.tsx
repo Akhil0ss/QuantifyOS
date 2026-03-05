@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Cpu, Plus, Radio, Server, Plug, Signal, SignalHigh, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '');
 
 export default function HardwareSection() {
     const { user } = useAuth();
@@ -21,11 +21,13 @@ export default function HardwareSection() {
     // Auth token copy state
     const [newToken, setNewToken] = useState<{ id: string, token: string } | null>(null);
 
+    const workspaceId = user ? `default-${user.uid}` : '';
+
     const fetchData = async () => {
-        if (!user) return;
+        if (!user || !workspaceId) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`${API}/api/hardware/list?workspace_id=${user.uid}`, {
+            const res = await fetch(`${API}/api/hardware/list?workspace_id=${workspaceId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setDevices(await res.json());
@@ -56,7 +58,7 @@ export default function HardwareSection() {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    workspace_id: user.uid,
+                    workspace_id: workspaceId,
                     name, type, description
                 })
             });

@@ -13,6 +13,7 @@ services:
     volumes:
       - ./workspaces:/app/workspaces
       - ./backups:/app/backups
+      - ./sessions:/app/sessions
       - ./backend/serviceAccountKey.json:/app/serviceAccountKey.json:ro
     deploy:
       resources:
