@@ -38,6 +38,7 @@ from app.api.billing import router as billing_router
 from app.api.backups import router as backups_router
 from app.api.notifications import router as notifications_router
 from app.api.replay import router as replay_router
+from app.api.deploy_webhook import router as deploy_router
 from app.core.rate_limiter import RateLimitMiddleware
 from app.core.stability_engine import StabilityMiddleware
 
@@ -73,6 +74,7 @@ app.include_router(billing_router)
 app.include_router(backups_router)
 app.include_router(notifications_router)
 app.include_router(replay_router)
+app.include_router(deploy_router)
 
 # Enable CORS for the Next.js frontend (dev + production)
 _cors_origins = [

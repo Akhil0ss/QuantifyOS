@@ -10,29 +10,34 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Deploy to Oracle via SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.ORACLE_HOST }}
-          username: ${{ secrets.ORACLE_USER }}
-          key: ${{ secrets.ORACLE_SSH_KEY }}
-          script: |
-            if [ ! -d "~/quantify-os/.git" ]; then
-              echo "Refreshing project directory..."
-              sudo rm -rf ~/quantify-os
-              git clone https://github.com/Akhil0ss/QuantifyOS.git ~/quantify-os
-            fi
-            cd ~/quantify-os
-            git pull origin main
-            sudo docker compose -f docker-compose.prod.yml up --build -d
-            sudo docker image prune -f
+      - name: Deploy Backend via Webhook
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            -H "X-Deploy-Token: ${{ secrets.DEPLOY_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"ref": "${{ github.sha }}"}' \
+            --max-time 120 \
+            "http://${{ secrets.ORACLE_HOST }}/api/deploy/webhook")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+
+          echo "Response: $BODY"
+          echo "HTTP Status: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "✅ Deploy triggered successfully!"
+          else
+            echo "❌ Deploy failed with HTTP $HTTP_CODE"
+            exit 1
+          fi
 
   deploy-frontends:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       
-      # This step assumes Vercel CLI is configured in secrets
       - name: Deploy Dashboard to Vercel
         uses: amondnet/vercel-action@v20
         with:
