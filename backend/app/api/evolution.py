@@ -56,8 +56,12 @@ async def run_evolution_cycle_manual(background_tasks: BackgroundTasks, user = D
     """
     Manually triggers an evolution cycle.
     """
-    from app.services.perpetual_evolution import run_evolution_cycle
-    background_tasks.add_task(run_evolution_cycle)
+    from app.autonomy.evolution_orchestrator import run_global_evolution
+    user_id = user["uid"]
+    # Usually workspace_id would come from URL, but for simplicity we'll use the default format
+    workspace_id = f"default-{user_id}"
+    
+    background_tasks.add_task(run_global_evolution, user_id, workspace_id)
     return {"status": "success", "message": "Evolution engine engaged. Monitoring capability gaps..."}
 
 @router.post("/kill")
