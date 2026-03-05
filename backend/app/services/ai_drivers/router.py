@@ -88,7 +88,7 @@ class ModelRouter:
             return OpenAIDriver(api_key=api_key)
         
         # Absolute fallback if everything is broken or empty config
-        return OllamaDriver(local_model="llama3")
+        return OpenAIDriver(api_key="unconfigured-api-key")
 
     @staticmethod
     async def get_best_provider(user_id: str, prompt: str, system_message: Optional[str] = None) -> str:
