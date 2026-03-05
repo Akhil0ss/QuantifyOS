@@ -27,7 +27,7 @@ export default function MarketplaceSection() {
             const headers = { 'Authorization': `Bearer ${token}` };
 
             const [catalogRes, installedRes] = await Promise.all([
-                fetch(`${API}/api/workspaces/${workspaceId}/marketplace/catalog`, { headers }),
+                fetch(`${API}/api/workspaces/any/marketplace/catalog`, { headers }), // We use 'any' or just a global route if we refactor prefix
                 fetch(`${API}/api/workspaces/${workspaceId}/marketplace/installed`, { headers })
             ]);
 

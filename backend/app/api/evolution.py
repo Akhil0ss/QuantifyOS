@@ -1,3 +1,4 @@
+from fastapi import APIRouter, Depends, BackgroundTasks
 from app.core.auth_middleware import get_current_user
 from app.services.evolution import EvolutionService
 from typing import Dict, Any
