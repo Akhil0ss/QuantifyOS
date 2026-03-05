@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 import { HardDrive, Download, RotateCcw, Trash2, Plus, Loader2, Archive, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
 interface Backup {
     id: string;
     workspace_id: string;
@@ -24,18 +22,22 @@ export default function BackupsSection() {
     const [restoring, setRestoring] = useState<string | null>(null);
 
     const fetchBackups = useCallback(async () => {
+        if (!user) return;
         try {
-            const res = await fetch(`${API}/api/backups/list`);
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/backups/list`, { headers: { 'Authorization': `Bearer ${token}` } });
             if (res.ok) setBackups(await res.json());
         } catch { } finally { setLoading(false); }
-    }, []);
+    }, [user]);
 
     useEffect(() => { fetchBackups(); }, [fetchBackups]);
 
     const createBackup = async () => {
+        if (!user) return;
         setCreating(true);
         try {
-            const res = await fetch(`${API}/api/backups/create`, { method: 'POST' });
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/backups/create`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
             if (res.ok) {
                 toast.success('Backup created successfully!');
                 fetchBackups();
@@ -45,12 +47,14 @@ export default function BackupsSection() {
     };
 
     const restoreBackup = async (backupId: string) => {
+        if (!user) return;
         if (!confirm('This will overwrite your current workspace. Are you sure?')) return;
         setRestoring(backupId);
         try {
-            const res = await fetch(`${API}/api/backups/restore`, {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/backups/restore`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ backup_id: backupId })
             });
             if (res.ok) toast.success('Workspace restored!');

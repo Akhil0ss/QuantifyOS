@@ -6,8 +6,6 @@ import { motion } from 'framer-motion';
 import { CreditCard, Check, Crown, Zap, Rocket, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
 interface Plan {
     name: string;
     price_monthly: number;
@@ -33,12 +31,15 @@ export default function BillingSection() {
     };
 
     const fetchData = useCallback(async () => {
+        if (!user) return;
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
+        const timeout = setTimeout(() => controller.abort(), 5000);
         try {
+            const token = await user.getIdToken();
+            const headers = { 'Authorization': `Bearer ${token}` };
             const [plansRes, subRes] = await Promise.all([
-                fetch(`${API}/api/billing/plans`, { signal: controller.signal }),
-                fetch(`${API}/api/billing/subscription`, { signal: controller.signal })
+                fetch(`/api/billing/plans`, { headers, signal: controller.signal }),
+                fetch(`/api/billing/subscription`, { headers, signal: controller.signal })
             ]);
             clearTimeout(timeout);
             if (plansRes.ok) setPlans(await plansRes.json());
@@ -48,16 +49,18 @@ export default function BillingSection() {
             clearTimeout(timeout);
             setPlans(FALLBACK_PLANS);
         } finally { setLoading(false); }
-    }, []);
+    }, [user]);
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const handleUpgrade = async (planId: string) => {
+        if (!user) return;
         setUpgrading(planId);
         try {
-            const res = await fetch(`${API}/api/billing/checkout`, {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/billing/checkout`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ plan: planId })
             });
             const data = await res.json();
@@ -72,9 +75,11 @@ export default function BillingSection() {
     };
 
     const handleCancel = async () => {
+        if (!user) return;
         setCancelling(true);
         try {
-            const res = await fetch(`${API}/api/billing/cancel`, { method: 'POST' });
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/billing/cancel`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
             if (res.ok) { toast.success('Subscription cancelled'); fetchData(); }
             else toast.error('Cancellation failed');
         } catch { toast.error('Error'); }

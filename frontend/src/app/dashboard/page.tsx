@@ -23,7 +23,7 @@ import SovereignIntelligence from '@/components/dashboard/SovereignIntelligence'
 import {
     LayoutDashboard, Activity, Link2, Sparkles, Store,
     Settings, User as UserIcon, ShieldCheck, LogOut, MessageSquare,
-    BrainCircuit
+    BrainCircuit, Briefcase, Wallet, CreditCard, HardDrive, Database
 } from 'lucide-react';
 
 const navItems = [
@@ -37,13 +37,13 @@ const navItems = [
 ];
 
 const settingsTabs = [
-    { id: 'profile', label: 'Profile' },
-    { id: 'business', label: 'Business' },
-    { id: 'memory', label: 'Memory' },
-    { id: 'wallet', label: 'Wallet' },
-    { id: 'billing', label: 'Billing' },
-    { id: 'backups', label: 'Backups' },
-    { id: 'security', label: 'Security' },
+    { id: 'profile', label: 'Profile', icon: 'UserIcon' },
+    { id: 'business', label: 'Business', icon: 'Briefcase' },
+    { id: 'memory', label: 'Memory', icon: 'Database' },
+    { id: 'wallet', label: 'Wallet', icon: 'Wallet' },
+    { id: 'billing', label: 'Billing', icon: 'CreditCard' },
+    { id: 'backups', label: 'Backups', icon: 'HardDrive' },
+    { id: 'security', label: 'Security', icon: 'ShieldCheck' },
 ];
 
 export default function DashboardPage() {
@@ -239,27 +239,34 @@ export default function DashboardPage() {
                             exit={{ opacity: 0, x: -20 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <div className="space-y-6">
+                            <div className="space-y-6 max-w-5xl">
                                 <div>
                                     <h1 className="text-2xl font-bold text-white flex items-center gap-3">
                                         <Settings className="text-zinc-400" size={24} /> Settings
                                     </h1>
-                                    <p className="text-zinc-500 text-sm mt-1">Profile, business context, memory, and wallet</p>
+                                    <p className="text-zinc-500 text-sm mt-1">Profile, AI config, billing, security, backups, and all OS preferences</p>
                                 </div>
 
-                                <div className="flex gap-2 p-1 bg-[#141414] rounded-xl border border-white/5 w-fit">
-                                    {settingsTabs.map((tab) => (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => setSettingsTab(tab.id)}
-                                            className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${settingsTab === tab.id
-                                                ? 'bg-white/10 text-white shadow-lg border border-white/10'
-                                                : 'text-zinc-500 hover:text-white hover:bg-white/5'
-                                                }`}
-                                        >
-                                            {tab.label}
-                                        </button>
-                                    ))}
+                                <div className="flex flex-wrap gap-1.5 p-1.5 bg-[#141414] rounded-xl border border-white/5">
+                                    {settingsTabs.map((tab) => {
+                                        const iconMap: Record<string, any> = {
+                                            UserIcon, Briefcase, Database, Wallet, CreditCard, HardDrive, ShieldCheck
+                                        };
+                                        const TabIcon = iconMap[tab.icon];
+                                        return (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setSettingsTab(tab.id)}
+                                                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${settingsTab === tab.id
+                                                    ? 'bg-white/10 text-white shadow-lg border border-white/10'
+                                                    : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                                                    }`}
+                                            >
+                                                {TabIcon && <TabIcon size={14} />}
+                                                {tab.label}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
 
                                 <AnimatePresence mode="wait">
@@ -269,6 +276,7 @@ export default function DashboardPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -10 }}
                                         transition={{ duration: 0.15 }}
+                                        className="min-h-[400px]"
                                     >
                                         {settingsTab === 'profile' && <ProfileSection />}
                                         {settingsTab === 'business' && <BusinessSection />}

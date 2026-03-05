@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Building2, Save, FileText, Target, Users, Star, Swords, MessageSquare, Shield, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = ''; // Relative paths — proxied by Next.js rewrites
 
 export default function BusinessSection() {
     const [saving, setSaving] = useState(false);

@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, CheckCircle2, AlertTriangle, Zap, Mail, X, Send, Loader2 } from 'lucide-react';
-
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 interface NotifEntry {
     to: string;
@@ -14,6 +13,7 @@ interface NotifEntry {
 }
 
 export default function NotificationCenter() {
+    const { user } = useAuth();
     const [open, setOpen] = useState(false);
     const [log, setLog] = useState<NotifEntry[]>([]);
     const [loading, setLoading] = useState(false);
@@ -21,15 +21,17 @@ export default function NotificationCenter() {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (open) {
+        if (open && user) {
             setLoading(true);
-            fetch(`${API}/api/notifications/log`)
-                .then(r => r.json())
-                .then(data => setLog(Array.isArray(data) ? data.reverse().slice(0, 20) : []))
-                .catch(() => setLog([]))
-                .finally(() => setLoading(false));
+            user.getIdToken().then(token => {
+                fetch(`/api/notifications/log`, { headers: { 'Authorization': `Bearer ${token}` } })
+                    .then(r => r.json())
+                    .then(data => setLog(Array.isArray(data) ? data.reverse().slice(0, 20) : []))
+                    .catch(() => setLog([]))
+                    .finally(() => setLoading(false));
+            });
         }
-    }, [open]);
+    }, [open, user]);
 
     // Close on outside click
     useEffect(() => {
@@ -41,11 +43,13 @@ export default function NotificationCenter() {
     }, []);
 
     const sendTest = async () => {
+        if (!user) return;
         setSending(true);
         try {
-            await fetch(`${API}/api/notifications/test`, { method: 'POST' });
-            // Re-fetch log
-            const r = await fetch(`${API}/api/notifications/log`);
+            const token = await user.getIdToken();
+            const headers = { 'Authorization': `Bearer ${token}` };
+            await fetch(`/api/notifications/test`, { method: 'POST', headers });
+            const r = await fetch(`/api/notifications/log`, { headers });
             const data = await r.json();
             setLog(Array.isArray(data) ? data.reverse().slice(0, 20) : []);
         } catch { }
@@ -113,8 +117,8 @@ export default function NotificationCenter() {
                                             <p className="text-[10px] text-zinc-600 mt-0.5">{new Date(n.timestamp).toLocaleString()}</p>
                                         </div>
                                         <span className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${n.status === 'sent' ? 'bg-emerald-500/10 text-emerald-400' :
-                                                n.status.startsWith('failed') ? 'bg-red-500/10 text-red-400' :
-                                                    'bg-blue-500/10 text-blue-400'
+                                            n.status.startsWith('failed') ? 'bg-red-500/10 text-red-400' :
+                                                'bg-blue-500/10 text-blue-400'
                                             }`}>{n.status.split(' ')[0]}</span>
                                     </div>
                                 ))

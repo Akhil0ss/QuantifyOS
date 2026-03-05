@@ -5,7 +5,7 @@ import { Database, HardDrive, Cloud, Server, CheckCircle2, Shield, AlertCircle }
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = ''; // Relative paths — proxied by Next.js rewrites
 
 export default function MemorySection() {
     const { user } = useAuth();

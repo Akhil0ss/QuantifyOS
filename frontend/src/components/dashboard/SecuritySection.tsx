@@ -6,19 +6,19 @@ import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, ShieldAlert, Lock, Key, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
 export default function SecuritySection() {
     const { user } = useAuth();
     const [status, setStatus] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchStatus = useCallback(async () => {
+        if (!user) return;
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 3000);
+        const timeout = setTimeout(() => controller.abort(), 5000);
         try {
-            const ws = user ? `default-${user.uid.slice(0, 8)}` : 'default';
-            const res = await fetch(`${API}/api/security/status?workspace_id=${ws}`, { signal: controller.signal });
+            const ws = `default-${user.uid}`;
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/security/status?workspace_id=${ws}`, { headers: { 'Authorization': `Bearer ${token}` }, signal: controller.signal });
             clearTimeout(timeout);
             if (res.ok) setStatus(await res.json());
             else setStatus({ trust_score: 85 });
@@ -135,10 +135,12 @@ export default function SecuritySection() {
                 <div className="flex gap-4">
                     <button
                         onClick={async () => {
+                            if (!user) return;
                             const warning = "🚨 PANIC PROTOCOL: Are you sure?\n\nThis will instantly kill all active agents in THIS workspace and halt your evolution loop. You will need to manually reset to resume operations.";
                             if (!confirm(warning)) return;
                             try {
-                                const res = await fetch(`${API}/api/evolution/kill`, { method: 'POST' });
+                                const token = await user.getIdToken();
+                                const res = await fetch(`/api/evolution/kill`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
                                 if (res.ok) toast.error("WORKSPACE KILL SWITCH ACTIVATED");
                             } catch (e) { toast.error("Failed to signal kill switch."); }
                         }}
@@ -148,8 +150,10 @@ export default function SecuritySection() {
                     </button>
                     <button
                         onClick={async () => {
+                            if (!user) return;
                             try {
-                                const res = await fetch(`${API}/api/evolution/reset`, { method: 'POST' });
+                                const token = await user.getIdToken();
+                                const res = await fetch(`/api/evolution/reset`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } });
                                 if (res.ok) toast.success("Kill switch cleared.");
                             } catch (e) { toast.error("Failed to reset switch."); }
                         }}
