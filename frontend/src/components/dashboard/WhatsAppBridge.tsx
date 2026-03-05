@@ -6,6 +6,8 @@ import { Smartphone, QrCode, Loader2, CheckCircle2, AlertCircle, XCircle, Send }
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function WhatsAppBridge() {
     const { user } = useAuth();
     const [status, setStatus] = useState<'disconnected' | 'starting' | 'qr_ready' | 'connected'>('disconnected');
@@ -21,7 +23,7 @@ export default function WhatsAppBridge() {
         if (!user || !workspaceId) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/whatsapp/status`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/status`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -48,7 +50,7 @@ export default function WhatsAppBridge() {
         if (!user || !workspaceId) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/whatsapp/qr`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/qr`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -88,7 +90,7 @@ export default function WhatsAppBridge() {
         toast.loading('Initializing secure bridge...', { id: 'wa-start' });
         try {
             const token = await user.getIdToken();
-            await fetch(`/api/workspaces/${workspaceId}/whatsapp/start`, {
+            await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/start`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -105,7 +107,7 @@ export default function WhatsAppBridge() {
         toast.loading('Terminating bridge...', { id: 'wa-stop' });
         try {
             const token = await user.getIdToken();
-            await fetch(`/api/workspaces/${workspaceId}/whatsapp/stop`, {
+            await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/stop`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -124,7 +126,7 @@ export default function WhatsAppBridge() {
         setSending(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/whatsapp/message`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/message`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

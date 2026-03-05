@@ -5,6 +5,8 @@ import { Database, HardDrive, Cloud, Server, CheckCircle2, Shield, AlertCircle }
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function MemorySection() {
     const { user } = useAuth();
     const [config, setConfig] = useState({
@@ -23,7 +25,7 @@ export default function MemorySection() {
     const fetchConfig = async () => {
         try {
             const token = await user?.getIdToken();
-            const res = await fetch('/api/config/memory', {
+            const res = await fetch(`${API}/api/config/memory`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -43,7 +45,7 @@ export default function MemorySection() {
         try {
             setSaving(true);
             const token = await user?.getIdToken();
-            const res = await fetch('/api/config/memory', {
+            const res = await fetch(`${API}/api/config/memory`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

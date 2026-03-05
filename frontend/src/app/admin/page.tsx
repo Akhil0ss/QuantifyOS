@@ -11,6 +11,8 @@ import UserManagement from "../../components/admin/UserManagement";
 import MonitoringArea from "../../components/admin/MonitoringArea";
 import toast from "react-hot-toast";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function AdminPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
@@ -29,10 +31,10 @@ export default function AdminPage() {
             const headers = { Authorization: `Bearer ${token}` };
 
             const [mRes, cRes, uRes, eRes] = await Promise.all([
-                fetch("/api/admin/metrics", { headers }),
-                fetch("/api/admin/config", { headers }),
-                fetch("/api/admin/users", { headers }),
-                fetch("/api/admin/errors", { headers })
+                fetch(`${API}/api/admin/metrics`, { headers }),
+                fetch(`${API}/api/admin/config`, { headers }),
+                fetch(`${API}/api/admin/users`, { headers }),
+                fetch(`${API}/api/admin/errors`, { headers })
             ]);
 
             if (mRes.ok && cRes.ok && uRes.ok && eRes.ok) {

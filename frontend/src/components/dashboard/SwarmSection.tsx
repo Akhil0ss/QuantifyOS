@@ -5,6 +5,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { Network, Bot, MessageSquare, Play, Square, Activity, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function SwarmSection() {
     const { user } = useAuth();
     const [agents, setAgents] = useState<any[]>([]);
@@ -27,8 +29,8 @@ export default function SwarmSection() {
             const workspace_id = user.uid;
 
             const [agentsRes, msgsRes] = await Promise.all([
-                fetch(`/api/swarm/active?workspace_id=${workspace_id}`, { headers }),
-                fetch(`/api/swarm/messages?workspace_id=${workspace_id}`, { headers })
+                fetch(`${API}/api/swarm/active?workspace_id=${workspace_id}`, { headers }),
+                fetch(`${API}/api/swarm/messages?workspace_id=${workspace_id}`, { headers })
             ]);
 
             if (agentsRes.ok) setAgents(await agentsRes.json());
@@ -62,7 +64,7 @@ export default function SwarmSection() {
         setSpawning(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch('/api/swarm/spawn', {
+            const res = await fetch(`${API}/api/swarm/spawn`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,7 +97,7 @@ export default function SwarmSection() {
         if (!user) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/swarm/terminate/${agent_id}`, {
+            const res = await fetch(`${API}/api/swarm/terminate/${agent_id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

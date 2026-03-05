@@ -74,10 +74,19 @@ app.include_router(backups_router)
 app.include_router(notifications_router)
 app.include_router(replay_router)
 
-# Enable CORS for the Next.js frontend
+# Enable CORS for the Next.js frontend (dev + production)
+_cors_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
+# Add production origins from environment
+_extra_origins = os.getenv("CORS_ORIGINS", "")
+if _extra_origins:
+    _cors_origins.extend([o.strip() for o in _extra_origins.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

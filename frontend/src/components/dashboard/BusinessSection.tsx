@@ -5,6 +5,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { Building2, Save, FileText, Target, Users, Star, Swords, MessageSquare, Shield, AlertTriangle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function BusinessSection() {
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
@@ -30,7 +32,7 @@ export default function BusinessSection() {
             if (!user) return;
             try {
                 const token = await user.getIdToken();
-                const res = await fetch('/api/config/business', {
+                const res = await fetch(`${API}/api/config/business`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -76,7 +78,7 @@ export default function BusinessSection() {
         try {
             const token = await user.getIdToken();
             const payload = { ...config, okrs: okrs.filter(o => o.trim() !== '') };
-            const res = await fetch('/api/config/business', {
+            const res = await fetch(`${API}/api/config/business`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

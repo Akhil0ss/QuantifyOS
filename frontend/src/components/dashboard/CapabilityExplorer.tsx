@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function CapabilityExplorer() {
     const { user } = useAuth();
     const [capabilities, setCapabilities] = useState<any[]>([]);
@@ -20,7 +22,7 @@ export default function CapabilityExplorer() {
             if (!user || !workspaceId) return;
             try {
                 const token = await user.getIdToken();
-                const res = await fetch(`/api/workspaces/${workspaceId}/capabilities`, {
+                const res = await fetch(`${API}/api/workspaces/${workspaceId}/capabilities`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (res.ok) {

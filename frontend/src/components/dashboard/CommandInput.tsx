@@ -6,6 +6,8 @@ import { Terminal, Send, Loader2, Sparkles, ChevronRight } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 interface CommandInputProps {
     onTaskCreated?: () => void;
 }
@@ -25,7 +27,7 @@ export default function CommandInput({ onTaskCreated }: CommandInputProps) {
         setIsSubmitting(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/tasks`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/tasks`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

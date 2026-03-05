@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Clock, CheckCircle2, AlertCircle, Loader2, ChevronDown, ChevronUp, TerminalSquare, BrainCircuit, Activity, Zap, PlayCircle, Settings, Coffee, UserCog, Megaphone, LineChart, GanttChart, Users } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function TaskSection() {
     const { user } = useAuth();
     const [tasks, setTasks] = useState<any[]>([]);
@@ -25,7 +27,7 @@ export default function TaskSection() {
         if (!user || !workspaceId) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/tasks`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/tasks`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -50,7 +52,7 @@ export default function TaskSection() {
         if (!user || !workspaceId) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/tasks/${taskId}/traces`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/tasks/${taskId}/traces`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -87,7 +89,7 @@ export default function TaskSection() {
         if (!user || !workspaceId) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/tasks/${taskId}/approve`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/tasks/${taskId}/approve`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -109,7 +111,7 @@ export default function TaskSection() {
         setSubmitting(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/tasks`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/tasks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

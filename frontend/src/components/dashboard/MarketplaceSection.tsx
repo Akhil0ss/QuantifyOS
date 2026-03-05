@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function MarketplaceSection() {
     const { user } = useAuth();
     const [catalog, setCatalog] = useState<any[]>([]);
@@ -25,8 +27,8 @@ export default function MarketplaceSection() {
             const headers = { 'Authorization': `Bearer ${token}` };
 
             const [catalogRes, installedRes] = await Promise.all([
-                fetch(`/api/workspaces/${workspaceId}/marketplace/catalog`, { headers }),
-                fetch(`/api/workspaces/${workspaceId}/marketplace/installed`, { headers })
+                fetch(`${API}/api/workspaces/${workspaceId}/marketplace/catalog`, { headers }),
+                fetch(`${API}/api/workspaces/${workspaceId}/marketplace/installed`, { headers })
             ]);
 
             if (catalogRes.ok && installedRes.ok) {
@@ -49,7 +51,7 @@ export default function MarketplaceSection() {
         setInstalling(moduleId);
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/workspaces/${workspaceId}/marketplace/install/${moduleId}`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/marketplace/install/${moduleId}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -120,8 +122,8 @@ export default function MarketplaceSection() {
                             key={category}
                             onClick={() => setSelectedCategory(category)}
                             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === category
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                                    : 'bg-[#141414] text-gray-400 hover:text-white border border-white/5 hover:border-white/20'
+                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                                : 'bg-[#141414] text-gray-400 hover:text-white border border-white/5 hover:border-white/20'
                                 }`}
                         >
                             {category}

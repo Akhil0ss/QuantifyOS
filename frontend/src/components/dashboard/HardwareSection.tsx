@@ -5,6 +5,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { Cpu, Plus, Radio, Server, Plug, Signal, SignalHigh, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function HardwareSection() {
     const { user } = useAuth();
     const [devices, setDevices] = useState<any[]>([]);
@@ -23,7 +25,7 @@ export default function HardwareSection() {
         if (!user) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/hardware/list?workspace_id=${user.uid}`, {
+            const res = await fetch(`${API}/api/hardware/list?workspace_id=${user.uid}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) setDevices(await res.json());
@@ -47,7 +49,7 @@ export default function HardwareSection() {
         setRegistering(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch('/api/hardware/register', {
+            const res = await fetch(`${API}/api/hardware/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

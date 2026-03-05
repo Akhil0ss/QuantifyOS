@@ -4,6 +4,8 @@ import { useState } from "react";
 import { User, CreditCard, ChevronRight, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function UserManagement({ users, onUpdate }: { users: any[], onUpdate: () => void }) {
     const [search, setSearch] = useState("");
     const [updatingUid, setUpdatingUid] = useState<string | null>(null);
@@ -16,7 +18,7 @@ export default function UserManagement({ users, onUpdate }: { users: any[], onUp
     const changePlan = async (uid: string, newPlan: string) => {
         setUpdatingUid(uid);
         try {
-            const res = await fetch(`/api/admin/users/${uid}/plan`, {
+            const res = await fetch(`${API}/api/admin/users/${uid}/plan`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ plan: newPlan })

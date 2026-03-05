@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { Save, User as UserIcon, ShieldAlert, Cpu, Settings, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 
 export default function ProfileSection() {
     const { user } = useAuth();
@@ -23,7 +25,7 @@ export default function ProfileSection() {
         if (!user) return;
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/user/autonomy`, {
+            const res = await fetch(`${API}/api/user/autonomy`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
@@ -46,7 +48,7 @@ export default function ProfileSection() {
         setSaving(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch(`/api/user/autonomy`, {
+            const res = await fetch(`${API}/api/user/autonomy`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import { Wallet, Coins, ArrowUpRight, ArrowDownRight, ShieldCheck, History, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function WalletSection() {
     const { user } = useAuth();
     const [balance, setBalance] = useState(0);
@@ -28,9 +30,9 @@ export default function WalletSection() {
 
             // Parallel fetch
             const [balRes, txRes, setRes] = await Promise.all([
-                fetch('/api/wallet/balance', { headers }),
-                fetch('/api/wallet/transactions', { headers }),
-                fetch('/api/wallet/settings', { headers })
+                fetch(`${API}/api/wallet/balance`, { headers }),
+                fetch(`${API}/api/wallet/transactions`, { headers }),
+                fetch(`${API}/api/wallet/settings`, { headers })
             ]);
 
             if (balRes.ok) setBalance((await balRes.json()).balance);
@@ -57,7 +59,7 @@ export default function WalletSection() {
         setFunding(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch('/api/wallet/fund', {
+            const res = await fetch(`${API}/api/wallet/fund`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -89,7 +91,7 @@ export default function WalletSection() {
         setSavingAuth(true);
         try {
             const token = await user.getIdToken();
-            const res = await fetch('/api/wallet/authorize-spend', {
+            const res = await fetch(`${API}/api/wallet/authorize-spend`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

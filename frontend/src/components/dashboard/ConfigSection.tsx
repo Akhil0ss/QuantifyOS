@@ -6,6 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Save, Shield, Database, Cpu, Globe, HardDrive, Infinity, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function ConfigSection() {
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
@@ -43,7 +45,7 @@ export default function ConfigSection() {
             if (!user) return;
             try {
                 const token = await user.getIdToken();
-                const response = await fetch('/api/config/ai', {
+                const response = await fetch(`${API}/api/config/ai`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (response.ok) {
@@ -74,7 +76,7 @@ export default function ConfigSection() {
         if (!user) return;
         try {
             const token = await user.getIdToken();
-            const response = await fetch(`/api/config/ai/web-status?provider=${provider}`, {
+            const response = await fetch(`${API}/api/config/ai/web-status?provider=${provider}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
@@ -94,7 +96,7 @@ export default function ConfigSection() {
         setPollingWeb(true);
         try {
             const token = await user.getIdToken();
-            const response = await fetch(`/api/config/ai/web-connect?provider=${currentTabProvider.provider}`, {
+            const response = await fetch(`${API}/api/config/ai/web-connect?provider=${currentTabProvider.provider}`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -126,7 +128,7 @@ export default function ConfigSection() {
             if (activeMode !== 'api' || !currentTabProvider || currentTabProvider.mode !== 'api' || !currentTabProvider.api_key || currentTabProvider.api_key.length < 10 || !user) return;
             try {
                 const token = await user.getIdToken();
-                const response = await fetch('/api/config/ai/auto-detect', {
+                const response = await fetch(`${API}/api/config/ai/auto-detect`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -192,7 +194,7 @@ export default function ConfigSection() {
         setLoading(true);
         try {
             const token = await user.getIdToken();
-            const response = await fetch('/api/config/ai', {
+            const response = await fetch(`${API}/api/config/ai`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

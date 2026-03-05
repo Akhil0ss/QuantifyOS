@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import { Sparkles, HeartPulse, Search, TrendingUp, Zap, ShieldCheck, Loader2 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function EvolutionStats() {
     const { user } = useAuth();
     const [stats, setStats] = useState<any>(null);
@@ -13,7 +15,7 @@ export default function EvolutionStats() {
             if (!user) return;
             try {
                 const token = await user.getIdToken();
-                const res = await fetch('/api/evolution/stats', {
+                const res = await fetch(`${API}/api/evolution/stats`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {

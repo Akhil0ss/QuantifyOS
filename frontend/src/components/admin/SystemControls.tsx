@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Power, Zap, Box, ShieldCheck, AlertCircle, Ban } from "lucide-react";
 import toast from "react-hot-toast";
 
+const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function SystemControls({ config, onUpdate }: { config: any, onUpdate: () => void }) {
     const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
@@ -17,7 +19,7 @@ export default function SystemControls({ config, onUpdate }: { config: any, onUp
     const toggleFeature = async (key: string, currentValue: boolean) => {
         setIsUpdating(key);
         try {
-            const res = await fetch("/api/admin/config/update", {
+            const res = await fetch(`${API}/api/admin/config/update`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ [key]: !currentValue })
@@ -36,7 +38,7 @@ export default function SystemControls({ config, onUpdate }: { config: any, onUp
     const emergencyStop = async () => {
         if (!confirm("Are you sure? This will halt ALL autonomous activity across ALL workspaces.")) return;
         try {
-            const res = await fetch("/api/admin/emergency/stop", { method: "POST" });
+            const res = await fetch(`${API}/api/admin/emergency/stop`, { method: "POST" });
             if (res.ok) {
                 toast.error("EMERGENCY STOP INITIALIZED", { duration: 5000 });
                 onUpdate();
@@ -83,7 +85,7 @@ export default function SystemControls({ config, onUpdate }: { config: any, onUp
                     </button>
                     <button
                         onClick={async () => {
-                            await fetch("/api/admin/emergency/reset", { method: "POST" });
+                            await fetch(`${API}/api/admin/emergency/reset`, { method: "POST" });
                             onUpdate();
                             toast.success("Emergency state reset.");
                         }}
