@@ -15,7 +15,7 @@ async def get_capabilities_status(
     current_user=Depends(get_current_user)
 ):
     """Returns all capabilities with their lifecycle status."""
-    workspace_id = f"default-{current_user['uid'][:8]}"
+    workspace_id = f"default-{current_user['uid']}"
     cap_mgr = CapabilityManager(workspace_id)
     index = cap_mgr._load_index()
     
@@ -34,7 +34,7 @@ async def get_dependencies(
     current_user=Depends(get_current_user)
 ):
     """Returns all capability dependencies."""
-    workspace_id = f"default-{current_user['uid'][:8]}"
+    workspace_id = f"default-{current_user['uid']}"
     cap_mgr = CapabilityManager(workspace_id)
     return cap_mgr._load_deps()
 
@@ -43,7 +43,7 @@ async def get_working_capabilities(
     current_user=Depends(get_current_user)
 ):
     """Returns only capabilities with 'working' status — ready to use."""
-    workspace_id = f"default-{current_user['uid'][:8]}"
+    workspace_id = f"default-{current_user['uid']}"
     cap_mgr = CapabilityManager(workspace_id)
     working = cap_mgr.get_working_capabilities()
     return {"count": len(working), "capabilities": working}

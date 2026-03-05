@@ -160,7 +160,7 @@ async def get_me(user = Depends(get_current_user)):
         ref.set(user_data)
         
         # 1. Provision Default Workspace
-        workspace_id = f"default-{user_id[:8]}"
+        workspace_id = f"default-{user_id}"
         workspace_ref = db_admin.reference(f"workspaces/{workspace_id}")
         workspace_ref.set({
             "name": "My Beta Workspace",
