@@ -5,7 +5,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { Cpu, Plus, Radio, Server, Plug, Signal, SignalHigh, Copy } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const API = process.env.NEXT_PUBLIC_API_URL || '';
+const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
 
 export default function HardwareSection() {
     const { user } = useAuth();

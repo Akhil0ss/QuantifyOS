@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
-const API = process.env.NEXT_PUBLIC_API_URL || '';
+const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
 
 export default function CapabilityExplorer() {
     const { user } = useAuth();

@@ -6,7 +6,7 @@ import { Terminal, Send, Loader2, Sparkles, ChevronRight } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
-const API = process.env.NEXT_PUBLIC_API_URL || '';
+const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
 
 interface CommandInputProps {
     onTaskCreated?: () => void;
