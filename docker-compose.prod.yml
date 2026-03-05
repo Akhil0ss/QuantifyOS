@@ -13,6 +13,7 @@ services:
     volumes:
       - ~/quantify-os/workspaces:/app/workspaces
       - ~/quantify-os/backups:/app/backups
+      - ~/quantify-os/backend/serviceAccountKey.json:/app/serviceAccountKey.json:ro
     deploy:
       resources:
         limits:
