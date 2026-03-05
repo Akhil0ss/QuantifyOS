@@ -19,7 +19,7 @@ export default function TaskSection() {
     const [pollingInterval, setPollingInterval] = useState<any>(null);
 
     // Using a default workspace for the user for now
-    const workspaceId = user ? `default-${user.uid.slice(0, 8)}` : '';
+    const workspaceId = user ? `default-${user.uid}` : '';
 
     const fetchTasks = useCallback(async () => {
         if (!user || !workspaceId) return;

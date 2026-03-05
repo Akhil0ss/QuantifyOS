@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { Github, Mail, Chrome } from 'lucide-react';
 
 export default function LoginPage() {
-    const { user, signInWithGoogle, signInWithGithub, signInWithEmail } = useAuth();
+    const { user, signInWithGoogle, signInWithGithub } = useAuth();
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -73,10 +73,7 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
-                        <button
-                            onClick={() => signInWithEmail(email, password)}
-                            className="w-full h-12 bg-blue-600 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-                        >
+                        <button className="w-full h-12 bg-blue-600 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
                             <Mail size={18} />
                             Continue with Email
                         </button>

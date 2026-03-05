@@ -18,12 +18,11 @@ export default function StatusPanel() {
             if (!user) return;
             try {
                 const token = await user.getIdToken();
-                const workspaceId = user.uid; // Use user.uid as default workspace_id
-
+                // Fetch from multiple sources for a unified view
                 const [saasRes, intelRes, securityRes] = await Promise.all([
                     fetch("/api/saas/status", { headers: { Authorization: `Bearer ${token}` } }),
-                    fetch(`/api/intelligence/status?workspace_id=${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } }),
-                    fetch(`/api/security/status?workspace_id=${workspaceId}`, { headers: { Authorization: `Bearer ${token}` } })
+                    fetch("/api/intelligence/status", { headers: { Authorization: `Bearer ${token}` } }),
+                    fetch("/api/security/status", { headers: { Authorization: `Bearer ${token}` } })
                 ]);
 
                 if (saasRes.ok && intelRes.ok && securityRes.ok) {
@@ -35,9 +34,9 @@ export default function StatusPanel() {
                         activeAgents: saas.total_active_agents || 0,
                         tasksToday: saas.total_load_tasks || 0,
                         intelligenceScore: intel.intelligence_score || 0,
-                        securityStatus: security.security_tier || "Beta Stable",
-                        autonomyLevel: intel.intelligence_tier || "Beta Tier 1",
-                        evolutionActive: security.evolution_authorized ?? true
+                        securityStatus: "Beta Stable",
+                        autonomyLevel: "Beta Tier 1",
+                        evolutionActive: true
                     });
                 }
             } catch (error) {

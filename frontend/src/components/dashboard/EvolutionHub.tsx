@@ -1,69 +1,97 @@
 'use client';
 
-import { Sparkles, Zap, BrainCircuit, Activity, BarChart3, LineChart } from 'lucide-react';
-import EvolutionFeed from './EvolutionFeed';
+import { motion } from 'framer-motion';
+import {
+    Sparkles, HeartPulse, TrendingUp, ShieldCheck, Zap, Box,
+    CheckCircle2, AlertTriangle, Clock
+} from 'lucide-react';
 import EvolutionStats from './EvolutionStats';
+import CapabilityExplorer from './CapabilityExplorer';
 
 export default function EvolutionHub() {
     return (
-        <div className="max-w-6xl space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/5 pb-10">
-                <div>
-                    <h1 className="text-4xl font-black text-white tracking-tighter flex items-center gap-4">
-                        <Sparkles className="text-fuchsia-500 animate-pulse" size={36} />
-                        Evolutionary Engine
-                    </h1>
-                    <p className="text-zinc-500 text-lg mt-2 font-medium">Self-Refactoring & Recursive Intelligence Optimization</p>
-                </div>
-                <div className="flex gap-4">
-                    <div className="px-6 py-4 rounded-3xl bg-fuchsia-500/10 border border-fuchsia-500/20 text-center">
-                        <p className="text-[10px] font-black text-fuchsia-400 uppercase tracking-widest mb-1">Growth Index</p>
-                        <p className="text-2xl font-black text-white font-mono">+4.8%</p>
-                    </div>
-                    <div className="px-6 py-4 rounded-3xl bg-blue-500/10 border border-blue-500/20 text-center">
-                        <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Logic Purity</p>
-                        <p className="text-2xl font-black text-white font-mono">99.2%</p>
-                    </div>
-                </div>
-            </header>
+        <div className="space-y-6">
+            {/* Header */}
+            <div>
+                <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <Sparkles className="text-fuchsia-400" size={24} /> Perpetual Evolution Engine
+                </h1>
+                <p className="text-zinc-500 text-sm mt-1">Autonomous self-healing, competitive research, and capability growth</p>
+            </div>
 
+            {/* Evolution Stats */}
             <EvolutionStats />
 
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
-                <section className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
-                            <Activity size={18} className="text-fuchsia-400" /> Improvement Vector
-                        </h2>
+            {/* Main Grid — 2 columns */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                {/* Self-Healing Repository */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                    className="bg-[#141414] border border-white/5 rounded-2xl p-6"
+                >
+                    <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <HeartPulse className="text-emerald-400" size={20} /> Self-Healing Repository
+                    </h3>
+                    <div className="space-y-3">
+                        {[
+                            { file: 'payment_gate.py', action: 'Syntax error auto-repaired', time: '2h ago', status: 'healed' },
+                            { file: 'mqtt_driver.py', action: 'Missing import added', time: '6h ago', status: 'healed' },
+                            { file: 'csv_analyzer.py', action: 'Type mismatch corrected', time: '12h ago', status: 'healed' },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                                <ShieldCheck className="text-emerald-500 shrink-0 mt-0.5" size={16} />
+                                <div className="flex-1">
+                                    <p className="text-sm font-medium text-zinc-200">{item.action} in <code className="text-emerald-400 text-xs bg-emerald-500/10 px-1.5 py-0.5 rounded">{item.file}</code></p>
+                                    <p className="text-[10px] text-zinc-500 mt-1 uppercase font-bold tracking-wide">{item.time} • Verified by Sandbox</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <div className="bg-[#111113] border border-white/5 rounded-[40px] p-8 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-fuchsia-600/5 blur-[100px] rounded-full" />
-                        <EvolutionFeed />
-                    </div>
-                </section>
+                </motion.div>
 
-                <section className="space-y-6">
-                    <h2 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3">
-                        <BrainCircuit size={28} className="text-blue-400" /> Intelligence Topology
-                    </h2>
-                    <div className="p-10 bg-gradient-to-br from-blue-600/5 to-fuchsia-600/5 border border-white/5 rounded-[40px] flex flex-col justify-center items-center text-center space-y-6">
-                        <div className="relative">
-                            <div className="w-24 h-24 rounded-full border-4 border-fuchsia-500/20 border-t-fuchsia-500 animate-spin" />
-                            <BrainCircuit className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" size={32} />
-                        </div>
-                        <div>
-                            <h3 className="text-xl font-bold text-white mb-2">Recursive Loop Stabilized</h3>
-                            <p className="text-zinc-500 text-sm max-w-sm leading-relaxed">
-                                The system is currently iterating on its own response-latency handlers.
-                                Level 11 logic protocols are being drafted in the internal sandbox.
-                            </p>
-                        </div>
-                        <button className="px-8 py-3 bg-white text-black text-[11px] font-black uppercase tracking-widest rounded-2xl hover:bg-zinc-200 transition-all active:scale-95 shadow-xl">
-                            View Neural Diff
-                        </button>
+                {/* Competitive Market IQ */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="bg-[#141414] border border-white/5 rounded-2xl p-6"
+                >
+                    <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <Zap className="text-blue-400" size={20} /> Competitive Market IQ
+                    </h3>
+                    <div className="space-y-3">
+                        {[
+                            { trend: 'Multi-Chain wallet integration', source: 'Competitor X', action: 'Prototype ready' },
+                            { trend: 'Voice-first AI interfaces', source: 'Market trend', action: 'Under analysis' },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.02] border border-white/5">
+                                <TrendingUp className="text-blue-500 shrink-0 mt-0.5" size={16} />
+                                <div>
+                                    <p className="text-sm font-medium text-zinc-200">Identified &apos;{item.trend}&apos; from {item.source}</p>
+                                    <button className="mt-2 text-[10px] font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded uppercase tracking-widest hover:bg-blue-500/20 transition-all">
+                                        {item.action}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                </section>
+                </motion.div>
             </div>
+
+            {/* Capability Explorer — Full width */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-[#141414] border border-white/5 rounded-2xl p-6"
+            >
+                <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                    <Box className="text-blue-400" size={20} /> Capability Explorer
+                </h3>
+                <CapabilityExplorer />
+            </motion.div>
         </div>
     );
 }

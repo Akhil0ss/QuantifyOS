@@ -1,48 +1,66 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import WhatsAppBridge from './WhatsAppBridge';
+import { Globe, Cpu, Smartphone, Link2 } from 'lucide-react';
+import ConfigSection from './ConfigSection';
 import HardwareSection from './HardwareSection';
-import { Link2, SignalHigh, Smartphone, Cpu } from 'lucide-react';
+import WhatsAppBridge from './WhatsAppBridge';
+
+type SubTab = 'ai' | 'hardware' | 'whatsapp';
 
 export default function ConnectionsHub() {
+    const [subTab, setSubTab] = useState<SubTab>('ai');
+
+    const tabs = [
+        { id: 'ai' as SubTab, label: 'AI Providers', icon: <Globe size={16} />, color: 'blue' },
+        { id: 'hardware' as SubTab, label: 'Hardware Bridge', icon: <Cpu size={16} />, color: 'emerald' },
+        { id: 'whatsapp' as SubTab, label: 'WhatsApp', icon: <Smartphone size={16} />, color: 'green' },
+    ];
+
+    const colorMap: Record<string, string> = {
+        blue: 'bg-blue-600/20 text-blue-400 shadow-blue-500/10 border-blue-500/20',
+        emerald: 'bg-emerald-600/20 text-emerald-400 shadow-emerald-500/10 border-emerald-500/20',
+        green: 'bg-green-600/20 text-green-400 shadow-green-500/10 border-green-500/20',
+    };
+
     return (
-        <div className="space-y-12 animate-in fade-in duration-500">
-            <header className="flex items-center gap-4 border-b border-white/5 pb-8">
-                <div className="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl">
-                    <Link2 size={24} />
-                </div>
-                <div>
-                    <h1 className="text-2xl font-black text-white uppercase tracking-tight">Connections Hub</h1>
-                    <p className="text-zinc-500 text-sm font-medium uppercase tracking-widest mt-1">Hybrid Bridge • Bio-Digital Interface</p>
-                </div>
-            </header>
-
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-start">
-                <section className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Smartphone size={18} className="text-emerald-400" />
-                        <h2 className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Mobile Command Bridge</h2>
-                    </div>
-                    <WhatsAppBridge />
-                </section>
-
-                <section className="space-y-4">
-                    <div className="flex items-center gap-2 mb-2">
-                        <Cpu size={18} className="text-cyan-400" />
-                        <h2 className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">Physical Hardware Bus</h2>
-                    </div>
-                    <HardwareSection />
-                </section>
+        <div className="space-y-6">
+            {/* Header */}
+            <div>
+                <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <Link2 className="text-cyan-400" size={24} /> Connections
+                </h1>
+                <p className="text-zinc-500 text-sm mt-1">AI providers, hardware devices, and messaging bridges</p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between group hover:bg-white/[0.05] transition-all">
-                <div className="flex items-center gap-3">
-                    <SignalHigh className="text-zinc-500 group-hover:text-emerald-500 transition-colors" size={16} />
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Neural Latency Normal (14ms)</span>
-                </div>
-                <div className="text-[10px] font-mono text-zinc-600">ORACLE-EAD-1 // STABLE</div>
+            {/* Sub-tabs */}
+            <div className="flex gap-2 p-1 bg-[#141414] rounded-xl border border-white/5 w-fit">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab.id}
+                        onClick={() => setSubTab(tab.id)}
+                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${subTab === tab.id
+                                ? `${colorMap[tab.color]} shadow-lg border`
+                                : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                            }`}
+                    >
+                        {tab.icon} {tab.label}
+                    </button>
+                ))}
             </div>
+
+            {/* Content */}
+            <motion.div
+                key={subTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+            >
+                {subTab === 'ai' && <ConfigSection />}
+                {subTab === 'hardware' && <HardwareSection />}
+                {subTab === 'whatsapp' && <WhatsAppBridge />}
+            </motion.div>
         </div>
     );
 }

@@ -5,20 +5,20 @@ import { useAuth } from '../../hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { redirect } from 'next/navigation';
 
-import DashboardHome from '../../components/dashboard/DashboardHome';
-import OperationsCenter from '../../components/dashboard/OperationsCenter';
-import ConnectionsHub from '../../components/dashboard/ConnectionsHub';
-import EvolutionHub from '../../components/dashboard/EvolutionHub';
-import MarketplaceSection from '../../components/dashboard/MarketplaceSection';
-import ProfileSection from '../../components/dashboard/ProfileSection';
-import BusinessSection from '../../components/dashboard/BusinessSection';
-import MemorySection from '../../components/dashboard/MemorySection';
-import WalletSection from '../../components/dashboard/WalletSection';
-import NotificationCenter from '../../components/dashboard/NotificationCenter';
-import BillingSection from '../../components/dashboard/BillingSection';
-import BackupsSection from '../../components/dashboard/BackupsSection';
-import SecuritySection from '../../components/dashboard/SecuritySection';
-import SovereignIntelligence from '../../components/dashboard/SovereignIntelligence';
+import DashboardHome from '@/components/dashboard/DashboardHome';
+import OperationsCenter from '@/components/dashboard/OperationsCenter';
+import ConnectionsHub from '@/components/dashboard/ConnectionsHub';
+import EvolutionHub from '@/components/dashboard/EvolutionHub';
+import MarketplaceSection from '@/components/dashboard/MarketplaceSection';
+import ProfileSection from '@/components/dashboard/ProfileSection';
+import BusinessSection from '@/components/dashboard/BusinessSection';
+import MemorySection from '@/components/dashboard/MemorySection';
+import WalletSection from '@/components/dashboard/WalletSection';
+import NotificationCenter from '@/components/dashboard/NotificationCenter';
+import BillingSection from '@/components/dashboard/BillingSection';
+import BackupsSection from '@/components/dashboard/BackupsSection';
+import SecuritySection from '@/components/dashboard/SecuritySection';
+import SovereignIntelligence from '@/components/dashboard/SovereignIntelligence';
 
 import {
     LayoutDashboard, Activity, Link2, Sparkles, Store,
@@ -91,21 +91,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Nav */}
-                <nav className="flex-1 px-3 space-y-1 overflow-y-auto custom-scrollbar">
-                    {user?.isAdmin && (
-                        <div className="mb-4 pt-2">
-                            <p className="px-4 text-[9px] font-black text-red-500/50 uppercase tracking-[0.2em] mb-2">Systems Administration</p>
-                            <button
-                                onClick={() => window.location.href = '/admin'}
-                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-all bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 uppercase tracking-widest font-bold text-[10px]"
-                            >
-                                <ShieldCheck size={16} />
-                                <span>Owner Control Panel</span>
-                            </button>
-                        </div>
-                    )}
-
-                    <p className="px-4 text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2">Operational Grid</p>
+                <nav className="flex-1 px-3 space-y-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = activeTab === item.id;
@@ -145,6 +131,15 @@ export default function DashboardPage() {
                             <LogOut size={15} />
                         </button>
                     </div>
+
+                    {user?.email === "test@example.com" && (
+                        <button
+                            onClick={() => window.location.href = '/admin'}
+                            className="w-full flex items-center justify-center gap-2 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-[10px] font-bold rounded-lg border border-red-500/20 transition-all uppercase tracking-widest"
+                        >
+                            <ShieldCheck size={14} /> Owner Panel
+                        </button>
+                    )}
 
                     {/* Beta Feedback */}
                     <button
