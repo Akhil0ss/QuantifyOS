@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, ShieldAlert, Lock, Key, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
