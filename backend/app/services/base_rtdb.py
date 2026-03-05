@@ -7,6 +7,7 @@ class BaseRTDBService:
     """
     def __init__(self, path: str):
         self.path = path
+        self.db = db_admin
         self.ref = db_admin.reference(path) if db_admin else None
 
     def get(self, child_path: str = "") -> Any:
