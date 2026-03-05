@@ -53,15 +53,52 @@ class MarketplaceService(BaseRTDBService):
         target_path = wm.get_tool_path(f"marketplace_{module_id}.py")
         
         if os.path.exists(template_path):
-            # Use high-quality template
+            # Use high-quality pre-built template
             shutil.copy2(template_path, target_path)
             print(f"MARKETPLACE: Provisioned real template for {module_id} to {target_path}")
         else:
-            # Fallback: Create a functional stub that correctly hooks into the OS
-            stub_code = f'"""\nMarketplace Tool: {module["name"]}\n{module["description"]}\n"""\nimport asyncio\n\nasync def run(**kwargs):\n    return {{"status": "initialized", "module": "{module_id}", "message": "Module created from marketplace registry."}}\n'
+            # Generate a REAL AI-powered tool, not a dummy stub
+            stub_code = f'''"""
+Marketplace Tool: {module["name"]}
+{module["description"]}
+Auto-provisioned by Quantify OS Marketplace.
+"""
+import asyncio
+from typing import Dict, Any
+from app.services.ai_drivers.router import ModelRouter
+
+
+async def run(user_id: str = "default", **kwargs) -> Dict[str, Any]:
+    """
+    {module["description"]}
+    Uses the workspace AI driver for real execution.
+    """
+    task = kwargs.get("task", "{module["description"]}")
+
+    system_message = (
+        "You are a specialized AI assistant for: {module["name"]}. "
+        "Your expertise: {module["description"]} "
+        "Provide detailed, actionable, production-quality output."
+    )
+
+    try:
+        result = await ModelRouter.get_best_provider(user_id, task, system_message)
+        return {{
+            "status": "success",
+            "module": "{module_id}",
+            "output": result,
+            "message": "Execution complete."
+        }}
+    except Exception as e:
+        return {{
+            "status": "error",
+            "module": "{module_id}",
+            "message": f"Execution failed: {{str(e)}}"
+        }}
+'''
             with open(target_path, "w") as f:
                 f.write(stub_code)
-            print(f"MARKETPLACE: Provisioned functional stub for {module_id}")
+            print(f"MARKETPLACE: Provisioned AI-powered tool for {module_id}")
 
         # 3. REGISTER IN CAPABILITY INDEX
         # This makes it visible to the autonomous Evolution Feed and Agent Orchestrator
