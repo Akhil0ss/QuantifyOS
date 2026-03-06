@@ -3,7 +3,7 @@ import { Terminal, ShieldCheck, Activity, Search, Code, CheckCircle2, Loader2 } 
 import { useState, useEffect } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = ''; // Relative paths — Next.js rewrites proxy to backend
 
 export default function ShadowTrace() {
     const { user } = useAuth();

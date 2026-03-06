@@ -8,7 +8,7 @@ import ForesightTimeline from "./ForesightTimeline";
 import ShadowTrace from "./ShadowTrace";
 import EconomyVisualizer from "./EconomyVisualizer";
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = ''; // Relative paths — Next.js rewrites proxy to backend
 
 export default function SovereignIntelligence() {
     const { user } = useAuth();
