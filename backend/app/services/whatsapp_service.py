@@ -38,7 +38,7 @@ class WhatsAppService:
             try:
                 # 1. Find the last message (using a common selector for incoming message bubbles)
                 # In a real implementation, we'd use more robust selectors or WhatsApp API
-                last_msg_selector = ".message-in span.selectable-text"
+                last_msg_selector = ".message-in span.selectable-text, .message-in span.selectable-text span, div[data-pre-plain-text]"
                 msg_elements = await page.query_selector_all(last_msg_selector)
                 
                 if msg_elements:
@@ -94,8 +94,8 @@ class WhatsAppService:
         page = self.session_manager.page
         
         try:
-            # 1. Click search box
-            search_selector = 'div[contenteditable="true"][data-tab="3"]'
+            # 1. Click search box (Supports multiple layout versions)
+            search_selector = 'div[contenteditable="true"][data-tab="3"], div[title="Search input textbox"]'
             await page.click(search_selector)
             
             # 2. Type contact name/number
@@ -108,7 +108,7 @@ class WhatsAppService:
             await asyncio.sleep(1)
             
             # 4. selector for the chat input area
-            input_selector = 'div[contenteditable="true"][data-tab="10"]'
+            input_selector = 'div[contenteditable="true"][data-tab="10"], div[contenteditable="true"][data-tab="1"], div[title="Type a message"]'
             await page.fill(input_selector, message)
             await page.press(input_selector, "Enter")
             print(f"WhatsApp Message sent to {contact}")
