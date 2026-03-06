@@ -173,7 +173,7 @@ class AutoFixLoop:
     5. Repeats up to MAX_RETRIES
     """
     
-    MAX_RETRIES = 5
+    MAX_RETRIES = 5  # Can be overridden by user's auto_retry_limit setting
     
     @staticmethod
     async def fix_and_retry(
@@ -305,6 +305,14 @@ class ExecutionGuaranteeEngine:
         self.workspace_id = workspace_id
         self.cap_manager = CapabilityManager(workspace_id)
         self.wm = WorkspaceManager(workspace_id)
+        
+        # Load user autonomy preferences from Settings → Profile tab
+        try:
+            from app.services.users import UserService
+            user_svc = UserService()
+            self.autonomy = user_svc.get_autonomy_preferences(user_id)
+        except Exception:
+            self.autonomy = {"auto_retry_limit": 2, "financial_override": True}
     
     async def ensure_and_execute(self, task_goal: str) -> Dict[str, Any]:
         """
