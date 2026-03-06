@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from app.core.auth_middleware import get_current_user
 from app.core.role_middleware import RoleMiddleware
 from app.services.marketplace import MarketplaceService
@@ -42,3 +42,39 @@ async def install_module(
     if not success:
         raise HTTPException(status_code=404, detail="Module not found in catalog.")
     return {"status": "success", "module_id": module_id}
+
+@router.post("/uninstall/{module_id}")
+async def uninstall_module(
+    workspace_id: str,
+    module_id: str,
+    current_user = Depends(get_current_user),
+    membership = Depends(RoleMiddleware.get_workspace_membership)
+):
+    """
+    Uninstalls a module from the workspace.
+    """
+    success = marketplace_service.uninstall_module(workspace_id, module_id)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to uninstall module.")
+    return {"status": "success", "module_id": module_id, "message": "Module uninstalled."}
+
+@router.post("/execute/{module_id}")
+async def execute_module(
+    workspace_id: str,
+    module_id: str,
+    request: Request,
+    current_user = Depends(get_current_user),
+    membership = Depends(RoleMiddleware.get_workspace_membership)
+):
+    """
+    Executes an installed module and returns its output.
+    """
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+
+    result = await marketplace_service.execute_module(
+        workspace_id, module_id, current_user["uid"], body
+    )
+    return result

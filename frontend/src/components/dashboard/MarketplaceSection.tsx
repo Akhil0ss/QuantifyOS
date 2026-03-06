@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import toast from 'react-hot-toast';
 
 // Use relative paths — Next.js rewrites in next.config.ts proxy /api/* to the Oracle backend
-// This avoids Mixed Content (HTTPS→HTTP) browser blocks on production Vercel
 
 export default function MarketplaceSection() {
     const { user } = useAuth();
@@ -15,9 +14,13 @@ export default function MarketplaceSection() {
     const [installed, setInstalled] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [installing, setInstalling] = useState<string | null>(null);
+    const [uninstalling, setUninstalling] = useState<string | null>(null);
+    const [executing, setExecuting] = useState<string | null>(null);
+    const [executionOutput, setExecutionOutput] = useState<{ moduleId: string; data: any } | null>(null);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
+    const [showInstalled, setShowInstalled] = useState(false);
 
     const workspaceId = user ? `default-${user.uid}` : '';
 
@@ -35,7 +38,7 @@ export default function MarketplaceSection() {
             if (catalogRes.ok) {
                 setCatalog(await catalogRes.json());
             } else {
-                console.error('[Marketplace] Catalog fetch failed:', catalogRes.status, await catalogRes.text());
+                console.error('[Marketplace] Catalog fetch failed:', catalogRes.status);
             }
             if (installedRes.ok) {
                 setInstalled(await installedRes.json());
@@ -61,7 +64,7 @@ export default function MarketplaceSection() {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (res.ok) {
-                toast.success('Module Installed successfully!');
+                toast.success('Module installed successfully!');
                 fetchMarketplaceData();
             } else {
                 toast.error('Failed to install module');
@@ -74,6 +77,62 @@ export default function MarketplaceSection() {
         }
     };
 
+    const handleUninstall = async (moduleId: string) => {
+        if (!user || !workspaceId) return;
+        if (!confirm('Are you sure you want to uninstall this module?')) return;
+        setUninstalling(moduleId);
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/workspaces/${workspaceId}/marketplace/uninstall/${moduleId}`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                toast.success('Module uninstalled');
+                setExecutionOutput(null);
+                fetchMarketplaceData();
+            } else {
+                toast.error('Failed to uninstall module');
+            }
+        } catch (error) {
+            toast.error('An error occurred');
+        } finally {
+            setUninstalling(null);
+        }
+    };
+
+    const handleExecute = async (moduleId: string) => {
+        if (!user || !workspaceId) return;
+        setExecuting(moduleId);
+        setExecutionOutput(null);
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/workspaces/${workspaceId}/marketplace/execute/${moduleId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({})
+            });
+            if (res.ok) {
+                const output = await res.json();
+                setExecutionOutput({ moduleId, data: output });
+                if (output.status === 'success') {
+                    toast.success('Module executed successfully');
+                } else {
+                    toast.error(output.message || 'Execution returned an error');
+                }
+            } else {
+                toast.error('Execution failed');
+            }
+        } catch (error) {
+            toast.error('An error occurred during execution');
+        } finally {
+            setExecuting(null);
+        }
+    };
+
     const isInstalled = (moduleId: string) => {
         return installed.some(mod => mod.id === moduleId);
     };
@@ -81,13 +140,17 @@ export default function MarketplaceSection() {
     const categories = ['All', ...Array.from(new Set(catalog.map(item => item.category).filter(Boolean)))].sort();
 
     const filteredCatalog = useMemo(() => {
-        return catalog.filter(module => {
+        let items = showInstalled
+            ? catalog.filter(m => isInstalled(m.id))
+            : catalog;
+
+        return items.filter(module => {
             const matchesSearch = module.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 module.description.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory === 'All' || module.category === selectedCategory;
             return matchesSearch && matchesCategory;
         });
-    }, [catalog, searchQuery, selectedCategory]);
+    }, [catalog, installed, searchQuery, selectedCategory, showInstalled]);
 
     // Dynamic icon renderer
     const RenderIcon = ({ iconName, type }: { iconName: string, type: string }) => {
@@ -103,7 +166,12 @@ export default function MarketplaceSection() {
         <div className="space-y-6 h-full flex flex-col">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                 <div>
-                    <h2 className="text-xl font-bold tracking-tight text-white mb-1">Module Marketplace</h2>
+                    <h2 className="text-xl font-bold tracking-tight text-white mb-1 flex items-center gap-3">
+                        Module Marketplace
+                        <span className="text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full">
+                            {installed.length} / {catalog.length} installed
+                        </span>
+                    </h2>
                     <p className="text-sm text-gray-400">Expand your agent's capabilities with pre-built personas and advanced workflows.</p>
                 </div>
 
@@ -111,7 +179,7 @@ export default function MarketplaceSection() {
                     <Icons.Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
                     <input
                         type="text"
-                        placeholder="Search 100+ tools..."
+                        placeholder={`Search ${catalog.length}+ tools...`}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="w-full bg-[#141414] border border-white/10 rounded-lg pl-9 pr-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
@@ -119,9 +187,22 @@ export default function MarketplaceSection() {
                 </div>
             </div>
 
-            {/* Categories filter */}
-            {!loading && categories.length > 1 && (
-                <div className="flex flex-wrap gap-2 pb-2">
+            {/* Filter Bar */}
+            {!loading && (
+                <div className="flex flex-wrap items-center gap-2 pb-2">
+                    <button
+                        onClick={() => setShowInstalled(!showInstalled)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${showInstalled
+                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20'
+                            : 'bg-[#141414] text-gray-400 hover:text-white border border-white/5 hover:border-white/20'
+                            }`}
+                    >
+                        <Icons.CheckCircle2 size={12} />
+                        Installed ({installed.length})
+                    </button>
+
+                    <div className="w-px h-5 bg-white/10 mx-1" />
+
                     {categories.map(category => (
                         <button
                             key={category}
@@ -137,13 +218,40 @@ export default function MarketplaceSection() {
                 </div>
             )}
 
+            {/* Execution Output Panel */}
+            <AnimatePresence>
+                {executionOutput && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="bg-[#0d1117] border border-emerald-500/20 rounded-xl overflow-hidden"
+                    >
+                        <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-emerald-500/5">
+                            <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                                <Icons.Terminal size={12} /> Module Output
+                            </span>
+                            <button onClick={() => setExecutionOutput(null)} className="text-zinc-500 hover:text-white">
+                                <Icons.X size={14} />
+                            </button>
+                        </div>
+                        <pre className="p-4 text-xs text-gray-300 overflow-x-auto max-h-64 whitespace-pre-wrap font-mono leading-relaxed">
+                            {typeof executionOutput.data === 'object'
+                                ? JSON.stringify(executionOutput.data, null, 2)
+                                : String(executionOutput.data)
+                            }
+                        </pre>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {loading ? (
                 <div className="flex justify-center py-20"><Icons.Loader2 className="animate-spin text-blue-500" /></div>
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-10">
                     {filteredCatalog.length === 0 ? (
                         <div className="col-span-1 lg:col-span-2 text-center py-10 text-gray-500 text-sm">
-                            No tools found matching your search.
+                            {showInstalled ? 'No installed modules match your search.' : 'No tools found matching your search.'}
                         </div>
                     ) : (
                         filteredCatalog.map((module) => (
@@ -173,8 +281,8 @@ export default function MarketplaceSection() {
                                 {module.min_model && (
                                     <div className="mb-3 flex items-center gap-2 flex-wrap">
                                         <span className={`text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${module.tier === 'basic' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
-                                                module.tier === 'standard' ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
-                                                    'text-red-400 bg-red-500/10 border-red-500/20'
+                                            module.tier === 'standard' ? 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' :
+                                                'text-red-400 bg-red-500/10 border-red-500/20'
                                             }`}>
                                             <Icons.Cpu size={8} className="inline mr-1 -mt-0.5" />
                                             {module.tier === 'basic' ? 'Any Model' : module.tier === 'standard' ? 'Mid-Range+' : 'Pro Model'}
@@ -202,8 +310,27 @@ export default function MarketplaceSection() {
                                         {module.price}
                                     </div>
                                     {isInstalled(module.id) ? (
-                                        <div className="flex items-center gap-1.5 text-xs text-green-400 font-medium px-3 py-1.5 bg-green-900/10 border border-green-500/20 rounded-lg">
-                                            <Icons.CheckCircle2 size={14} /> Installed
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => handleExecute(module.id)}
+                                                disabled={executing === module.id}
+                                                className="flex items-center gap-1.5 text-xs text-white font-medium px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
+                                            >
+                                                {executing === module.id
+                                                    ? <Icons.Loader2 size={12} className="animate-spin" />
+                                                    : <Icons.Play size={12} />}
+                                                Run
+                                            </button>
+                                            <button
+                                                onClick={() => handleUninstall(module.id)}
+                                                disabled={uninstalling === module.id}
+                                                className="flex items-center gap-1.5 text-xs text-red-400 font-medium px-3 py-1.5 bg-red-500/10 hover:bg-red-500/20 border border-red-500/10 rounded-lg transition-colors disabled:opacity-50"
+                                            >
+                                                {uninstalling === module.id
+                                                    ? <Icons.Loader2 size={12} className="animate-spin" />
+                                                    : <Icons.Trash2 size={12} />}
+                                                Remove
+                                            </button>
                                         </div>
                                     ) : (
                                         <button
