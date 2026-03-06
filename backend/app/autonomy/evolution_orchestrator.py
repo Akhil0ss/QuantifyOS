@@ -97,8 +97,7 @@ class EvolutionOrchestrator:
                 return
 
             state = self._get_state(workspace_id)
-            
-            state = self._get_state(workspace_id)
+
 
             if state["failure_count"] >= 3:
                 print("EVOLUTION: Circuit breaker active (>= 3 failures). Evolution halted until daily reset.")

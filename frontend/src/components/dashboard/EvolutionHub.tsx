@@ -3,19 +3,20 @@
 import { motion } from 'framer-motion';
 import {
     Sparkles, HeartPulse, TrendingUp, ShieldCheck, Zap, Box,
-    CheckCircle2, AlertTriangle, Clock
+    CheckCircle2, AlertTriangle, Clock, Play, Loader2
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import EvolutionStats from './EvolutionStats';
+import EvolutionFeed from './EvolutionFeed';
 import CapabilityExplorer from './CapabilityExplorer';
-
-const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '');
+import toast from 'react-hot-toast';
 
 export default function EvolutionHub() {
     const { user } = useAuth();
     const [events, setEvents] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [triggering, setTriggering] = useState(false);
 
     const workspaceId = user ? `default-${user.uid}` : '';
 
@@ -24,7 +25,7 @@ export default function EvolutionHub() {
             if (!user || !workspaceId) return;
             try {
                 const token = await user.getIdToken();
-                const res = await fetch(`${API}/api/evolution/status`, {
+                const res = await fetch(`/api/evolution/status`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -43,16 +44,48 @@ export default function EvolutionHub() {
         return () => clearInterval(interval);
     }, [user, workspaceId]);
 
+    const handleTriggerEvolution = async () => {
+        if (!user) return;
+        setTriggering(true);
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/evolution/run`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                toast.success('Evolution cycle triggered! Monitoring capability gaps...');
+            } else {
+                toast.error('Failed to trigger evolution');
+            }
+        } catch (error) {
+            toast.error('An error occurred');
+        } finally {
+            setTriggering(false);
+        }
+    };
+
     const healingEvents = events.filter(e => e.type === 'bug_fix').slice(0, 3);
     const marketEvents = events.filter(e => e.type === 'market_feature_gap').slice(0, 2);
+
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                    <Sparkles className="text-fuchsia-400" size={24} /> Perpetual Evolution Engine
-                </h1>
-                <p className="text-zinc-500 text-sm mt-1">Autonomous self-healing, competitive research, and capability growth</p>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+                        <Sparkles className="text-fuchsia-400" size={24} /> Perpetual Evolution Engine
+                    </h1>
+                    <p className="text-zinc-500 text-sm mt-1">Autonomous self-healing, competitive research, and capability growth</p>
+                </div>
+                <button
+                    onClick={handleTriggerEvolution}
+                    disabled={triggering}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-fuchsia-600 hover:bg-fuchsia-700 text-white text-sm font-bold rounded-xl transition-all disabled:opacity-50 shadow-lg shadow-fuchsia-500/20 hover:shadow-fuchsia-500/30"
+                >
+                    {triggering ? <Loader2 size={16} className="animate-spin" /> : <Play size={16} />}
+                    {triggering ? 'Engaging...' : 'Trigger Evolution'}
+                </button>
             </div>
 
             {/* Evolution Stats */}
@@ -116,6 +149,16 @@ export default function EvolutionHub() {
                     </div>
                 </motion.div>
             </div>
+
+            {/* Evolution Feed — Full width */}
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.18 }}
+                className="bg-[#141414] border border-white/5 rounded-2xl p-6"
+            >
+                <EvolutionFeed />
+            </motion.div>
 
             {/* Capability Explorer — Full width */}
             <motion.div

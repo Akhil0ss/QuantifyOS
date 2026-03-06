@@ -72,9 +72,4 @@ class EvolutionService(BaseRTDBService):
             elif e_type == "market_feature_gap": stats["marketInsights"] += 1
             elif e_type == "autonomous_upgrade": stats["autonomousUpgrades"] += 1
             
-        # Ensure minimums for aesthetic
-        stats["bugsHealed"] = max(stats["bugsHealed"], 12)
-        stats["marketInsights"] = max(stats["marketInsights"], 3)
-        stats["autonomousUpgrades"] = max(stats["autonomousUpgrades"], 1)
-        
         return stats

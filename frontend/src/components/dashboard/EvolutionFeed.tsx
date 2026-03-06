@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles, Zap, ShieldCheck, TrendingUp, History, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API = ''; // Relative paths — Next.js rewrites proxy to backend
 
 export default function EvolutionFeed() {
     const { user } = useAuth();
