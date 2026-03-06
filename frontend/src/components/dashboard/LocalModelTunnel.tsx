@@ -31,12 +31,18 @@ export default function LocalModelTunnel() {
                 });
 
                 // Execute the actual request locally
-                console.log(`[Zero-Config Tunnel] Relaying request to ${data.url}`);
-                const response = await fetch(data.url, {
-                    method: 'POST',
+                console.log(`[Zero-Config Tunnel] Relaying ${data.method || 'POST'} request to ${data.url}`);
+
+                const fetchOptions: RequestInit = {
+                    method: data.method || 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data.payload)
-                });
+                };
+
+                if ((data.method || 'POST') !== 'GET' && data.payload) {
+                    fetchOptions.body = JSON.stringify(data.payload);
+                }
+
+                const response = await fetch(data.url, fetchOptions);
 
                 if (!response.ok) {
                     throw new Error(`Local model returned HTTP ${response.status}`);

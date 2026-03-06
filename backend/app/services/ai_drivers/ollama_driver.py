@@ -110,8 +110,46 @@ class OllamaDriver(AIProvider):
 
     async def validate_key(self) -> Optional[str]:
         if self.needs_tunnel:
-            # Tunnel validation not supported easily, assume provided model string is valid
-            return self.local_model
+            try:
+                # Test connectivity through the tunnel
+                if not db_admin:
+                    return None
+                req_id = str(uuid.uuid4())
+                ref = db_admin.reference(f"tunnels/{self.user_id}/requests/{req_id}")
+                
+                ref.set({
+                    "status": "pending",
+                    "url": f"{self.base_url}/api/tags",
+                    "payload": None,
+                    "method": "GET",
+                    "timestamp": { ".sv": "timestamp" }
+                })
+                
+                for _ in range(30): # 15s timeout for validation
+                    await asyncio.sleep(0.5)
+                    data = ref.get()
+                    if data and data.get("status") == "completed":
+                        response_text = data.get("response")
+                        ref.delete()
+                        # Extract first model or intended model
+                        try:
+                            models = json.loads(response_text).get("models", [])
+                            for m in models:
+                                if m["name"].startswith(self.local_model):
+                                    return m["name"]
+                            return models[0]["name"] if models else self.local_model
+                        except:
+                            return self.local_model
+                    elif data and data.get("status") == "error":
+                        ref.delete()
+                        raise Exception(data.get("error", "Tunnel error"))
+                
+                ref.delete()
+                raise Exception("Browser tunnel timed out")
+            except Exception as e:
+                import logging
+                logging.error(f"Local Model Tunnel validation failed: {str(e)}")
+                return None
             
         try:
             async with httpx.AsyncClient() as client:
