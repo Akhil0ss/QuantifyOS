@@ -6,7 +6,7 @@ import { Terminal, Send, Loader2, Sparkles, ChevronRight } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
-const API = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
+const API = ''; // Relative paths — Next.js rewrites proxy to backend
 
 interface CommandInputProps {
     onTaskCreated?: () => void;
