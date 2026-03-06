@@ -2,20 +2,21 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../hooks/useAuth';
-import { Smartphone, QrCode, Loader2, CheckCircle2, AlertCircle, XCircle, Send } from 'lucide-react';
+import { Smartphone, QrCode, Loader2, CheckCircle2, AlertCircle, XCircle, Send, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const API = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '');
+const API = ''; // Relative paths — Next.js rewrites proxy to backend
 
 export default function WhatsAppBridge() {
     const { user } = useAuth();
-    const [status, setStatus] = useState<'disconnected' | 'starting' | 'qr_ready' | 'connected'>('disconnected');
+    const [status, setStatus] = useState<'disconnected' | 'starting' | 'qr_ready' | 'connected' | 'error'>('disconnected');
     const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [testPhone, setTestPhone] = useState('');
     const [testMessage, setTestMessage] = useState('');
     const [sending, setSending] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
     const workspaceId = user ? `default-${user.uid}` : '';
 
@@ -32,9 +33,17 @@ export default function WhatsAppBridge() {
                 if (data.status === 'connected') {
                     setStatus('connected');
                     setQrCodeUrl(null);
-                } else if (data.is_running && status !== 'connected') {
-                    // Try to fetch QR
-                    fetchQrCode();
+                    setErrorMsg('');
+                } else if (data.status === 'starting') {
+                    setStatus('starting');
+                } else if (data.status === 'qr_ready') {
+                    // Fetch QR image
+                    if (status !== 'connected') {
+                        fetchQrCode();
+                    }
+                } else if (data.status === 'error') {
+                    setStatus('error');
+                    setErrorMsg(data.message || 'Session failed');
                 } else {
                     setStatus('disconnected');
                 }
@@ -55,15 +64,29 @@ export default function WhatsAppBridge() {
             });
 
             if (res.ok) {
-                const blob = await res.blob();
-                const url = URL.createObjectURL(blob);
-                setQrCodeUrl(url);
-                setStatus('qr_ready');
-                toast.success('QR Code Ready - Scan with WhatsApp');
+                const contentType = res.headers.get('content-type');
+                if (contentType && contentType.includes('image')) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    setQrCodeUrl(url);
+                    setStatus('qr_ready');
+                    if (status !== 'qr_ready') {
+                        toast.success('QR Code Ready - Scan with WhatsApp');
+                    }
+                } else {
+                    // Got a JSON response (e.g. "already connected")
+                    const data = await res.json();
+                    if (data.status === 'connected') {
+                        setStatus('connected');
+                    }
+                }
+            } else if (res.status === 202) {
+                // Still initializing
+                setStatus('starting');
             } else if (res.status === 404) {
+                // QR not yet available, keep polling
                 setStatus('starting');
             } else if (res.status === 400) {
-                // Not running
                 setStatus('disconnected');
             }
         } catch (error) {
@@ -76,9 +99,9 @@ export default function WhatsAppBridge() {
 
         let interval: any;
         if (status === 'starting' || status === 'qr_ready') {
-            interval = setInterval(checkStatus, 3000);
+            interval = setInterval(checkStatus, 3000); // Fast poll when waiting
         } else {
-            interval = setInterval(checkStatus, 10000);
+            interval = setInterval(checkStatus, 10000); // Slow poll otherwise
         }
 
         return () => clearInterval(interval);
@@ -87,14 +110,29 @@ export default function WhatsAppBridge() {
     const handleStart = async () => {
         if (!user || !workspaceId) return;
         setStatus('starting');
+        setErrorMsg('');
         toast.loading('Initializing secure bridge...', { id: 'wa-start' });
         try {
             const token = await user.getIdToken();
-            await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/start`, {
+            const res = await fetch(`${API}/api/workspaces/${workspaceId}/whatsapp/start`, {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            toast.success('Session starting, generating QR code...', { id: 'wa-start' });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.status === 'connected') {
+                    setStatus('connected');
+                    toast.success('Already connected!', { id: 'wa-start' });
+                } else if (data.status === 'qr_ready') {
+                    fetchQrCode();
+                    toast.success('Session active, fetching QR...', { id: 'wa-start' });
+                } else {
+                    toast.success('Session starting, generating QR code...', { id: 'wa-start' });
+                }
+            } else {
+                toast.error('Failed to start session', { id: 'wa-start' });
+                setStatus('error');
+            }
         } catch (error) {
             console.error('Failed to start WhatsApp:', error);
             setStatus('disconnected');
@@ -113,6 +151,7 @@ export default function WhatsAppBridge() {
             });
             setStatus('disconnected');
             setQrCodeUrl(null);
+            setErrorMsg('');
             toast.success('Bridge terminated', { id: 'wa-stop' });
         } catch (error) {
             console.error('Failed to stop WhatsApp:', error);
@@ -197,6 +236,25 @@ export default function WhatsAppBridge() {
                         </motion.div>
                     )}
 
+                    {status === 'error' && (
+                        <motion.div
+                            key="error"
+                            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="text-center py-8"
+                        >
+                            <AlertCircle size={48} className="text-red-500 mx-auto mb-4" />
+                            <h3 className="text-white font-semibold mb-2">Session Error</h3>
+                            <p className="text-gray-400 text-sm mb-2 max-w-sm mx-auto">{errorMsg || 'Failed to start WhatsApp bridge.'}</p>
+                            <p className="text-gray-500 text-xs mb-6 max-w-sm mx-auto">This usually means the browser could not launch. Try again or check server logs.</p>
+                            <button
+                                onClick={handleStart}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-medium transition-colors flex items-center gap-2 mx-auto"
+                            >
+                                <RefreshCw size={16} /> Retry
+                            </button>
+                        </motion.div>
+                    )}
+
                     {status === 'starting' && (
                         <motion.div
                             key="starting"
@@ -216,11 +274,10 @@ export default function WhatsAppBridge() {
                             className="flex flex-col items-center py-4"
                         >
                             <div className="bg-white p-4 rounded-xl mb-6">
-                                {/* Next Image component doesn't work well with blob URLs, using standard img */}
                                 <img src={qrCodeUrl} alt="WhatsApp QR Code" className="w-64 h-64 object-contain" />
                             </div>
                             <h3 className="text-white font-semibold mb-1">Scan to Link</h3>
-                            <p className="text-gray-400 text-sm mb-6">Open WhatsApp on your phone {"->"} Linked Devices {"->"} Link a Device</p>
+                            <p className="text-gray-400 text-sm mb-6">Open WhatsApp on your phone {"→"} Linked Devices {"→"} Link a Device</p>
                             <button
                                 onClick={handleStop}
                                 className="text-gray-500 hover:text-white text-sm flex items-center gap-1 transition-colors"

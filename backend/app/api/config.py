@@ -3,6 +3,7 @@ from app.core.auth_middleware import get_current_user
 from app.services.entities import ConfigService
 from app.schemas.db_schemas import AIConfigBase, MemoryConfigBase, BusinessConfigBase
 from typing import Dict, Any
+import asyncio
 
 router = APIRouter(prefix="/api/config", tags=["config"])
 config_service = ConfigService()
