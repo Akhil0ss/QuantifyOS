@@ -10,9 +10,10 @@ const API = ''; // Relative paths — Next.js rewrites proxy to backend
 
 interface CommandInputProps {
     onTaskCreated?: () => void;
+    onCommandSent?: (command: string, response: string) => void;
 }
 
-export default function CommandInput({ onTaskCreated }: CommandInputProps) {
+export default function CommandInput({ onTaskCreated, onCommandSent }: CommandInputProps) {
     const { user } = useAuth();
     const [command, setCommand] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -22,7 +23,8 @@ export default function CommandInput({ onTaskCreated }: CommandInputProps) {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!command.trim() || !user || !workspaceId) return;
+        const currentCommand = command;
+        if (!currentCommand.trim() || !user || !workspaceId) return;
 
         setIsSubmitting(true);
         try {
@@ -33,7 +35,7 @@ export default function CommandInput({ onTaskCreated }: CommandInputProps) {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ goal: command }),
+                body: JSON.stringify({ goal: currentCommand }),
             });
 
             if (res.ok) {
@@ -43,6 +45,7 @@ export default function CommandInput({ onTaskCreated }: CommandInputProps) {
                     style: { background: "#141414", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }
                 });
                 if (onTaskCreated) onTaskCreated();
+                if (onCommandSent) onCommandSent(currentCommand, "Strategy formulated. Execution sequence started. Telemetry bound.");
             } else {
                 toast.error("System: Autonomous loop failed to initialize.");
             }

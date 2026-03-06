@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Zap, Activity, Cpu, TrendingUp, Clock, Box, Shield,
     Brain, Sparkles, ChevronRight, ArrowUpRight, Terminal,
@@ -29,6 +29,7 @@ export default function DashboardHome() {
     const [events, setEvents] = useState<any[]>([]);
     const [recentTasks, setRecentTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [chatLog, setChatLog] = useState<{ role: 'user' | 'system', text: string, time: string }[]>([]);
 
     const workspaceId = user ? `default-${user.uid}` : "";
 
@@ -59,9 +60,18 @@ export default function DashboardHome() {
 
     useEffect(() => {
         fetchAllData();
-        const interval = setInterval(fetchAllData, 10000); // 10s refresh
+        const interval = setInterval(fetchAllData, 10000);
         return () => clearInterval(interval);
-    }, [user, workspaceId]);
+    }, [workspaceId]);
+
+    const handleCommandSent = (command: string, response: string) => {
+        const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        setChatLog(prev => [
+            ...prev,
+            { role: 'user', text: command, time: now },
+            { role: 'system', text: response, time: now }
+        ]);
+    };
 
     const handleRunEvolution = async () => {
         if (!user) return;
@@ -186,13 +196,41 @@ export default function DashboardHome() {
                 </div>
             </div>
 
-            {/* Command Bar — Always visible at top */}
+            {/* Command Bar & Chat Interlace */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-gradient-to-r from-[#141418] to-[#18181f] rounded-2xl border border-white/5 p-5 shadow-2xl shadow-blue-500/5"
+                className="bg-gradient-to-r from-[#141418] to-[#18181f] rounded-2xl border border-white/5 p-5 shadow-2xl shadow-blue-500/5 space-y-4"
             >
-                <CommandInput onTaskCreated={fetchAllData} />
+                <CommandInput onTaskCreated={fetchAllData} onCommandSent={handleCommandSent} />
+
+                {/* Embedded Conversation Space */}
+                <AnimatePresence>
+                    {chatLog.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="max-h-[300px] overflow-y-auto custom-scrollbar space-y-4 bg-black/40 rounded-xl p-4 border border-white/5"
+                        >
+                            {chatLog.map((msg, idx) => (
+                                <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex gap-3 group ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                    {msg.role === 'system' && <span className="w-6 h-6 rounded-full bg-fuchsia-500/20 flex items-center justify-center shrink-0 mt-1"><Sparkles size={12} className="text-fuchsia-400" /></span>}
+
+                                    <div className="flex flex-col gap-1 max-w-[80%]">
+                                        <div className={`px-4 py-3 text-sm rounded-2xl ${msg.role === 'user' ? 'bg-indigo-600 text-white rounded-br-sm shadow-lg shadow-indigo-600/20' : 'bg-white/5 text-zinc-300 border border-white/10 rounded-bl-sm'}`}>
+                                            {msg.text}
+                                        </div>
+                                        <span className={`text-[9px] text-zinc-600 font-bold tracking-widest uppercase ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
+                                            {msg.time}
+                                        </span>
+                                    </div>
+
+                                    {msg.role === 'user' && <span className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 mt-1"><Terminal size={12} className="text-indigo-400" /></span>}
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </motion.div>
 
             {/* Metric Cards — 6 columns */}
