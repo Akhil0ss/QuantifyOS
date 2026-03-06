@@ -64,16 +64,30 @@ async def guarantee_capability(
     if not task_goal:
         raise HTTPException(status_code=400, detail="'goal' is required.")
     
-    workspace_id = f"default-{current_user['uid'][:8]}"
+    workspace_id = f"default-{current_user['uid']}"
     
-    # Get provider config from user's workspace
-    wm = WorkspaceManager(workspace_id)
-    config_path = wm.get_path("provider_config.json")
-    if os.path.exists(config_path):
-        with open(config_path, "r") as f:
-            provider_config = json.load(f)
+    # Read AI config from user's saved settings (RTDB) — synced with Settings UI
+    from app.services.entities import ConfigService
+    config_service = ConfigService()
+    saved_config = config_service.get_ai_config(current_user["uid"])
+    
+    if saved_config and saved_config.get("provider"):
+        provider_config = {
+            "mode": saved_config.get("mode", "api"),
+            "provider": saved_config.get("provider", "openai"),
+            "model_name": saved_config.get("model_name", "gpt-4o"),
+            "api_key": saved_config.get("api_key", ""),
+            "local_url": saved_config.get("local_url", "http://localhost:11434"),
+        }
     else:
-        provider_config = {"provider": "openai", "model": "gpt-4"}
+        # Fallback: check workspace file, then defaults
+        wm = WorkspaceManager(workspace_id)
+        config_path = wm.get_path("provider_config.json")
+        if os.path.exists(config_path):
+            with open(config_path, "r") as f:
+                provider_config = json.load(f)
+        else:
+            provider_config = {"provider": "openai", "model": "gpt-4o"}
     
     from app.autonomy.capability_engine import ExecutionGuaranteeEngine
     engine = ExecutionGuaranteeEngine(provider_config, current_user["uid"], workspace_id)
