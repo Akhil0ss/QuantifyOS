@@ -9,6 +9,8 @@ import time
 from typing import Optional, Dict, Any
 from fastapi import APIRouter, HTTPException, Request, Depends
 from app.core.auth_middleware import get_current_user
+from app.services.base_rtdb import BaseRTDBService
+
 
 router = APIRouter(prefix="/api/billing", tags=["Billing"])
 
@@ -55,18 +57,15 @@ PLANS = {
     }
 }
 
-# Local subscription store
-SUBS_FILE = "subscriptions.json"
+# Subscription store — Firebase RTDB for persistence across Docker rebuilds
+_subs_store = BaseRTDBService("subscriptions")
 
 def _load_subs() -> Dict:
-    if os.path.exists(SUBS_FILE):
-        with open(SUBS_FILE, "r") as f:
-            return json.load(f)
-    return {}
+    return _subs_store.list_all() or {}
 
 def _save_subs(data: Dict):
-    with open(SUBS_FILE, "w") as f:
-        json.dump(data, f, indent=2)
+    for uid, sub_data in data.items():
+        _subs_store.set(sub_data, uid)
 
 def _apply_plan_limits(user_id: str, plan_id: str):
     """Apply plan limits to the user's workspace."""
@@ -77,7 +76,7 @@ def _apply_plan_limits(user_id: str, plan_id: str):
         "max_agents": plan["max_agents"],
         "max_tasks_per_hour": plan["max_tasks_per_hour"],
     }
-    sc.set_limits(f"default-{user_id[:8]}", limits)
+    sc.set_limits(f"default-{user_id}", limits)
 
 # ─── API Endpoints ───
 

@@ -13,6 +13,7 @@ from typing import Optional
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from app.core.auth_middleware import get_current_user
+from app.services.base_rtdb import BaseRTDBService
 
 router = APIRouter(prefix="/api/notifications", tags=["Notifications"])
 
@@ -24,8 +25,8 @@ SMTP_PASS = os.environ.get("SMTP_PASS", "")
 FROM_EMAIL = os.environ.get("FROM_EMAIL", "noreply@quantifyos.com")
 FROM_NAME = "Quantify OS"
 
-# Notification log
-NOTIFICATION_LOG = "notification_log.json"
+# Notification log — Firebase RTDB for persistence
+_notif_store = BaseRTDBService("notification_log")
 
 class EmailService:
     """Sends transactional emails for the platform."""
@@ -34,7 +35,7 @@ class EmailService:
     def send_email(to_email: str, subject: str, html_body: str) -> bool:
         """Sends an email via SMTP. Returns True on success."""
         if not SMTP_USER or not SMTP_PASS:
-            # Log to file if SMTP not configured
+            # Log to RTDB if SMTP not configured
             EmailService._log_notification(to_email, subject, "queued (SMTP not configured)")
             return False
         
@@ -114,24 +115,15 @@ class EmailService:
         return EmailService.send_email(email, f"Upgraded to {plan.title()} Plan 🚀", html)
     
     @staticmethod
-    def _log_notification(to: str, subject: str, status: str):
-        log = []
-        if os.path.exists(NOTIFICATION_LOG):
-            try:
-                with open(NOTIFICATION_LOG, "r") as f:
-                    log = json.load(f)
-            except: pass
-        
-        log.append({
+    def _log_notification(to: str, subject: str, status: str, user_id: str = "system"):
+        entry = {
             "to": to,
             "subject": subject,
             "status": status,
             "timestamp": datetime.now().isoformat()
-        })
-        
-        # Keep last 200 entries
-        with open(NOTIFICATION_LOG, "w") as f:
-            json.dump(log[-200:], f, indent=2)
+        }
+        # Push to RTDB under user's notification log
+        _notif_store.db.reference(f"notification_log/{user_id}").push(entry)
 
 # ─── API Endpoints ───
 
@@ -152,15 +144,22 @@ async def send_test_notification(user: dict = Depends(get_current_user)):
     if not email:
         raise HTTPException(status_code=400, detail="No email on account.")
     
+    # Pass user_id so log is stored per-user
+    EmailService._log_notification(
+        email, "Quantify OS — Test Notification",
+        "queued (test)", user_id=user["uid"]
+    )
     success = EmailService.send_email(email, "Quantify OS — Test Notification", 
         "<h2 style='color: #4F46E5;'>✅ Notification system is working!</h2>")
     
-    return {"sent": success, "email": email, "note": "Check notification_log.json if SMTP is not configured."}
+    return {"sent": success, "email": email}
 
 @router.get("/log")
 async def get_notification_log(user: dict = Depends(get_current_user)):
-    """Returns recent notification activity."""
-    if os.path.exists(NOTIFICATION_LOG):
-        with open(NOTIFICATION_LOG, "r") as f:
-            return json.load(f)
-    return []
+    """Returns recent notification activity for this user."""
+    user_id = user["uid"]
+    logs = _notif_store.db.reference(f"notification_log/{user_id}").get() or {}
+    # Convert dict to sorted list (newest first)
+    result = list(logs.values()) if isinstance(logs, dict) else []
+    result.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+    return result[:50]  # Return last 50
