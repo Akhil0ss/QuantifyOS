@@ -19,6 +19,7 @@ import BillingSection from '@/components/dashboard/BillingSection';
 import BackupsSection from '@/components/dashboard/BackupsSection';
 import SecuritySection from '@/components/dashboard/SecuritySection';
 import SovereignIntelligence from '@/components/dashboard/SovereignIntelligence';
+import LocalModelTunnel from '@/components/dashboard/LocalModelTunnel';
 
 import {
     LayoutDashboard, Activity, Link2, Sparkles, Store,
@@ -154,7 +155,8 @@ export default function DashboardPage() {
             {/* Main Content */}
             <main className="ml-60 flex-1 p-8 min-h-screen">
                 {/* Notification Bell — fixed top right */}
-                <div className="fixed top-4 right-6 z-40">
+                <div className="fixed top-4 right-6 z-40 flex items-center gap-4">
+                    <LocalModelTunnel />
                     <NotificationCenter />
                 </div>
 

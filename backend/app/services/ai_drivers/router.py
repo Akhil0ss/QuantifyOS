@@ -82,7 +82,8 @@ class ModelRouter:
             local_url = p_config.get("local_url", "http://localhost:11434")
             return OllamaDriver(
                 local_model=model_name if model_name != "default" else "llama3",
-                base_url=local_url
+                base_url=local_url,
+                user_id=user_id
             )
         elif mode == "web":
             return WebRouter(provider=provider_name, user_id=user_id)
