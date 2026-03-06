@@ -278,7 +278,7 @@ export default function ConfigSection() {
     ];
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500 pb-20">
+        <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-xl font-bold flex items-center gap-2 text-white">
@@ -533,25 +533,23 @@ export default function ConfigSection() {
                 </div>
             </div>
 
-            {/* Global Bottom Bar */}
-            <div className="fixed bottom-0 left-0 right-0 p-6 bg-[#0a0a0a] border-t border-white/10 z-50 flex items-center justify-between shadow-2xl">
-                <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-                    <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-200 uppercase tracking-tighter flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-green-500" /> System Routing: {config.routing_strategy === 'smart' ? 'Auto-Fallback (Smart)' : 'Manual Priority'}
-                        </span>
-                        <span className="text-[10px] text-gray-500 font-mono mt-0.5">Primary: {activeProvider?.provider || 'None'} | {config.fallback_pool.length} Configured Models</span>
-                    </div>
-
-                    <button
-                        onClick={handleSave}
-                        disabled={loading}
-                        className="bg-white text-black hover:bg-gray-200 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-xl disabled:opacity-50"
-                    >
-                        {loading ? <RefreshCw className="animate-spin" size={16} /> : <Save size={16} />}
-                        Save Configuration
-                    </button>
+            {/* Save Bar — sticky within content area */}
+            <div className="sticky bottom-0 mt-8 -mx-8 px-8 py-5 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-white/10 z-30 flex items-center justify-between shadow-2xl">
+                <div className="flex flex-col">
+                    <span className="text-xs font-bold text-gray-200 uppercase tracking-tighter flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-500" /> System Routing: {config.routing_strategy === 'smart' ? 'Auto-Fallback (Smart)' : 'Manual Priority'}
+                    </span>
+                    <span className="text-[10px] text-gray-500 font-mono mt-0.5">Primary: {activeProvider?.provider || 'None'} | {config.fallback_pool.length} Configured Models</span>
                 </div>
+
+                <button
+                    onClick={handleSave}
+                    disabled={loading}
+                    className="bg-white text-black hover:bg-gray-200 px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest flex items-center gap-2 transition-all active:scale-95 shadow-xl disabled:opacity-50"
+                >
+                    {loading ? <RefreshCw className="animate-spin" size={16} /> : <Save size={16} />}
+                    Save Configuration
+                </button>
             </div>
         </div>
     );

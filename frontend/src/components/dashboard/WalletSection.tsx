@@ -115,7 +115,7 @@ export default function WalletSection() {
     if (loading) return <div className="p-8 text-center text-gray-500 animate-pulse">Loading wallet data...</div>;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-500 pb-20 pt-12">
+        <div className="space-y-8 animate-in fade-in duration-500">
             <div className="flex items-center justify-between">
                 <div>
                     <h2 className="text-xl font-bold flex items-center gap-2 text-white">
