@@ -38,7 +38,7 @@ class OllamaDriver(AIProvider):
         })
         
         # Wait for the frontend to complete the request
-        max_retries = 120 # 60 seconds (0.5s intervals)
+        max_retries = 600 # 300 seconds (5 minutes) for slow local inference
         for _ in range(max_retries):
             await asyncio.sleep(0.5)
             data = ref.get()
