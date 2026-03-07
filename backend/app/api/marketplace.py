@@ -1,80 +1,53 @@
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends
 from app.core.auth_middleware import get_current_user
-from app.core.role_middleware import RoleMiddleware
-from app.services.marketplace import MarketplaceService
-from typing import List, Dict, Any
+from app.core.tool_engine import registry
+from typing import Dict, Any
 
 router = APIRouter(prefix="/api/workspaces/{workspace_id}/marketplace", tags=["marketplace"])
-marketplace_service = MarketplaceService()
 
 @router.get("/catalog")
-async def get_catalog(
-    workspace_id: str,
-    current_user = Depends(get_current_user)
-):
+async def get_marketplace_catalog(workspace_id: str, current_user = Depends(get_current_user)):
     """
-    Returns the global module catalog.
+    Returns all registered and available tools in the marketplace.
     """
-    return marketplace_service.get_catalog()
+    registered_tools = registry.list_tools()
+    
+    tools = []
+    for tool in registered_tools:
+        category = "default"
+        if "web" in tool.name or "search" in tool.name or "browser" in tool.name:
+            category = "web"
+        elif "mqtt" in tool.name or "modbus" in tool.name or "hardware" in tool.name:
+            category = "hardware"
+        elif "data" in tool.name or "csv" in tool.name or "file" in tool.name:
+            category = "data"
+        
+        tools.append({
+            "name": tool.name,
+            "description": tool.description,
+            "status": "installed",
+            "category": category
+        })
 
-@router.get("/installed")
-async def get_installed_modules(
-    workspace_id: str,
-    current_user = Depends(get_current_user),
-    membership = Depends(RoleMiddleware.get_workspace_membership)
-):
-    """
-    Returns the modules installed in the specific workspace.
-    """
-    return marketplace_service.get_installed_modules(workspace_id)
+    # Also scan marketplace directory for uninstalled tools
+    import os
+    marketplace_dir = registry.marketplace.marketplace_dir
+    if os.path.exists(marketplace_dir):
+        for fname in os.listdir(marketplace_dir):
+            if fname.endswith(".py") and not fname.startswith("__"):
+                tool_name = fname[:-3]
+                if tool_name not in [t["name"] for t in tools]:
+                    tools.append({
+                        "name": tool_name,
+                        "description": f"Marketplace module: {tool_name}",
+                        "status": "available",
+                        "category": "default"
+                    })
 
-@router.post("/install/{module_id}")
-async def install_module(
-    workspace_id: str,
-    module_id: str,
-    current_user = Depends(get_current_user),
-    membership = Depends(RoleMiddleware.get_workspace_membership)
-):
-    """
-    Installs a module into the workspace.
-    """
-    success = marketplace_service.install_module(workspace_id, module_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Module not found in catalog.")
-    return {"status": "success", "module_id": module_id}
+    return {"tools": tools}
 
-@router.post("/uninstall/{module_id}")
-async def uninstall_module(
-    workspace_id: str,
-    module_id: str,
-    current_user = Depends(get_current_user),
-    membership = Depends(RoleMiddleware.get_workspace_membership)
-):
-    """
-    Uninstalls a module from the workspace.
-    """
-    success = marketplace_service.uninstall_module(workspace_id, module_id)
-    if not success:
-        raise HTTPException(status_code=500, detail="Failed to uninstall module.")
-    return {"status": "success", "module_id": module_id, "message": "Module uninstalled."}
-
-@router.post("/execute/{module_id}")
-async def execute_module(
-    workspace_id: str,
-    module_id: str,
-    request: Request,
-    current_user = Depends(get_current_user),
-    membership = Depends(RoleMiddleware.get_workspace_membership)
-):
-    """
-    Executes an installed module and returns its output.
-    """
-    try:
-        body = await request.json()
-    except Exception:
-        body = {}
-
-    result = await marketplace_service.execute_module(
-        workspace_id, module_id, current_user["uid"], body
-    )
-    return result
+@router.post("/install")
+async def install_marketplace_tool(workspace_id: str, payload: Dict[str, Any], current_user = Depends(get_current_user)):
+    """Triggers a marketplace scan and installs discovered tools."""
+    registry.install_from_marketplace()
+    return {"status": "installed", "total_tools": len(registry.list_tools())}

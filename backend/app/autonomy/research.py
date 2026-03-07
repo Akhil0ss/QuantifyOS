@@ -16,18 +16,30 @@ class CompetitorIntelligenceEngine:
 
     async def _ingest_live_market_data(self, niche: str) -> List[str]:
         """
-        S-Tier: Continuous Market Ingestion.
-        Scrapes GitHub, HackerNews, and Discord for bleeding-edge trends.
+        Sovereign V15.1: Real-time Tech Signal Ingestion.
+        Scrapes HackerNews for bleeding-edge trends.
         """
-        # In a full-scale deployment, this would use a 'search_web' tool and BeautifulSoup
-        self.telemetry.log_process("system", "research", "Data Ingestion", f"Ingesting live signals for {niche}...", "thought")
+        import httpx
+        self.telemetry.log_process("system", "research", "Data Ingestion", f"Fetching live signals from HackerNews regarding {niche}...", "thought")
         
-        # Simulated live signals
-        signals = [
-            "GitHub: Rise of MCP servers for IoT autonomy",
-            "HN: Discussion on inter-agent economic negotiation protocols",
-            "Discord: Demand for zero-risk predicted evolution"
-        ]
+        signals = []
+        try:
+            # Query HackerNews for the niche
+            async with httpx.AsyncClient() as client:
+                query = niche.split(' ')[0] # Use first word as primary keyword
+                response = await client.get(f"https://hn.algolia.com/api/v1/search_by_date?query={query}&tags=story&hitsPerPage=5")
+                if response.status_code == 200:
+                    hits = response.json().get("hits", [])
+                    for hit in hits:
+                        signals.append(f"HN Story: {hit['title']} ({hit['url']})")
+        except Exception as e:
+            print(f"RESEARCH: HN Ingestion failed: {e}")
+            # Fallback to internal persona knowledge if web fails
+            signals = ["GitHub: Trending repositories for AI Agents", "Research: New paper on recursive self-improvement"]
+            
+        if not signals:
+            signals = ["Discord: Growing interest in autonomous IoT control"]
+            
         return signals
 
     async def perform_market_research(self, workspace_id: str, niche: str = "AI Automation SaaS"):

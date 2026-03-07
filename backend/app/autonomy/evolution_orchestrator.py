@@ -39,48 +39,77 @@ class EvolutionOrchestrator:
         
         self.evolution_service = EvolutionService()
 
-    def _get_state(self, workspace_id: str) -> Dict[str, Any]:
-        return self.evolution_service.get_state(workspace_id)
+        # Sovereign V15.1: Path to the global workspace-transcendent marketplace
+        # Correctly pointing to f:\Quantify OS\marketplace
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+        self.market_path = os.path.join(base_dir, "marketplace")
+        if not os.path.exists(self.market_path):
+            os.makedirs(self.market_path, exist_ok=True)
 
-    def _log_history(self, workspace_id: str, entry: Dict[str, Any]):
-        event_type = entry.get("type", "evolution_step")
-        details = entry.get("capability") or entry.get("event") or "Evolution action"
-        result = entry.get("result", "success").lower()
-        self.evolution_service.log_event(workspace_id, event_type, details, result, entry)
-
-    def _log_intel(self, workspace_id: str, entry: Dict[str, Any]):
-        # Market IQ events
-        self.evolution_service.log_event(workspace_id, "market_feature_gap", entry.get("gap") or "Market Insight", "success", entry)
-
-    async def revalidate_capabilities(self, workspace_id: str):
+    async def autonomous_market_scan(self, workspace_id: str):
         """
-        Manually re-triggers real execution tests for all indexed modules every 7 days.
+        Sovereign V15.1: Proactive Global Evolution.
+        Scrapes news, predicts features, and installs them in the marketplace.
         """
-        wm = WorkspaceManager(workspace_id)
-        index_file = wm.get_path("capability_index.json")
-        if not os.path.exists(index_file): return
+        self.telemetry.log_process(workspace_id, "evolution", "Sovereign Scan", "Initiating proactive market and tech analysis...", "thought")
         
-        with open(index_file, "r") as f:
-            index = json.load(f)
+        # 1. Perform deep niche research
+        niche = "Post-LLM Autonomous Operating Systems and Agentic Infrastructure"
+        try:
+            features = await self.researcher.perform_market_research(workspace_id, niche)
+        except Exception as e:
+            print(f"SOVEREIGN: Market research failed: {e}")
+            features = []
+        
+        if not features:
+            self.telemetry.log_process(workspace_id, "evolution", "Scan Result", "No new gaps identified in the current tech cycle.", "system")
+            return
+
+        # 2. Forge tools for gaps
+        for feature in features:
+            cap_name = feature["Feature Name"].lower().replace(' ', '_')
             
-        now = int(time.time())
-        seven_days = 7 * 24 * 3600
-        
-        for cap, data in index.items():
-            if now - data.get("last_tested", 0) > seven_days:
-                print(f"RE-VALIDATION: Retesting {cap}...")
-                # Re-run via generator (simulated here for brevity, in real it would call generator.test_module)
-                # For this implementation, we'll just check if the file still exists
-                if not os.path.exists(data.get("file_path", "")):
-                    data["available"] = False
-                    data["validation_score"] = 0.0
-                    print(f"RE-VALIDATION: {cap} FILE MISSING. Marked unstable.")
+            # Check if already in marketplace
+            if os.path.exists(os.path.join(self.market_path, f"{cap_name}.py")):
+                print(f"SOVEREIGN: Tool '{cap_name}' already exists in marketplace. Skipping.")
+                continue
+                
+            self.telemetry.log_process(workspace_id, "evolution", "Tool Forging", f"Generating sovereign upgrade: {cap_name}", "thought")
+            
+            gap_def = {
+                "capability_name": cap_name,
+                "description": feature["Description"],
+                "is_hardware": "hardware" in feature["Description"].lower() or "iot" in feature["Description"].lower()
+            }
+            
+            try:
+                result = await self.generator.generate_module(gap_def, workspace_id)
+                
+                if result["success"]:
+                    # Move to global marketplace
+                    generated_path = result["file_path"]
+                    market_dest = os.path.join(self.market_path, f"{cap_name}.py")
+                    
+                    import shutil
+                    shutil.copy2(generated_path, market_dest)
+                    
+                    # Signal global RTDB of new sovereign feature
+                    try:
+                        from app.services.base_rtdb import BaseRTDBService
+                        global_db = BaseRTDBService("marketplace_announcements")
+                        global_db.push({
+                            "type": "new_sovereign_tool",
+                            "tool": cap_name,
+                            "description": feature["Description"],
+                            "timestamp": int(time.time() * 1000)
+                        })
+                    except: pass
+                    
+                    self.telemetry.log_process(workspace_id, "evolution", "Upgrade Deployed", f"Sovereign tool '{cap_name}' added to Global Marketplace.", "system")
                 else:
-                    # Update timestamp to reset the 7-day clock
-                    data["last_tested"] = now
-        
-        with open(index_file, "w") as f:
-            json.dump(index, f, indent=2)
+                    print(f"SOVEREIGN: Failed to forge {cap_name}: {result.get('error')}")
+            except Exception as e:
+                print(f"SOVEREIGN: Generation crashed for {cap_name}: {e}")
 
     async def run_cycle(self, workspace_id: str):
         """
@@ -223,11 +252,16 @@ class EvolutionOrchestrator:
                     # Log proactive result
                     self.evolution_service.log_event(workspace_id, "autonomous_upgrade", top_forecast['capability_name'], "success" if result["success"] else "failure", proactive_entry)
 
-            # 5. Competitive Intelligence & Revalidation
+            # 5. Sovereign V15.1: Global Marketplace Scan
+            # This scans the web for trends and populates the marketplace proactively
+            if system_config.get("sovereign_autonomy_enabled", True):
+                await self.autonomous_market_scan(workspace_id)
+
+            # 6. Competitive Intelligence & Revalidation
             await self.revalidate_capabilities(workspace_id)
             await self.researcher.perform_market_research(workspace_id)
 
-            # 6. Record Intelligence & Growth
+            # 7. Record Intelligence & Growth
             intelligence = IntelligenceEngine(workspace_id)
             intelligence.record_evolution_result(True)
             
@@ -256,11 +290,12 @@ class EvolutionOrchestrator:
 
     async def start_evolution_cycle(self, workspace_id: str):
         """
-        Runs a full evolution loop every 6 hours.
+        Runs a full evolution loop every 12 hours (Sovereign mode).
         """
         while True:
             await self.run_cycle(workspace_id)
-            await asyncio.sleep(6 * 3600)
+            # Cycle interval increased for Sovereign stability
+            await asyncio.sleep(12 * 3600)
 
 async def run_global_evolution(user_id: str, workspace_id: str):
     """

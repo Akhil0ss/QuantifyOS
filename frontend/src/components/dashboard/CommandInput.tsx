@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Send, Loader2, Sparkles, ChevronRight } from "lucide-react";
+import { Terminal, Send, Loader2, Sparkles, ChevronRight, Paperclip } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 
@@ -18,8 +18,34 @@ export default function CommandInput({ onTaskCreated, onCommandSent }: CommandIn
     const [command, setCommand] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
+    const [attachment, setAttachment] = useState<{ name: string; path: string } | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const workspaceId = user ? `default-${user.uid}` : "";
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file || !user || !workspaceId) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`/api/workspaces/${workspaceId}/upload`, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${token}` },
+                body: formData,
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setAttachment({ name: data.filename, path: data.path });
+                toast.success(`File attached: ${data.filename}`);
+            }
+        } catch {
+            toast.error("File upload failed.");
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,11 +61,12 @@ export default function CommandInput({ onTaskCreated, onCommandSent }: CommandIn
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ goal: currentCommand }),
+                body: JSON.stringify({ goal: attachment ? `${currentCommand} [Attached file: ${attachment.path}]` : currentCommand }),
             });
 
             if (res.ok) {
                 setCommand("");
+                setAttachment(null);
                 toast.success("CEO: Strategy formulated. Execution sequence started.", {
                     icon: <Sparkles className="text-amber-400" size={16} />,
                     style: { background: "#141414", color: "#fff", border: "1px solid rgba(255,255,255,0.1)" }
@@ -91,6 +118,26 @@ export default function CommandInput({ onTaskCreated, onCommandSent }: CommandIn
                             disabled={isSubmitting}
                         />
                     </div>
+
+                    {/* Attachment Badge */}
+                    {attachment && (
+                        <div className="shrink-0 flex items-center gap-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-lg px-2.5 py-1">
+                            <Paperclip size={12} className="text-indigo-400" />
+                            <span className="text-[10px] text-indigo-300 font-bold max-w-[80px] truncate">{attachment.name}</span>
+                            <button type="button" onClick={() => setAttachment(null)} className="text-zinc-500 hover:text-white ml-1">&times;</button>
+                        </div>
+                    )}
+
+                    {/* File Upload */}
+                    <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileUpload} />
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="shrink-0 p-3 rounded-xl text-zinc-600 hover:text-indigo-400 hover:bg-white/5 transition-all"
+                        title="Attach file"
+                    >
+                        <Paperclip size={18} />
+                    </button>
 
                     <button
                         type="submit"

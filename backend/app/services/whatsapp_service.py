@@ -1,23 +1,24 @@
 import asyncio
-from typing import Optional
+import time
+from typing import Optional, Set
 from .whatsapp_session import WhatsAppSessionManager
-from ..agents.orchestrator import AgentOrchestrator
 from ..services.tasks import TaskService
 
 class WhatsAppService:
     """
     Real WhatsApp service using Playwright persistent sessions.
+    Full two-way communication: receive commands → execute → send results.
     """
     def __init__(self, user_id: str):
         self.user_id = user_id
         self.session_manager = WhatsAppSessionManager(user_id)
         self.task_service = TaskService()
         self.is_running = False
+        self._processed_messages: Set[str] = set()  # Deduplication set
+        self._last_message_text: str = ""  # Track last seen message
 
     async def start(self):
-        """
-        Starts the session and the listener loop.
-        """
+        """Starts the session and the listener loop."""
         await self.session_manager.start(headless=True)
         if await self.session_manager.is_logged_in():
             self.is_running = True
@@ -28,101 +29,165 @@ class WhatsAppService:
 
     async def listen_for_commands(self):
         """
-        Polls for new messages in the currently open chat.
-        (Simplified version: looks for message bubbles with specific text)
+        Polls for new INCOMING messages with proper deduplication.
+        Only processes messages that are new and from the user (incoming).
         """
         page = self.session_manager.page
-        orchestrator = AgentOrchestrator(self.user_id, self.user_id) # Using workspace_id for both
+        workspace_id = self.user_id  # Using user_id as workspace for now
 
         while self.is_running:
             try:
-                # 1. Find the last message (using a common selector for incoming message bubbles)
-                # In a real implementation, we'd use more robust selectors or WhatsApp API
-                last_msg_selector = ".message-in span.selectable-text, .message-in span.selectable-text span, div[data-pre-plain-text]"
-                msg_elements = await page.query_selector_all(last_msg_selector)
-                
-                if msg_elements:
-                    last_msg = await msg_elements[-1].inner_text()
-                    
-                    # Logic: In conversational mode, every message is a potential command or reply
-                    # We skip messages that we already processed or that are repetitive (simplified)
-                    print(f"WhatsApp Message Detected: {last_msg}")
-                    
-                    print(f"WhatsApp Message Detected: {last_msg}")
-                    
-                    # --- Phase 27: WhatsApp Approval Logic ---
-                    clean_msg = last_msg.strip().lower()
-                    if clean_msg in ["proceed", "approve", "go ahead", "ok"]:
-                        # Find the most recent task awaiting approval
-                        all_tasks = self.task_service.get_workspace_tasks(self.user_id)
-                        awaiting_tasks = sorted(
-                            [t for t in all_tasks if t.get("status") == "awaiting_approval"],
-                            key=lambda t: t.get("created_at", 0),
-                            reverse=True
-                        )
-                        
-                        if awaiting_tasks:
-                            target_task = awaiting_tasks[0]
-                            target_id = target_task["id"]
-                            print(f"WhatsApp Approval detected for task {target_id}")
-                            
-                            self.task_service.update_status(target_id, "approved")
-                            from .orchestrator import run_autonomy_loop
-                            asyncio.create_task(run_autonomy_loop(self.user_id, target_id, self.user_id))
-                            
-                            await self.send_message("Me", "Confirmation received. I am proceeding with the execution now.")
-                            continue # Skip task creation
-                    
-                    # Standard conversational task creation
-                    task_id = self.task_service.create_task(self.user_id, last_msg)
-                    from .orchestrator import run_autonomy_loop
-                    asyncio.create_task(run_autonomy_loop(self.user_id, task_id, self.user_id))
-                    
-                    # Notify receipt naturally
-                    await self.send_message("Me", f"Got it. I'll get started on '{last_msg}' immediately.")
+                # Get all incoming message bubbles (class: message-in)
+                # Use multiple selector strategies for robustness
+                incoming_selectors = [
+                    '.message-in .copyable-text span.selectable-text',
+                    '.message-in span[dir="ltr"]',
+                    '.message-in ._ao3e',
+                ]
 
-                await asyncio.sleep(10) # Poll every 10 seconds
+                msg_text = None
+                for selector in incoming_selectors:
+                    try:
+                        elements = await page.query_selector_all(selector)
+                        if elements:
+                            msg_text = await elements[-1].inner_text()
+                            break
+                    except:
+                        continue
+
+                if msg_text and msg_text.strip():
+                    clean = msg_text.strip()
+                    
+                    # DEDUPLICATION: Create a unique key from text + approximate time bucket
+                    # We use 30-second buckets to avoid reprocessing the same message
+                    time_bucket = int(time.time() / 30)
+                    dedup_key = f"{clean[:100]}_{time_bucket}"
+                    
+                    if dedup_key not in self._processed_messages and clean != self._last_message_text:
+                        self._processed_messages.add(dedup_key)
+                        self._last_message_text = clean
+                        
+                        # Keep dedup set from growing unbounded
+                        if len(self._processed_messages) > 500:
+                            self._processed_messages = set(list(self._processed_messages)[-100:])
+                        
+                        print(f"WhatsApp NEW message: {clean[:80]}")
+                        
+                        # --- Approval Logic ---
+                        lower = clean.lower()
+                        if lower in ["proceed", "approve", "go ahead", "ok", "yes", "do it"]:
+                            all_tasks = self.task_service.get_workspace_tasks(workspace_id)
+                            awaiting = sorted(
+                                [t for t in all_tasks if t.get("status") == "awaiting_approval"],
+                                key=lambda t: t.get("created_at", 0),
+                                reverse=True
+                            )
+                            if awaiting:
+                                target = awaiting[0]
+                                self.task_service.update_status(target["id"], "approved")
+                                from .orchestrator import run_autonomy_loop
+                                asyncio.create_task(run_autonomy_loop(self.user_id, target["id"], workspace_id))
+                                await self.send_message("Me", "✅ Approved. Executing now.")
+                                await asyncio.sleep(10)
+                                continue
+
+                        # --- Create new task from message ---
+                        task_id = self.task_service.create_task(workspace_id, clean)
+                        from .orchestrator import run_autonomy_loop
+                        asyncio.create_task(run_autonomy_loop(self.user_id, task_id, workspace_id))
+                        
+                        await self.send_message("Me", f"🧠 Got it. Working on: \"{clean[:60]}...\"")
+
+                await asyncio.sleep(8)  # Poll every 8 seconds
             except Exception as e:
-                print(f"Error in WhatsApp listener: {str(e)}")
+                print(f"WhatsApp listener error: {str(e)}")
                 await asyncio.sleep(30)
 
     async def send_message(self, contact: str, message: str):
         """
-        Sends a message by searching for the contact first, then typing.
+        Sends a message using robust selector fallback.
+        Uses type() instead of fill() for contenteditable divs.
         """
-        if not self.session_manager.page: return
+        if not self.session_manager.page:
+            return
         page = self.session_manager.page
-        
+
         try:
-            # 1. Click search box (Supports multiple layout versions)
-            search_selector = 'div[contenteditable="true"][data-tab="3"], div[title="Search input textbox"]'
-            await page.click(search_selector)
-            
-            # 2. Type contact name/number
-            await page.fill(search_selector, "") # Clear first
-            await page.type(search_selector, contact)
-            await asyncio.sleep(2) # Wait for results
-            
-            # 3. Press Enter to select first result
-            await page.press(search_selector, "Enter")
-            await asyncio.sleep(1)
-            
-            # 4. selector for the chat input area
-            input_selector = 'div[contenteditable="true"][data-tab="10"], div[contenteditable="true"][data-tab="1"], div[title="Type a message"]'
-            await page.fill(input_selector, message)
-            await page.press(input_selector, "Enter")
-            print(f"WhatsApp Message sent to {contact}")
-            
+            # Navigate to "Me" chat (user's own chat / Saved Messages)
+            # First try clicking the search box
+            search_selectors = [
+                'div[contenteditable="true"][data-tab="3"]',
+                'div[title="Search input textbox"]',
+                'div[role="textbox"][data-tab="3"]',
+            ]
+
+            search_box = None
+            for sel in search_selectors:
+                search_box = await page.query_selector(sel)
+                if search_box:
+                    break
+
+            if search_box:
+                await search_box.click()
+                await asyncio.sleep(0.5)
+                
+                # Clear and type contact name
+                await page.keyboard.press("Control+A")
+                await page.keyboard.press("Backspace")
+                await page.keyboard.type(contact, delay=50)
+                await asyncio.sleep(2)
+                
+                # Click first search result
+                result_selectors = [
+                    'span[title*="Me"]',
+                    '._ahlY',  # Chat list item
+                    'div[role="listitem"]',
+                ]
+                for rsel in result_selectors:
+                    try:
+                        result = await page.query_selector(rsel)
+                        if result:
+                            await result.click()
+                            await asyncio.sleep(1)
+                            break
+                    except:
+                        continue
+
+            # Now type in the message input box
+            input_selectors = [
+                'div[contenteditable="true"][data-tab="10"]',
+                'div[contenteditable="true"][data-tab="1"]',
+                'div[title="Type a message"]',
+                'footer div[contenteditable="true"]',
+                'div[role="textbox"][data-tab="10"]',
+            ]
+
+            input_box = None
+            for sel in input_selectors:
+                input_box = await page.query_selector(sel)
+                if input_box:
+                    break
+
+            if input_box:
+                await input_box.click()
+                await asyncio.sleep(0.3)
+                
+                # Type message character by character (works with contenteditable)
+                await page.keyboard.type(message, delay=10)
+                await asyncio.sleep(0.3)
+                await page.keyboard.press("Enter")
+                
+                print(f"WhatsApp: Message sent to {contact}")
+            else:
+                print(f"WhatsApp: Could not find message input box")
+
         except Exception as e:
-            print(f"Failed to send WhatsApp message: {str(e)}")
+            print(f"WhatsApp send failed: {str(e)}")
 
     async def notify_ceo_event(self, event_type: str, details: str):
-        """
-        Specific helper for CEO notifications.
-        Defaults to sending to the primary linked device (self).
-        """
-        msg = f"🔔 *CEO ALERT: {event_type}*\n\n{details}\n\n_Reply with 'Run: [Goal]' to issue a command._"
-        await self.send_message("Me", msg) # "Me" usually targets the user's own chat in some setups, or a pinned chat.
+        """Sends a CEO alert notification."""
+        msg = f"🔔 *{event_type}*\n\n{details}\n\n_Reply to issue a command._"
+        await self.send_message("Me", msg)
 
 
 whatsapp_manager = {}

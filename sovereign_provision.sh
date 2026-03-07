@@ -21,14 +21,42 @@ fi
 
 # 3. System Prep
 echo "🛠️ Installing Infrastructure Bases..."
+sudo apt-get install -y debian-keyring debian-archive-keyring apt-transport-https
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg --yes
+curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | sudo tee /etc/apt/sources.list.d/caddy-stable.list
 sudo apt-get update && sudo apt-get install -y docker.io docker-compose-v2 caddy
 
 # 4. Restart Docker with new MTU
 sudo systemctl restart docker
 
-# 5. Launch S-Tier
+# 5. Configure Caddy (Multi-Service Proxy)
+echo "🔒 Configuring Caddy for Frontend & Backend..."
+cat <<EOF | sudo tee /etc/caddy/Caddyfile
+:80 {
+    # Main Frontend
+    reverse_proxy localhost:3000
+
+    # Backend API
+    handle_path /api/* {
+        reverse_proxy localhost:8000
+    }
+
+    # Admin Panel
+    handle_path /admin/* {
+        reverse_proxy localhost:3001
+    }
+}
+EOF
+sudo systemctl restart caddy
+
+# 6. Launch S-Tier
 echo "🚢 Launching Quantify OS S-Tier..."
 cd ~/quantify-os
+# Ensure env file exists
+if [ ! -f ./backend/.env ]; then
+    cp .env.example ./backend/.env
+fi
 sudo docker compose -f docker-compose.prod.yml up --build -d
 
 echo "✅ PROVISIONING COMPLETE!"
+echo "🌍 App live at: http://$(curl -s ifconfig.me)"

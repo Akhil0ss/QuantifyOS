@@ -39,6 +39,8 @@ from app.api.backups import router as backups_router
 from app.api.notifications import router as notifications_router
 from app.api.replay import router as replay_router
 from app.api.deploy_webhook import router as deploy_router
+from app.api.schedules import router as schedules_router
+from app.api.upload import router as upload_router
 from app.core.rate_limiter import RateLimitMiddleware
 from app.core.stability_engine import StabilityMiddleware
 
@@ -75,6 +77,8 @@ app.include_router(backups_router)
 app.include_router(notifications_router)
 app.include_router(replay_router)
 app.include_router(deploy_router)
+app.include_router(schedules_router)
+app.include_router(upload_router)
 
 # Enable CORS for the Next.js frontend (dev + production)
 _cors_origins = [
@@ -103,18 +107,46 @@ app.add_middleware(StabilityMiddleware)
 @app.on_event("startup")
 async def startup_event():
     """
-    Initializes background processes on server start.
+    Initializes ALL autonomous background processes on server start.
+    Deploy once. Never touch again.
     """
     import asyncio
+    
+    # 0. Register all tools (web_search, code_editor, hardware, marketplace)
+    from app.core.tool_engine import init_tools
+    init_tools()
+    
+    # 1. Auto-resume stalled tasks from previous crashes
+    from app.services.tasks import TaskService
+    ts = TaskService()
+    await ts.auto_resume_stalled()
+    
+    # 2. Evolution Engine (self-healing + capability growth)
     from app.autonomy.evolution_orchestrator import run_global_evolution
-    # We use a default user/workspace ID for the global loop for now
-    # In multi-tenant, this would loop through active workspaces
     asyncio.create_task(run_global_evolution("Me", "default-Me"))
     
+    # 3. Stability Monitor (crash prevention)
     from app.autonomy.stability import start_stability_monitor
     asyncio.create_task(start_stability_monitor())
     
-    print("Global Evolution & Stability Engine Started")
+    # 4. Task Scheduler (cron-based autonomous execution)
+    from app.autonomy.scheduler import TaskScheduler
+    scheduler = TaskScheduler("Me", "default-Me")
+    asyncio.create_task(scheduler.start_loop())
+    
+    # 5. Proactive Suggestions (anticipates user needs)
+    from app.autonomy.proactive import ProactiveSuggestionEngine
+    proactive = ProactiveSuggestionEngine("Me", "default-Me")
+    asyncio.create_task(proactive.start_loop())
+    
+    print("═" * 60)
+    print("  QUANTIFY OS: ALL AUTONOMOUS ENGINES ONLINE")
+    print("  → Evolution Engine")
+    print("  → Stability Monitor")
+    print("  → Task Scheduler")
+    print("  → Proactive Suggestions")
+    print("  → Task Auto-Resume")
+    print("═" * 60)
 
 @app.get("/api/health")
 async def public_health():

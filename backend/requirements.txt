@@ -12,3 +12,8 @@ google-genai
 playwright
 psutil
 email-validator
+pymongo
+supabase
+paho-mqtt
+pymodbus
+pytest-asyncio

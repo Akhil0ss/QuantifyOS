@@ -9,6 +9,9 @@ import {
 } from 'lucide-react';
 import CommandInput from './CommandInput';
 import EvolutionFeed from './EvolutionFeed';
+import CredentialRequestModal from './CredentialRequestModal';
+import MarketplaceCatalog from './MarketplaceCatalog';
+import OnboardingWizard from './OnboardingWizard';
 import { useAuth } from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 
@@ -30,6 +33,8 @@ export default function DashboardHome() {
     const [recentTasks, setRecentTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [chatLog, setChatLog] = useState<{ role: 'user' | 'system', text: string, time: string }[]>([]);
+    const [showOnboarding, setShowOnboarding] = useState(false);
+    const [suggestions, setSuggestions] = useState<any[]>([]);
 
     const workspaceId = user ? `default-${user.uid}` : "";
 
@@ -45,12 +50,22 @@ export default function DashboardHome() {
             // Fetch intelligence score
             fetch(`${API}/api/intelligence/status?workspace_id=${workspaceId}`, { headers }).then(r => r.json()).then(setIntel).catch(() => { });
 
+            // Fetch proactive suggestions
+            fetch(`${API}/api/workspaces/${workspaceId}/schedules/suggestions`, { headers })
+                .then(r => r.json())
+                .then(data => setSuggestions(data.suggestions || []))
+                .catch(() => { });
+
             // Fetch live events
             fetch(`${API}/api/system/events`, { headers }).then(r => r.json()).then(setEvents).catch(() => { });
 
             // Fetch tasks
             fetch(`${API}/api/workspaces/${workspaceId}/tasks`, { headers }).then(r => r.json()).then(data => {
-                if (Array.isArray(data)) setRecentTasks(data);
+                if (Array.isArray(data)) {
+                    setRecentTasks(data);
+                    // Show onboarding for users with 0 tasks
+                    if (data.length === 0) setShowOnboarding(true);
+                }
             }).catch(() => { });
 
         } catch (error) {
@@ -329,7 +344,20 @@ export default function DashboardHome() {
                     </div>
                     <EvolutionFeed />
                 </motion.div>
+
+                {/* Right Bottom: Marketplace */}
+                <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="bg-[#141414] rounded-2xl border border-white/5 p-6"
+                >
+                    <MarketplaceCatalog />
+                </motion.div>
             </div>
+            {/* Modal Layer */}
+            <CredentialRequestModal />
+            {showOnboarding && <OnboardingWizard onComplete={() => setShowOnboarding(false)} />}
         </div>
     );
 }

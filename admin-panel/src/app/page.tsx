@@ -127,8 +127,8 @@ export default function AdminPage() {
                     >
                         {activeTab === "overview" && <MetricsDashboard metrics={metrics} />}
                         {activeTab === "monitoring" && <MonitoringArea errors={errors} />}
-                        {activeTab === "controls" && <SystemControls config={config} onUpdate={fetchData} apiBase={API} />}
-                        {activeTab === "users" && <UserManagement users={users} onUpdate={fetchData} />}
+                        {activeTab === "controls" && <SystemControls config={config} onUpdate={fetchData} apiBase={API} user={user} />}
+                        {activeTab === "users" && <UserManagement users={users} onUpdate={fetchData} user={user} apiBase={API} />}
                     </motion.div>
                 </AnimatePresence>
             </div>

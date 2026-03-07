@@ -132,3 +132,52 @@ class SQLiteMemoryStore:
             }
             return json.dumps(snapshot)
 
+class MongoMemoryStore:
+    """
+    Enterprise V15.1: MongoDB implementation for massive-scale memory graphs.
+    """
+    def __init__(self, workspace_id: str, mongo_uri: str):
+        import pymongo
+        self.client = pymongo.MongoClient(mongo_uri)
+        self.db = self.client[f"quantify_{workspace_id}"]
+        self.nodes = self.db.nodes
+        self.triplets = self.db.triplets
+        
+    def add_node(self, node_id: str, node_type: str, data: Dict[str, Any], layer: Optional[str] = None):
+        doc = {"_id": node_id, "type": node_type, "data": data, "layer": layer}
+        self.nodes.replace_one({"_id": node_id}, doc, upsert=True)
+
+    def add_relation(self, subject_id: str, predicate: str, object_id: str):
+        self.triplets.insert_one({"subject_id": subject_id, "predicate": predicate, "object_id": object_id})
+
+    def get_node(self, node_id: str) -> Optional[Dict[str, Any]]:
+        doc = self.nodes.find_one({"_id": node_id})
+        return {"type": doc["type"], "data": doc["data"]} if doc else None
+
+class SupabaseMemoryStore:
+    """
+    Enterprise V15.1: Supabase/PostgreSQL implementation.
+    """
+    def __init__(self, workspace_id: str, url: str, key: str):
+        from supabase import create_client
+        self.client = create_client(url, key)
+        self.workspace_id = workspace_id
+
+    def add_node(self, node_id: str, node_type: str, data: Dict[str, Any], layer: Optional[str] = None):
+        self.client.table("nodes").upsert({
+            "id": node_id,
+            "type": node_type,
+            "data": data,
+            "workspace_id": self.workspace_id,
+            "layer": layer
+        }).execute()
+
+    def add_relation(self, subject_id: str, predicate: str, object_id: str):
+        self.client.table("triplets").insert({
+            "subject_id": subject_id,
+            "predicate": predicate,
+            "object_id": object_id,
+            "workspace_id": self.workspace_id
+        }).execute()
+
+

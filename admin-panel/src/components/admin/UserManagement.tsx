@@ -4,7 +4,7 @@ import { useState } from "react";
 import { User, CreditCard, ChevronRight, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function UserManagement({ users, onUpdate }: { users: any[], onUpdate: () => void }) {
+export default function UserManagement({ users, onUpdate, user, apiBase }: { users: any[], onUpdate: () => void, user: any, apiBase: string }) {
     const [search, setSearch] = useState("");
     const [updatingUid, setUpdatingUid] = useState<string | null>(null);
 
@@ -16,9 +16,13 @@ export default function UserManagement({ users, onUpdate }: { users: any[], onUp
     const changePlan = async (uid: string, newPlan: string) => {
         setUpdatingUid(uid);
         try {
-            const res = await fetch(`/api/admin/users/${uid}/plan`, {
+            const token = await user.getIdToken();
+            const res = await fetch(`${apiBase}/api/admin/users/${uid}/plan`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ plan: newPlan })
             });
             if (res.ok) {

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Power, Zap, Box, ShieldCheck, AlertCircle, Ban } from "lucide-react";
 import toast from "react-hot-toast";
 
-export default function SystemControls({ config, onUpdate, apiBase }: { config: any, onUpdate: () => void, apiBase: string }) {
+export default function SystemControls({ config, onUpdate, apiBase, user }: { config: any, onUpdate: () => void, apiBase: string, user: any }) {
     const [isUpdating, setIsUpdating] = useState<string | null>(null);
 
     const toggles = [
@@ -17,9 +17,13 @@ export default function SystemControls({ config, onUpdate, apiBase }: { config: 
     const toggleFeature = async (key: string, currentValue: boolean) => {
         setIsUpdating(key);
         try {
+            const token = await user.getIdToken();
             const res = await fetch(`${apiBase}/api/admin/config/update`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify({ [key]: !currentValue })
             });
             if (res.ok) {
@@ -37,7 +41,11 @@ export default function SystemControls({ config, onUpdate, apiBase }: { config: 
         const warning = "⚠️ CRITICAL ACTION: Are you absolutely sure?\n\nThis will trigger a GLOBAL EMERGENCY STOP.\n- All autonomous agents in ALL user workspaces will be killed.\n- All evolution cycles will be frozen.\n- This action is logged for compliance.";
         if (!confirm(warning)) return;
         try {
-            const res = await fetch(`${apiBase}/api/admin/emergency/stop`, { method: "POST" });
+            const token = await user.getIdToken();
+            const res = await fetch(`${apiBase}/api/admin/emergency/stop`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
             if (res.ok) {
                 toast.error("EMERGENCY STOP INITIALIZED", { duration: 5000 });
                 onUpdate();
@@ -84,7 +92,11 @@ export default function SystemControls({ config, onUpdate, apiBase }: { config: 
                     </button>
                     <button
                         onClick={async () => {
-                            await fetch(`${apiBase}/api/admin/emergency/reset`, { method: "POST" });
+                            const token = await user.getIdToken();
+                            await fetch(`${apiBase}/api/admin/emergency/reset`, {
+                                method: "POST",
+                                headers: { "Authorization": `Bearer ${token}` }
+                            });
                             onUpdate();
                             toast.success("Emergency state reset.");
                         }}

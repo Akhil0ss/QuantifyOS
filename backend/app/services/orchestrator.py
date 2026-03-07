@@ -100,9 +100,8 @@ async def run_autonomy_loop(workspace_id: str, task_id: str, user_uid: str):
                     from app.services.whatsapp_service import WhatsAppService
                     wa = WhatsAppService(user_uid)
                     await wa.notify_ceo_event(
-                        f"⚠️ RISK ALERT: Your CEO has generated a plan with high-stakes actions:\n\n"
-                        f"{risk_report['summary']}\n\n"
-                        f"Please go to the Dashboard to Review & Approve, or reply 'Proceed' here."
+                        "RISK ALERT",
+                        f"High-stakes actions detected:\n{risk_report['summary']}\n\nReply 'Proceed' to approve or go to Dashboard."
                     )
                 except Exception as wa_err:
                     print(f"Failed to send risk notification: {wa_err}")
