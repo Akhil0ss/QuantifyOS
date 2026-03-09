@@ -112,6 +112,10 @@ class StabilityEngine:
         """
         Main background loop for stability and recovery.
         """
+        from app.services.tasks import TaskService
+        ts = TaskService()
+        
+        iteration = 0
         while True:
             try:
                 print("STABILITY: Running health check...")
@@ -123,10 +127,14 @@ class StabilityEngine:
                     print(f"STABILITY: Attempting recovery for {corrupted}")
                     # In a real L11 system, we would restore from the last backup here
                 
-                # Check for daily backup (simplified: if last backup > 24h)
-                # For this demo, we'll just log it.
+                # Periodic Task Recovery (Every 15 minutes)
+                # Loop runs every minute for faster health checks, but recovery is throttled
+                if iteration % 15 == 0:
+                    print("STABILITY: Checking for stalled tasks...")
+                    await ts.auto_resume_stalled()
                 
-                await asyncio.sleep(3600) # Run every hour
+                iteration += 1
+                await asyncio.sleep(60) # Run every minute
             except Exception as e:
                 print(f"STABILITY Error: {e}")
                 await asyncio.sleep(60)

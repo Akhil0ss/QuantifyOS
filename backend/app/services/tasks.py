@@ -58,5 +58,5 @@ class TaskService(BaseRTDBService):
         if stalled:
             print(f"TASK QUEUE: Found {len(stalled)} stalled tasks. Re-queuing...")
             for task in stalled:
-                self.update_status(task["id"], "pending", result="Auto-resumed after server restart")
+                self.update_status(task["id"], "pending", result="Auto-resumed: Task was stalled or server was restarted (Resilience Engine)")
                 print(f"  → Re-queued: {task['id']} ({task.get('goal', '')[:50]})")

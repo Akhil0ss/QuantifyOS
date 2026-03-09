@@ -5,6 +5,17 @@ from app.autonomy.execution import ExecutionEngine
 from app.autonomy.evolution import EvolutionEngine
 from app.services.tasks import TaskService
 
+async def _heartbeat_worker(task_id: str):
+    """Pulses the database every 30 seconds to show the task is still alive."""
+    task_service = TaskService()
+    try:
+        while True:
+            await asyncio.sleep(30)
+            task_service.send_heartbeat(task_id)
+            print(f"HEARTBEAT: Task {task_id} pulsed.")
+    except asyncio.CancelledError:
+        pass
+
 async def run_autonomy_loop(workspace_id: str, task_id: str, user_uid: str):
     """
     Background worker that runs the autonomy loop out-of-band of the HTTP request.
@@ -14,6 +25,10 @@ async def run_autonomy_loop(workspace_id: str, task_id: str, user_uid: str):
     """
     print(f"Starting autonomy loop for task {task_id}")
     task_service = TaskService()
+    
+    # Start heartbeat worker
+    heartbeat_task = asyncio.create_task(_heartbeat_worker(task_id))
+    
     try:
         # Update status to acknowledge starting
         task_service.update_status(task_id, "running", result="Initializing Orchestrator...")
@@ -149,3 +164,10 @@ async def run_autonomy_loop(workspace_id: str, task_id: str, user_uid: str):
             )
         except Exception as reflect_err:
             print(f"Failed to reflect on error: {reflect_err}")
+
+    finally:
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass
