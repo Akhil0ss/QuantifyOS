@@ -9,7 +9,7 @@ services:
     environment:
       - QUANTIFY_ENV=production
     ports:
-      - "80:8000"
+      - "8000:8000"
     volumes:
       - ./workspaces:/app/workspaces
       - ./backups:/app/backups
@@ -18,4 +18,32 @@ services:
     deploy:
       resources:
         limits:
-          memory: 800M
+          memory: 400M
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=/api
+    deploy:
+      resources:
+        limits:
+          memory: 300M
+
+  admin-panel:
+    build:
+      context: ./admin-panel
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - NEXT_PUBLIC_API_URL=/api
+    deploy:
+      resources:
+        limits:
+          memory: 200M

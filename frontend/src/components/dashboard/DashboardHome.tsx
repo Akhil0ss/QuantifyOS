@@ -205,9 +205,18 @@ export default function DashboardHome() {
                     </h1>
                     <p className="text-zinc-500 text-sm mt-1">Autonomous operating system overview</p>
                 </div>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider">System Online</span>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => toast.success("Feedback channel opened. Our engineers are monitoring this session.")}
+                        className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider hover:bg-blue-500/20 transition-colors flex items-center gap-1.5"
+                    >
+                        <Send size={12} />
+                        Beta Feedback
+                    </button>
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="text-emerald-400 text-xs font-bold uppercase tracking-wider">System Online</span>
+                    </div>
                 </div>
             </div>
 
