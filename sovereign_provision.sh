@@ -9,8 +9,8 @@ echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
 sudo mkdir -p /etc/docker
 echo '{"mtu": 1300, "dns": ["8.8.8.8", "8.8.4.4"]}' | sudo tee /etc/docker/daemon.json > /dev/null
 
-# 2. Memory Hardening (Swap)
-echo "🧠 Provisioning 2GB Swap Memory..."
+# 2. Memory Hardening (Swap + OOM)
+echo "🧠 Provisioning 2GB Swap & OOM Protections..."
 if [ ! -f /swapfile ]; then
     sudo fallocate -l 2G /swapfile
     sudo chmod 600 /swapfile
@@ -18,6 +18,17 @@ if [ ! -f /swapfile ]; then
     sudo swapon /swapfile
     echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 fi
+# Prevent kernel from killing Docker during spikes (prioritize system stability)
+sudo sysctl -w vm.overcommit_memory=1
+sudo sysctl -w vm.swappiness=10
+
+# 3. Firewall Hardening (Oracle Specific)
+echo "🛡️ Opening Ports 80/443 in iptables..."
+sudo iptables -I INPUT 6 -p tcp --dport 80 -j ACCEPT
+sudo iptables -I INPUT 6 -p tcp --dport 443 -j ACCEPT
+# Persist Rules
+sudo apt-get install -y iptables-persistent
+sudo netfilter-persistent save
 
 # 3. System Prep
 echo "🛠️ Installing Infrastructure Bases..."
@@ -56,7 +67,7 @@ cd ~/quantify-os
 if [ ! -f ./backend/.env ]; then
     cp .env.example ./backend/.env
 fi
-sudo docker compose -f docker-compose.prod.yml up --build -d
+sudo docker compose -f docker-compose.prod.yml up --build -d backend
 
 echo "✅ PROVISIONING COMPLETE!"
 echo "🌍 App live at: http://$(curl -s ifconfig.me)"

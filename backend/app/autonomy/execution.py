@@ -117,6 +117,21 @@ class ExecutionEngine:
                         self.telemetry.log_process(workspace_id, task_id, "Tool Execution Complete", str(tool_result), "tool_result")
                     except Exception as e:
                         error_str = str(e)
+                        
+                        # Sovereign Auto-Dependency Resolution
+                        if isinstance(e, ModuleNotFoundError) or "No module named" in error_str:
+                            module_name = error_str.split("'")[-2] if "'" in error_str else error_str.split()[-1]
+                            self.telemetry.log_process(workspace_id, task_id, "Dependency Resolution", f"Missing dependency '{module_name}'. Locating built-in resolver...", "system")
+                            from app.autonomy.dependency_resolver import DependencyResolver
+                            pip_name = DependencyResolver.get_pip_name(module_name)
+                            success, msg = DependencyResolver.install_package(pip_name)
+                            if success:
+                                self.telemetry.log_process(workspace_id, task_id, "Dependency Resolved", f"Successfully installed {pip_name} via resolver. Retrying...", "system")
+                                iteration -= 1
+                                continue
+                            else:
+                                error_str = f"Failed to auto-install {pip_name}: {msg}"
+
                         # Sovereign V15.1: API Key Acquisition Logic
                         if "api key" in error_str.lower() or "credentials" in error_str.lower() or "unauthorized" in error_str.lower():
                             self.telemetry.log_process(workspace_id, task_id, "Pause & Request", f"Tool {tool_name} requires missing credentials. Requesting from user...", "system")
@@ -188,7 +203,6 @@ class ExecutionEngine:
             )
         except Exception as e:
             print(f"EXECUTOR: Primary provider failed during synthesis: {e}. Falling back to pool...")
-            from app.services.ai_drivers.router import ModelRouter
             final_answer = await ModelRouter.get_best_provider(
                 self.user_id, 
                 prompt=f"Goal: {goal}\n{mem_context}\nExecution History: {context}\nProvide a natural, conversational final response to the user.",

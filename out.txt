@@ -1,0 +1,8 @@
+workspaces/global_ai_hq/outputs/mission_summary.json
+workspaces/global_ai_hq/outputs/ai_report_video.mp4
+workspaces/global_ai_hq/outputs/ai_intelligence_report.html
+workspaces/global_ai_hq/outputs/mission_plan.json
+workspaces/global_ai_hq/outputs/ai_intelligence_package.zip
+workspaces/global_ai_hq/outputs/top_trends.json
+workspaces/global_ai_hq/outputs/trend_chart.png
+workspaces/global_ai_hq/outputs/category_chart.png

@@ -128,6 +128,16 @@ def init_tools():
     for tool in WEB_SEARCH_TOOLS:
         registry.register_tool(tool)
 
+    # Register market reporting tools
+    from app.tools.market_reporter import MARKET_REPORTING_TOOLS
+    for tool in MARKET_REPORTING_TOOLS:
+        registry.register_tool(tool)
+
+    # Register advanced synthetic data tool
+    from app.tools.advanced_data_synthesizer import ADVANCED_DATA_TOOLS
+    for tool in ADVANCED_DATA_TOOLS:
+        registry.register_tool(tool)
+
     # Register structural self-refactoring tools
     from app.tools.code_editor import STRUCTURAL_TOOLS
     for tool in STRUCTURAL_TOOLS:

@@ -1,8 +1,7 @@
 # deploy_sovereign.ps1
 param (
-    [Parameter(Mandatory=$true)]
-    [string]$IP,
-    [string]$KeyFile = "ssh-key-2026-03-03.key"
+    [string]$IP = "80.225.250.239",
+    [string]$KeyFile = "oracle_fresh.key"
 )
 
 Write-Host "QUANTIFY OS: SOVEREIGN DEPLOYMENT STARTING"

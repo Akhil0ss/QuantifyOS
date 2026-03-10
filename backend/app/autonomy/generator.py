@@ -2,6 +2,7 @@ import json
 import os
 import time
 import shutil
+import asyncio
 from typing import Dict, Any, List, Optional
 from app.services.ai_drivers.router import ModelRouter
 from app.autonomy.structural import StructuralEngine

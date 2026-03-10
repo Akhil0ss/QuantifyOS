@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/app/test_dynamic_dependency.py", line 72, in <module>
+    asyncio.run(run_dynamic_test())
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/app/test_dynamic_dependency.py", line 69, in run_dynamic_test
+    await executor.execute_plan(workspace_id, task_id, [])
+  File "/app/app/autonomy/execution.py", line 96, in execute_plan
+    ai_decision = await ModelRouter.route_tool_call(
+                        ^^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'ModelRouter' where it is not associated with a value

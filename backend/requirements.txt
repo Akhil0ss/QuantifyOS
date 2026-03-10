@@ -17,3 +17,7 @@ supabase
 paho-mqtt
 pymodbus
 pytest-asyncio
+fpdf2
+opencv-python-headless
+matplotlib
+numpy
